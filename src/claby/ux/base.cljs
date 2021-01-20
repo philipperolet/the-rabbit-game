@@ -52,6 +52,11 @@
 (defonce game-state (atom {}))
 (defonce level (atom 0))
 
+(def autorun-flag
+  "On = game with AI player will run auto. Off = game with AI player
+  can run manually step by step"
+  (atom false))
+
 (defn server-get
   "Send HTTP GET request at claby server's `endpoint`, to be handled by `callback`
 
@@ -69,11 +74,27 @@
                [(keyword k) v]))))
 
 
-;;; Player movement
+;;; Game progression
 ;;;;;;
 
-(defn move-player
-  "Move player on the board by changing player-position"
+(defn ai-game-step
+  "Moves the game forward one step (for AI players)"
+  []
+  (when (= :active (@game-state ::gs/status))
+    (server-get "next" #(swap! game-state ge/move-player %))))
+
+(defn move-ai-player
+  "Moves the game forward according to user input (for AI players)"
+  [e]
+  (cond
+    (= (.-key e) "Enter")
+    (swap! autorun-flag not)
+    
+    (and (= (.-key e) " ") (not @autorun-flag))
+    (ai-game-step)))
+
+(defn move-human-player
+  "Move player on the board by changing player-position (for human players)"
   [e]
   (let [command
         (case (.-key e)
@@ -81,17 +102,15 @@
           ("ArrowDown" "d" "D") :down
           ("ArrowLeft" "s" "S") :left
           ("ArrowRight" "f" "F") :right
-          (" ") :space
           :other)]
-    
-    (cond
-      (and (= (:player (parse-params)) "human") (some #{command} ge/directions))
-      (do (.preventDefault e)
-          (swap! game-state ge/move-player command))
+    (when (not= :other command)
+        (.preventDefault e)
+        (swap! game-state ge/move-player command))))
 
-      (and (not= (:player (parse-params)) "human") (= command :space))
-      (do (.preventDefault e)
-          (server-get "next" #(swap! game-state ge/move-player %))))))
+(defn user-keypress [e]
+  (if (= (:player (parse-params)) "human")
+    (move-human-player e)
+    (move-ai-player e)))
 
 ;;;
 ;;; Component & app rendering
@@ -138,20 +157,28 @@
          (reduce ge/move-enemy-random @game-state)
          (reset! game-state))))
 
+(defn- setup-auto-movement
+  "Setup auto enemy move for human play or auto full-game move for ai play"
+  []
+  (let [tick-interval (int (get (parse-params) :tick "130"))
+        move-ai-game #(when @autorun-flag (ai-game-step))]
+    (if (= "human" (-> (parse-params) :human))
+      (.setInterval js/window move-enemies tick-interval)
+      (.setInterval js/window move-ai-game tick-interval))))
+
 (defn- initialize-game-state [ux state]
   (reset! game-state state)
   (.hide (jq "#loading") 200)
-  (.setInterval js/window move-enemies
-                (int (get (parse-params) :tick "130")))
+  (setup-auto-movement)
   (start-level ux))
 
 (defn start-game
   [ux]
-  (.addEventListener js/window "keydown" move-player)
+  (.addEventListener js/window "keydown" user-keypress)
   (add-enemies-style ux (get-in levels [@level :enemies]))
   (.show (jq "#loading")
          200
-         #(server-get "start" #(initialize-game-state ux %))))
+         (fn [] (server-get "start" #(initialize-game-state ux %)))))
 
 (defn game-transition
   "Component rendering a change in game status. 3 possible transitions may occur:
@@ -170,7 +197,7 @@
                nil)]
 
     ;; render animation and component
-    (.removeEventListener js/window "keydown" move-player)
+    (.removeEventListener js/window "keydown" user-keypress)
     (if (= transition-type :nextlevel)
       (swap! level inc))
     (animate-transition ux transition-type)

@@ -7,10 +7,11 @@ OK feat: visualize basic claby games with ai players (fixed parameters)
 OK feat: ability to choose human / ai play
 OK feat: command-line like input to adjust params for ai players
 OK doc: clean readme
+feat: run the game auto at tick move. Enter used to start / pause. Space to move once when game paused.
 feat: visualize any claby games with ai players (incl. cheese & enemies)
 - base can send level info to server, server handles level data
 - works with lapy
-feat: run the game auto at tick move. Space used to start / pause
+
 feat: adapt ai ux (no anims, special level handling)
 feat: small ux cleanup
 
