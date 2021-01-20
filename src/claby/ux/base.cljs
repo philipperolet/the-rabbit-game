@@ -5,42 +5,39 @@
    [clojure.string :as cstr :refer [split]]
    [clojure.test.check]
    [clojure.test.check.properties]
-   [cljs.spec.alpha :as s]
-   [cljs.spec.gen.alpha :as gen]
    [reagent.core :as reagent :refer [atom]]
    [reagent.dom :refer [render]]
-   [claby.game.board :as gb]
-   [claby.game.state :as gs]
-   [claby.game.events :as ge]
-   [claby.game.generation :as gg]))
+   [claby.ux.temp-game :refer [temp-game]]
+   [mzero.game.state :as gs]
+   [mzero.game.events :as ge]))
 
 (defonce game-size 15)
 
 (defonce levels
   [{:message "Lapinette enceinte doit manger un maximum de fraises"
-    ::gg/density-map {:fruit 5
-                      :cheese 0}}
+    :mzero.game.generation/density-map {:fruit 5
+                                        :cheese 0}}
    {:message "Attention au fromage non-pasteurisé !"
-    ::gg/density-map {:fruit 5
+    :density-map {:fruit 5
                       :cheese 3}
     :message-color "darkgoldenrod"}
    {:message "Evite les apéros alcoolisés"
-    ::gg/density-map {:fruit 5
+    :density-map {:fruit 5
                       :cheese 3}
     :message-color "darkblue"
     :enemies [:drink :drink]}
    {:message "Les souris ont infesté la maison!"
-    ::gg/density-map {:fruit 5
+    :density-map {:fruit 5
                       :cheese 3}
     :message-color "darkmagenta"
     :enemies [:drink :mouse :mouse]}
    {:message "Le covid ça fait peur!"
-    ::gg/density-map {:fruit 5
+    :density-map {:fruit 5
                       :cheese 3}
     :message-color "darkcyan"
     :enemies [:virus :virus]}
    {:message "Allez on arrête de déconner."
-    ::gg/density-map {:fruit 5
+    :density-map {:fruit 5
                       :cheese 5}
     :message-color "darkgreen"
     :enemies [:drink :drink :virus :virus :mouse :mouse]}])
@@ -125,9 +122,7 @@
    (jq "#loading")
    200
    (fn []
-     (swap! game-state #(gg/create-nice-game
-                         game-size
-                         (levels @level)))
+     (reset! game-state temp-game)
      (.hide (jq "#loading") 200)
      (.setInterval js/window move-enemies
                    (int (get (parse-params) :tick "130")))
@@ -200,3 +195,4 @@
   ;; your application
   ;; (swap! app-state update-in [:__figwheel_counter] inc)
 )
+

@@ -4,10 +4,8 @@
   (:require
    [clojure.test.check]
    [clojure.test.check.properties]
-   [cljs.spec.alpha :as s]
-   [cljs.spec.gen.alpha :as gen]
    [reagent.dom.server :refer [render-to-static-markup]]
-   [claby.game.state :as gs]
+   [mzero.game.state :as gs]
    [claby.ux.base :as ux]))
 
 (defonce jq (js* "$"))

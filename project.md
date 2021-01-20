@@ -2,14 +2,18 @@
 
 ### 1.0.0 - UX for AI & Human gaming
 
-== ref: remove code migrated to mzero and add mzero dependency
+OK ref: remove code migrated to mzero and add mzero dependency
 	+ Review diffs between last claby version & current ver (check no important ux changes)
-	+ add todo in project.md and dep in project.clj 
+	+ add todo in project.md and dep in project.clj
+	+ remove code
+	+ add dependencies | use a fake game since generation.cljc cannot be used
+	+ check it works
 
 feat: visualize claby games with ai players (fixed parameters)
 - add clean server.clj
 - add clean code in base.cljs
 feat: ability to choose human / ai play via button
+- restore 
 feat: command-line like input to adjust params for ai players
 feat: run the game auto at 1s/move. Space used to start / pause
 feat: small ux clean

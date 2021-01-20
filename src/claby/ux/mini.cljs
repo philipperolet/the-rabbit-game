@@ -3,9 +3,7 @@
   (:require
    [clojure.test.check]
    [clojure.test.check.properties]
-   [cljs.spec.alpha :as s]
-   [cljs.spec.gen.alpha :as gen]
-   [claby.game.state :as gs]
+   [mzero.game.state :as gs]
    [claby.ux.base :as ux]))
 
 (defonce transition-message
