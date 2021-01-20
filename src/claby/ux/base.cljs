@@ -7,9 +7,11 @@
    [clojure.test.check.properties]
    [reagent.core :as reagent :refer [atom]]
    [reagent.dom :refer [render]]
-   [claby.ux.temp-game :refer [temp-game]]
    [mzero.game.state :as gs]
-   [mzero.game.events :as ge]))
+   [mzero.game.events :as ge]
+   [cljs-http.client :as http]
+   [cljs.reader :refer [read-string]]
+   [clojure.core.async :refer [<!] :refer-macros [go]]))
 
 (defonce game-size 15)
 
@@ -45,6 +47,15 @@
 (defonce game-state (atom {}))
 (defonce level (atom 0))
 
+(defn server-get
+  "Send HTTP GET request at claby server's `endpoint`, to be handled by `callback`
+
+  Callback expects exactly one param, the request body parsed via read-string."
+  [endpoint callback]
+  (go (let [response (<! (http/get (str "http://127.0.0.1:8080/" endpoint)
+                                   {:with-credentials? false}))]
+        (callback (read-string (:body response))))))
+
 (defn parse-params
   "Parse URL parameters into a hashmap"
   []
@@ -67,7 +78,10 @@
                     :no-movement)]
     (when (not= direction :no-movement)
       (.preventDefault e)
-      (swap! game-state ge/move-player direction))))
+      (server-get "next"
+                #(swap! game-state
+                       ge/move-player
+                       %)))))
   
 ;;;
 ;;; Component & app rendering
@@ -122,11 +136,14 @@
    (jq "#loading")
    200
    (fn []
-     (reset! game-state temp-game)
-     (.hide (jq "#loading") 200)
-     (.setInterval js/window move-enemies
-                   (int (get (parse-params) :tick "130")))
-     (start-level ux))))
+     (server-get
+      "start"
+      (fn [x]
+        (reset! game-state x)
+        (.hide (jq "#loading") 200)
+        (.setInterval js/window move-enemies
+                      (int (get (parse-params) :tick "130")))
+        (start-level ux))))))
 
 (defn game-transition
   "Component rendering a change in game status. 3 possible transitions may occur:

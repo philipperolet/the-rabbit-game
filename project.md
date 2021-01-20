@@ -9,16 +9,19 @@ OK ref: remove code migrated to mzero and add mzero dependency
 	+ add dependencies | use a fake game since generation.cljc cannot be used
 	+ check it works
 
-feat: visualize claby games with ai players (fixed parameters)
-- add clean server.clj
-- add clean code in base.cljs
-feat: ability to choose human / ai play via button
-- restore 
+OK feat: visualize basic claby games with ai players (fixed parameters)
++ add clean server.clj
++ add code in base.cljs
++ remove temp-game
+
 feat: command-line like input to adjust params for ai players
+feat: visualize any claby games with ai players (incl. cheese & enemies)
+- works with lapy
+feat: ability to choose human / ai play via button
 feat: run the game auto at 1s/move. Space used to start / pause
 feat: small ux clean
-feat: works with lapy
-feat: clean readme
+
+doc: clean readme
 
 ## Backlog
 
