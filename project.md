@@ -1,9 +1,10 @@
 # Plan
 
 ### 1.0.0 - UX for AI & Human gaming
-ref: remove code migrated to mzero and add mzero dependency
-+ Review diffs between last claby version & current ver (check no important ux changes)
-+ add todo in project.md and dep in project.clj 
+
+== ref: remove code migrated to mzero and add mzero dependency
+	+ Review diffs between last claby version & current ver (check no important ux changes)
+	+ add todo in project.md and dep in project.clj 
 
 feat: visualize claby games with ai players (fixed parameters)
 - add clean server.clj
