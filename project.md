@@ -1,15 +1,20 @@
-## Plan - TBD FINISH IT
+# Plan
 
-#### Faire marcher un player pas mal : tree explo ####
-- identifier la cause du bug du joueur qui tourne en rond
-- Le test d'intégration doit tourner exactement sur 300 steps
-- complété par 1 qui tourne sur 5 secondes
+### 1.0.0 - UX for AI & Human gaming
+ref: remove code migrated to mzero and add mzero dependency
++ Review diffs between last claby version & current ver (check no important ux changes)
++ add todo in project.md and dep in project.clj 
 
-- test & fix de ce bug
+feat: visualize claby games with ai players (fixed parameters)
+- add clean server.clj
+- add clean code in base.cljs
+feat: ability to choose human / ai play via button
+feat: command-line like input to adjust params for ai players
+feat: run the game auto at 1s/move. Space used to start / pause
+feat: small ux clean
+feat: works with lapy
+feat: clean readme
 
-#### Historique des jeux conservés et rejouables
-#### Visu de jeu sur le net
-#### TBD - Première version de m0
 ## Backlog
 
 ### v0.2.1
