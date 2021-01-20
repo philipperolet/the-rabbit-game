@@ -1,9 +1,8 @@
-# Claby
+# Claby UX
 
-A simple game of eating fruits in a maze, avoiding unpasteurized cheese and moving enemies, with 6 levels to clear. The game can be played :
+UX for the claby game (in repo mzero) in a browser. It allows human play (**Lapyrinthe**), or visualization of AI play (**AI world**)
 
-- by computers using CLI (**AI world**).
-- by humans in a browser (**Lapyrinthe**);
+The claby game: a simple game of eating fruits in a maze, avoiding unpasteurized cheese and moving enemies, with auto-generable maps & levels to clear.
 
 
 ## Setup
@@ -17,58 +16,24 @@ For more info on requirements / dependencies and which version of what you need 
 ### Installation
 - Install by cloning this rep.
 
-## AI world
 
-### Purpose
-**AI world** provides a simple programmatic world, and an interface to implement wannabe-intelligent players to interact in this world. The world's rules are those of the above described games. Therefore, a good player will be able to navigate the maze to eat lots of fruits, while avoiding enemies.
+## Usage
+- Start game server (backend) with ``lein run -m claby.ux.server/serve args`` where args are any kind of args that can be used to start a claby game in backend, see repo [mzero](https://github.com/sittingbull/mzero) for a list of those
+- Start ux with niceties (sound, rabbits everywhere, animations) with ``lein fig:build-lapy``
+- Start ux with minimal skin with ``lein fig:build-mini`` (intended for AI Game visualisation)
 
-### Usage
-Launching AI world will run a single game using the player code located in `claby.ai.player`.
+Both humans and AIs can play. By defaut AIs play. Use query parameter `player=human` to play yourself
 
-Start game:
-- in CLI with `lein run args`;
-- in REPL by getting to the `claby.ai.main` namespace and typing `(run args)`.
+### AI play
+Press space bar to start / stop the AI player (chosen among multiple implementations in the game server args, see below)
 
-Run `lein run -h` to print CLI arguments. They are also described in `cli-options` at [claby.ai.main](src/claby/ai/main.clj).
+### Human play
+Move the player with arrow keys, or e - d - s - f keys. Game starts at level 1, and if the player clears all 6 predefined levels you will see the ending.
 
-#### Programmatic mode - interactive mode ###
-In programmatic mode, game only displays initial and end states.
-
-Game can be run interactively using the `--interactive/-i` flag. In that case:
-- user can pause/step with [enter], run with r, quit wit q;
-- game state is displayed every X (optionally specified) steps.
-
-See main.clj for more details.
-
-### Project structure
-Game models and actions are in ``claby.game``
-
-3 main modules in `claby.ai`:
-- **main.clj** is responsible for launching AI world;
-- **world.clj** is responsible for running the world;
-- **player.clj** is responsible for running the player.
-
-### How world and player operate
-The world is the *reality*, all that is external to the player's intelligence and senses--the player is defined by its senses and its movement decisions. In the real world, the player would be one's brain & nerves, sensing information and deciding actions. The world woud be everything else--including one's bodily functions.
-
-Movement requests are the player's responsibility, while performing the actual movement is the world's responsibility. Theoretically, the player could request movements that are not executed, similarly to somebody suffering from the locked-in syndrome.
-
-#### Architecture for AI Game
-
-![Architecture image](https://docs.google.com/drawings/d/e/2PACX-1vT1ogu40fw8SG1oWGnR4WCJE3kmnCFcYzwMuLwiAuGbJ1vb8V2M8JzLFYiwczdS6D6cYqsMLmmyFO-_/pub?w=960&h=720)
-
-## Lapyrinthe
-
-### Usage
-
-- Start game with niceties (sound, rabbits everywhere, animations) with ``lein fig:build-lapy``
-- Start game with minimal skin with ``lein fig:build-mini`` (intended for AI Game visualisation)
-
-Move the player with arrow keys, or e - d - s - f keys. Game starts at level 1, and if the player clears all levels 6 you will see the ending.
-
+### Cheat codes
 Cheat codes allow to start directly at a given level, or to slow down the enemies, by adding the query string `?cheatlev=X&tick=Y`
 
-### Dev & deploy
+## Dev & deploy
 UX tools and entry points for **lapyrinthe** are in ``claby.ux``
 
 To get an interactive development environment run:
@@ -93,7 +58,8 @@ To create a production build run:
 	lein fig:prod
 
 
-# License
+## Note - Mzero & Claby game
+The code in this repo is a browser UX for the claby game in repo `mzero`. Check said repo for more info on the game.
 
 Copyright © 2020 Philippe Rolet
 
