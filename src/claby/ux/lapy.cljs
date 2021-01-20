@@ -119,7 +119,7 @@
               (start-level-data :nextlevel))]
 
         ;; music and fading to begin level, and game activity
-        (if @music-on (-> (.play gameMusic)))
+        (when @music-on (-> (.play gameMusic)))
         (.fadeTo (jq "#h") 1000 1
                  (fn []
                    (swap! ux/game-state #(assoc % ::gs/status :active))

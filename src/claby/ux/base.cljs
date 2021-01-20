@@ -1,5 +1,10 @@
 (ns ^:figwheel-hooks claby.ux.base
-  "Main UX components to run the Claby game."
+  "Main UX components to run the Claby game.
+
+  UX can be tweaked via query params:
+  - cheatlev=X starts directly in level X
+  - tick=X sets the 'speed' of enemies, actually their frequency defaulting to 130
+  - player=human allows for human control of the player rather than ai"
   (:require
    [goog.dom :as gdom]
    [clojure.string :as cstr :refer [split]]
@@ -68,20 +73,25 @@
 ;;;;;;
 
 (defn move-player
-  "Moves player on the board by changing player-position"
+  "Move player on the board by changing player-position"
   [e]
-  (let [direction (case (.-key e)
-                    ("ArrowUp" "e" "E") :up
-                    ("ArrowDown" "d" "D") :down
-                    ("ArrowLeft" "s" "S") :left
-                    ("ArrowRight" "f" "F") :right
-                    :no-movement)]
-    (when (not= direction :no-movement)
-      (.preventDefault e)
-      (server-get "next"
-                #(swap! game-state
-                       ge/move-player
-                       %)))))
+  (let [command
+        (case (.-key e)
+          ("ArrowUp" "e" "E") :up
+          ("ArrowDown" "d" "D") :down
+          ("ArrowLeft" "s" "S") :left
+          ("ArrowRight" "f" "F") :right
+          (" ") :space
+          :other)]
+    
+    (cond
+      (and (= (:player (parse-params)) "human") (some #{command} ge/directions))
+      (do (.preventDefault e)
+          (swap! game-state ge/move-player command))
+
+      (and (not= (:player (parse-params)) "human") (= command :space))
+      (do (.preventDefault e)
+          (server-get "next" #(swap! game-state ge/move-player %))))))
   
 ;;;
 ;;; Component & app rendering
