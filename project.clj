@@ -17,7 +17,7 @@
                  [http-kit "2.5.0"]                 
                  [reagent "0.10.0"]
                  [compojure "1.6.2"]
-                 [mzero "0.2.2"]]
+                 [mzero "0.2.3"]]
 
   :jvm-opts ["-Xss1g"]
   :source-paths ["src"]

@@ -6,15 +6,15 @@ OK ref: remove code migrated to mzero and add mzero dependency
 OK feat: visualize basic claby games with ai players (fixed parameters)
 OK feat: ability to choose human / ai play
 OK feat: command-line like input to adjust params for ai players
-- as server args
-- but should still generate a new game when going up levels
+OK doc: clean readme
 feat: visualize any claby games with ai players (incl. cheese & enemies)
+- base can send level info to server, server handles level data
 - works with lapy
+feat: run the game auto at tick move. Space used to start / pause
+feat: adapt ai ux (no anims, special level handling)
+feat: small ux cleanup
 
-feat: run the game auto at 1s/move. Space used to start / pause
-feat: small ux clean
 
-doc: clean readme
 
 ## Backlog
 

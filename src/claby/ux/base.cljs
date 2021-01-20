@@ -25,27 +25,27 @@
     :mzero.game.generation/density-map {:fruit 5
                                         :cheese 0}}
    {:message "Attention au fromage non-pasteurisé !"
-    :density-map {:fruit 5
-                      :cheese 3}
+    :mzero.game.generation/density-map {:fruit 5
+                                        :cheese 3}
     :message-color "darkgoldenrod"}
    {:message "Evite les apéros alcoolisés"
-    :density-map {:fruit 5
-                      :cheese 3}
+    :mzero.game.generation/density-map {:fruit 5
+                                        :cheese 3}
     :message-color "darkblue"
     :enemies [:drink :drink]}
    {:message "Les souris ont infesté la maison!"
-    :density-map {:fruit 5
-                      :cheese 3}
+    :mzero.game.generation/density-map {:fruit 5
+                                        :cheese 3}
     :message-color "darkmagenta"
     :enemies [:drink :mouse :mouse]}
    {:message "Le covid ça fait peur!"
-    :density-map {:fruit 5
-                      :cheese 3}
+    :mzero.game.generation/density-map {:fruit 5
+                                        :cheese 3}
     :message-color "darkcyan"
     :enemies [:virus :virus]}
    {:message "Allez on arrête de déconner."
-    :density-map {:fruit 5
-                      :cheese 5}
+    :mzero.game.generation/density-map {:fruit 5
+                                        :cheese 5}
     :message-color "darkgreen"
     :enemies [:drink :drink :virus :virus :mouse :mouse]}])
 
@@ -92,7 +92,7 @@
       (and (not= (:player (parse-params)) "human") (= command :space))
       (do (.preventDefault e)
           (server-get "next" #(swap! game-state ge/move-player %))))))
-  
+
 ;;;
 ;;; Component & app rendering
 ;;;
@@ -138,22 +138,20 @@
          (reduce ge/move-enemy-random @game-state)
          (reset! game-state))))
 
+(defn- initialize-game-state [ux state]
+  (reset! game-state state)
+  (.hide (jq "#loading") 200)
+  (.setInterval js/window move-enemies
+                (int (get (parse-params) :tick "130")))
+  (start-level ux))
+
 (defn start-game
   [ux]
   (.addEventListener js/window "keydown" move-player)
   (add-enemies-style ux (get-in levels [@level :enemies]))
-  (.show
-   (jq "#loading")
-   200
-   (fn []
-     (server-get
-      "start"
-      (fn [x]
-        (reset! game-state x)
-        (.hide (jq "#loading") 200)
-        (.setInterval js/window move-enemies
-                      (int (get (parse-params) :tick "130")))
-        (start-level ux))))))
+  (.show (jq "#loading")
+         200
+         #(server-get "start" #(initialize-game-state ux %))))
 
 (defn game-transition
   "Component rendering a change in game status. 3 possible transitions may occur:
@@ -197,8 +195,8 @@
      [:div.col-md-auto
       [show-score ux (@game-state ::gs/score)]
       [:table (gs/get-html-for-state @game-state)]]
-   [:div.col.col-lg-2]
-   [game-transition ux (@game-state ::gs/status)]]))
+     [:div.col.col-lg-2]
+     [game-transition ux (@game-state ::gs/status)]]))
 
 ;; conditionally start your application based on the presence of an "app" element
 ;; this is particularly helpful for testing this ns without launching the app
@@ -221,5 +219,5 @@
   ;; optionally touch your app-state to force rerendering depending on
   ;; your application
   ;; (swap! app-state update-in [:__figwheel_counter] inc)
-)
+  )
 
