@@ -6,7 +6,6 @@
    [cljs.spec.test.alpha
     :refer-macros [instrument check]
     :refer [abbrev-result]]
-   #_[claby.utils :refer-macros [check-all-specs]]
    [claby.ux.base :as c]))
 
 ;; (instrument)

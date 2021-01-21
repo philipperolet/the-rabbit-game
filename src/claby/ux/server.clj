@@ -5,6 +5,7 @@
   
   Endpoints are expected to return textual representations of clj objects that
   will be parsed with `read-string`"
+  (:import (java.net URLDecoder))
   (:require [org.httpkit.server :as server]
             [compojure.core :refer [GET defroutes]]
             [compojure.route :as route]
@@ -15,17 +16,26 @@
 (def mzero-arg-string
   "Argument string passed to mzero game when launched, see `mzero.ai.main`" "")
 
+(defn- get-level-from-query-string [request]
+  (-> (:query-string request)
+      (#(re-find #"level=[^&]*" %))
+      (str/split #"=")
+      (nth 1)
+      (URLDecoder/decode "UTF-8")))
+
 (defn start-handler
   "Get fresh game state, with player having moved once"
-  [_]
-  {:status  200
-   :headers {"Content-Type" "text/plain"
-             "Access-Control-Allow-Origin" "*"} 
-   :body
-   (-> (aim/go mzero-arg-string)
-       :world
-       ::gs/game-state
-       pr-str)})
+  [req]
+  (let [args-for-game
+        (format (str mzero-arg-string " -L '%s'")
+                (get-level-from-query-string req))
+        game-state-string
+        (-> (aim/go args-for-game) :world ::gs/game-state pr-str)]
+    
+    {:status  200
+     :headers {"Content-Type" "text/plain"
+               "Access-Control-Allow-Origin" "*"} 
+     :body game-state-string}))
 
 (defn next-handler
   "Get player's next movement."
@@ -46,9 +56,9 @@
   store them as string"
   [args]
   (let [arg-string (str/join " " args)]
-    (when (some #(str/includes? arg-string %) ["-n " "-h " "-i "])
+    (when (some #(str/includes? arg-string %) ["-n " "-h " "-i " "-L"])
       (throw (java.lang.IllegalArgumentException.
-              "`-n`, `-h` or `-i`  should not be used in server mode.")))
+              "`-n`, `-h`, `-L` or `-i`  should not be used in server mode.")))
     (aim/parse-run-args arg-string) ;; used to throw error in case of malformed args
     (alter-var-root #'mzero-arg-string (fn [_] (str arg-string " -n 1")))))
 

@@ -61,10 +61,13 @@
   "Send HTTP GET request at claby server's `endpoint`, to be handled by `callback`
 
   Callback expects exactly one param, the request body parsed via read-string."
-  [endpoint callback]
-  (go (let [response (<! (http/get (str "http://127.0.0.1:8080/" endpoint)
-                                   {:with-credentials? false}))]
-        (callback (read-string (:body response))))))
+  ([endpoint callback query-param-map]
+   (go (let [response (<! (http/get (str "http://127.0.0.1:8080/" endpoint)
+                                    {:with-credentials? false
+                                     :query-params query-param-map}))]
+         (callback (read-string (:body response))))))
+
+  ([endpoint callback] (server-get endpoint callback {})))
 
 (defn parse-params
   "Parse URL parameters into a hashmap"
@@ -176,7 +179,9 @@
     
     (-> (jq "#loading")
         (.show 200) (.promise)
-        (.then (fn [] (server-get "start" load-callback))))))
+        (.then (fn [] (server-get "start"
+                                  load-callback
+                                  {"level" (str (levels @level))}))))))
 
 (defn start-game
   [ux]
