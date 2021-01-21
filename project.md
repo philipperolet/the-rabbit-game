@@ -1,16 +1,6 @@
 # Plan
 
 ## Backlog
-### 1.0.0 - UX for AI & Human gaming
-- ref: remove code migrated to mzero and add mzero dependency
-- feat: visualize basic claby games with ai players (fixed parameters)
-- feat: ability to choose human / ai play
-- feat: command-line like input to adjust params for ai players
-- doc: clean readme
-- feat: run the game auto at tick move. Enter used to start / pause. Space to move once when game paused.
-- feat: visualize any claby games with ai players (incl. cheese & enemies)
-- fix: auto speed increase / enemy movement (for human) / changed keys (for ai)
-
 ### v0.2.1
 - random player senses are only a 7*7 grid, the step and the score
 - exhaustive-player senses are only a 7*7 grid, the step and the score
@@ -31,14 +21,18 @@
 - then look up alphazero
 
 
-## Icebox
-- remove libs from vcs to avoid useless commits / searchs?
-- tab should autocomplete
-- add walls & fruits with clicks
-- let tests be pretty-printed
-- convenient way of having tests in emacs
+## Changelog
+### 1.0.0 - UX for AI & Human gaming
+- ref: remove code migrated to mzero and add mzero dependency
+- feat: visualize basic claby games with ai players (fixed parameters)
+- feat: ability to choose human / ai play
+- feat: command-line like input to adjust params for ai players
+- doc: clean readme
+- feat: run the game auto at tick move. Enter used to start / pause. Space to move once when game paused.
+- feat: visualize any claby games with ai players (incl. cheese & enemies)
+- fix: auto speed increase / enemy movement (for human) / changed keys (for ai)
 
-## Done
+
 ### v0.2.1
 - refactor player cli options & player creation to fit new TE-player
 + added tree-exploration-player
@@ -152,3 +146,9 @@
 - allow magit auth with 2fa outside emacs
 - Hello world in a browser
 
+## Icebox
+- remove libs from vcs to avoid useless commits / searchs?
+- tab should autocomplete
+- add walls & fruits with clicks
+- let tests be pretty-printed
+- convenient way of having tests in emacs
