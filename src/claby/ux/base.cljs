@@ -164,21 +164,25 @@
         move-ai-game #(when @autorun-flag (ai-game-step))]
     (if (= "human" (-> (parse-params) :human))
       (.setInterval js/window move-enemies tick-interval)
-      (.setInterval js/window move-ai-game tick-interval))))
+      (.setInterval js/window move-ai-game (* 2 tick-interval)))))
 
-(defn- initialize-game-state [ux state]
-  (reset! game-state state)
-  (.hide (jq "#loading") 200)
-  (setup-auto-movement)
-  (start-level ux))
+(defn- load-game-board [ux]
+  (let [load-callback
+        (fn [state]
+          (reset! game-state state)
+          (.hide (jq "#loading") 200)
+          (setup-auto-movement)
+          (start-level ux))]
+    
+    (-> (jq "#loading")
+        (.show 200) (.promise)
+        (.then (fn [] (server-get "start" load-callback))))))
 
 (defn start-game
   [ux]
   (.addEventListener js/window "keydown" user-keypress)
   (add-enemies-style ux (get-in levels [@level :enemies]))
-  (.show (jq "#loading")
-         200
-         (fn [] (server-get "start" #(initialize-game-state ux %)))))
+  (load-game-board ux))
 
 (defn game-transition
   "Component rendering a change in game status. 3 possible transitions may occur:
