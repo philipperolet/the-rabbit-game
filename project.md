@@ -1,22 +1,15 @@
 # Plan
 
-### 1.0.0 - UX for AI & Human gaming
-
-OK ref: remove code migrated to mzero and add mzero dependency
-OK feat: visualize basic claby games with ai players (fixed parameters)
-OK feat: ability to choose human / ai play
-OK feat: command-line like input to adjust params for ai players
-OK doc: clean readme
-OK feat: run the game auto at tick move. Enter used to start / pause. Space to move once when game paused.
-OK feat: visualize any claby games with ai players (incl. cheese & enemies)
-- base can send level info to server, server handles level data
-- works with lapy
-
-feat: adapt ai ux (no anims, special level handling)
-feat: small ux cleanup
-
-
 ## Backlog
+### 1.0.0 - UX for AI & Human gaming
+- ref: remove code migrated to mzero and add mzero dependency
+- feat: visualize basic claby games with ai players (fixed parameters)
+- feat: ability to choose human / ai play
+- feat: command-line like input to adjust params for ai players
+- doc: clean readme
+- feat: run the game auto at tick move. Enter used to start / pause. Space to move once when game paused.
+- feat: visualize any claby games with ai players (incl. cheese & enemies)
+- fix: auto speed increase / enemy movement (for human) / changed keys (for ai)
 
 ### v0.2.1
 - random player senses are only a 7*7 grid, the step and the score

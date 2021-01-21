@@ -16,7 +16,8 @@
    [mzero.game.events :as ge]
    [cljs-http.client :as http]
    [cljs.reader :refer [read-string]]
-   [clojure.core.async :refer [<!] :refer-macros [go]]))
+   [clojure.core.async :refer [<!] :refer-macros [go]]
+   [clojure.string :as str]))
 
 (defonce game-size 15)
 
@@ -90,10 +91,10 @@
   "Moves the game forward according to user input (for AI players)"
   [e]
   (cond
-    (= (.-key e) "Enter")
+    (= (.-key e) " ")
     (swap! autorun-flag not)
     
-    (and (= (.-key e) " ") (not @autorun-flag))
+    (and (some #{(.-key e)} ["n" "N"]) (not @autorun-flag))
     (ai-game-step)))
 
 (defn move-human-player
@@ -165,16 +166,15 @@
   []
   (let [tick-interval (int (get (parse-params) :tick "130"))
         move-ai-game #(when @autorun-flag (ai-game-step))]
-    (if (= "human" (-> (parse-params) :human))
+    (if (= "human" (-> (parse-params) :player))
       (.setInterval js/window move-enemies tick-interval)
-      (.setInterval js/window move-ai-game (* 2 tick-interval)))))
+      (.setInterval js/window move-ai-game (/ tick-interval 2)))))
 
 (defn- load-game-board [ux]
   (let [load-callback
         (fn [state]
           (reset! game-state state)
           (.hide (jq "#loading") 200)
-          (setup-auto-movement)
           (start-level ux))]
     
     (-> (jq "#loading")
@@ -246,6 +246,7 @@
   [ux]
   {:pre [(gdom/getElement "app")]}
   (reset! level (int (get (parse-params) :cheatlev "0")))
+  (setup-auto-movement)
   (init ux)
   (render [claby ux] (gdom/getElement "app")))
 

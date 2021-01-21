@@ -25,7 +25,7 @@ For more info on requirements / dependencies and which version of what you need 
 Both humans and AIs can play. By defaut AIs play. Use query parameter `player=human` to play yourself
 
 ### AI play
-Press `Enter` to start / stop the AI player (chosen among multiple implementations in the game server args, see below). When stopped, press `Spacebar` to let it move step-by-step.
+Press `Spacebar` to start / stop the AI player (chosen among multiple implementations in the game server args, see below). When stopped, press `n` to let it move step-by-step.
 
 ### Human play
 Move the player with arrow keys, or e - d - s - f keys. Game starts at level 1, and if the player clears all 6 predefined levels you will see the ending.
