@@ -50,6 +50,7 @@
     :message-color "darkgreen"
     :enemies [:drink :drink :virus :virus :mouse :mouse]}])
 
+(defonce jq (js* "$"))
 (defonce game-state (atom {}))
 (defonce level (atom 0))
 
@@ -85,7 +86,20 @@
   "Moves the game forward one step (for AI players)"
   []
   (when (= :active (@game-state ::gs/status))
-    (server-get "next" #(swap! game-state ge/move-player %))))
+    (server-get "next"
+                (fn [movement]
+                  (let [bwidth-str (.css (jq "td.player") "border-width")
+                        bwidth
+                        (-> bwidth-str
+                            (subs 0 (- (count bwidth-str) 2))
+                            js/parseFloat)
+                        new-size (+ 0.67 (mod bwidth 5))]
+                    (.css (jq "td.player") "border-width" (str new-size "px")))
+                  (if movement
+                    (do (.css (jq "td.player") "opacity" 1.0)
+                        (swap! game-state ge/move-player movement))
+                    #_(.css (jq "td.player") "opacity"
+                          (- (js/parseFloat (.css (jq "td.player") "opacity")) 0.2)))))))
 
 (defn move-ai-player
   "Moves the game forward according to user input (for AI players)"
@@ -137,8 +151,6 @@
   
   (enemy-style [this type]
     "How to style enemies (string with css style for the enemy type)"))
-
-(defonce jq (js* "$"))
 
 (defn add-enemies-style
   [ux enemies]

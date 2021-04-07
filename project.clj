@@ -17,9 +17,10 @@
                  [http-kit "2.5.0"]                 
                  [reagent "0.10.0"]
                  [compojure "1.6.2"]
-                 [mzero "0.2.3"]]
+                 [mzero "0.2.5-alpha"]]
 
-  :jvm-opts ["-Xss1g"]
+  :jvm-opts ["-Xss1g"
+             "-Dclojure.tools.logging.factory=clojure.tools.logging.impl/jul-factory"]
   :source-paths ["src"]
   :aliases {"fig"       ["trampoline" "run" "-m" "figwheel.main"]
             "fig:build-lapy" ["trampoline" "run" "-m" "figwheel.main" "-b" "dev" "-r"]
