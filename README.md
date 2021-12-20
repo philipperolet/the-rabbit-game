@@ -1,40 +1,52 @@
-# Claby UX
+# Mzero Game GUI
 
-UX for the claby game (in repo mzero) in a browser. It allows human play (**Lapyrinthe**), or visualization of AI play (**AI world**)
+This is a ClojureScript GUI for the [Mzero Game](https://github.com/sittingbull/mzero-game). 
 
-The claby game: a simple game of eating fruits in a maze, avoiding unpasteurized cheese and moving enemies, with auto-generable maps & levels to clear.
+The GUI can be tried here: http://pyrinthe.filou.tech/index.html (chrome, chromium-based or firefox browsers, **not** mobile compliant).
 
+For details about the game itself, please read the [Mzero Game README](https://github.com/sittingbull/mzero-game). 
 
 ## Setup
 
 ### Requirements ###
-- Clojure & clojurescript
-- Leiningen (who will take care of installing all other reqs)
+- Clojure & clojurescript v1.10.1 or above
+- Leiningen v2.7.8 or above
 
-For more info on requirements / dependencies and which version of what you need to install, see `project.clj`
+Other requirements / dependencies will be installed by leiningen, see the [lein project file](project.clj)
 
 ### Installation
-- Install by cloning this rep.
-
+```
+git clone https://github.com/sittingbull/mzero-game-gui.git
+cd mzero-game-gui
+```
 
 ## Usage
-- Start game server (backend) with ``lein run -m claby.ux.server/serve args`` where args are any kind of args that can be used to start a claby game in backend, see repo [mzero](https://github.com/sittingbull/mzero) for a list of those
-- Start ux with niceties (sound, rabbits everywhere, animations) with ``lein fig:build-lapy``
-- Start ux with minimal skin with ``lein fig:build-mini`` (intended for AI Game visualisation)
+Meant for local use, not remote use.
 
-Both humans and AIs can play. By defaut AIs play. Use query parameter `player=human` to play yourself
+- Start game server (backend) with ``lein run -m claby.ux.server/serve args`` where args is a string of command-line args such as those described for the [Mzero Game CLI](https://github.com/sittingbull/mzero-game);
 
-### AI play
-Press `Spacebar` to start / stop the AI player (chosen among multiple implementations in the game server args, see below). When stopped, press `n` to let it move step-by-step.
+- The following will launch a browser with the game frontend--it will only work if the backend has been started
+
+```
+lein fig:build-lapy  # nice GUI (with sounds, rabbits everywhere, animations)
+lein fig:build-mini  # minimal, faster GUI ; intended for AI Game visualisation
+```
+
+Both humans and AIs can play. **By defaut AIs play**. Use query parameter `player=human` for human play.
+
+### AI play : Spacebar & 'n' key
+- Press `Spacebar` to start / stop the AI player (chose among multiple implementations via args given to the server, see above). 
+
+- When stopped, press `n` to let it move step-by-step.
 
 ### Human play
-Move the player with arrow keys, or e - d - s - f keys. Game starts at level 1, and if the player clears all 6 predefined levels you will see the ending.
+See the [Mzero Game Intro](https://github.com/sittingbull/mzero-game) for rules & explanations.
 
-### Cheat codes
-Cheat codes allow to start directly at a given level, or to slow down the enemies, by adding the query string `?cheatlev=X&tick=Y`
+## Code quality
+The code in this repo won the 2020 [Pigsty Worst Practices Awards](pigsty-wpa.md).
 
 ## Dev & deploy
-UX tools and entry points for **lapyrinthe** are in ``claby.ux``
+GUI tools and entry points for **lapyrinthe** are in ``claby.ux``
 
 To get an interactive development environment run:
 
@@ -57,10 +69,7 @@ To create a production build run:
 	lein clean
 	lein fig:prod
 
-
-## Note - Mzero & Claby game
-The code in this repo is a browser UX for the claby game in repo `mzero`. Check said repo for more info on the game.
-
+## Licence
 Copyright © 2020 Philippe Rolet
 
 Distributed under the Apache Public License 2.0
