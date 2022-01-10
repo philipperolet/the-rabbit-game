@@ -1,4 +1,4 @@
-(ns claby.core-test
+(ns claby.ux.base-test
   (:require
    [cljs.test :refer-macros [deftest is]]
    [clojure.test.check]

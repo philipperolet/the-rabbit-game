@@ -1,8 +1,6 @@
 (ns claby.game.generation
   "Tools for generating nice boards."
-  (:require #?@(:cljs [[clojure.test.check]
-                       [clojure.test.check.properties]])
-            [clojure.spec.alpha :as s]
+  (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
             [clojure.set :as cset]
             [claby.game.board :as gb]

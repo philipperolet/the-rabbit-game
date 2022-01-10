@@ -4,8 +4,6 @@
   (:require
    [clojure.test.check]
    [clojure.test.check.properties]
-   [cljs.spec.alpha :as s]
-   [cljs.spec.gen.alpha :as gen]
    [reagent.dom.server :refer [render-to-static-markup]]
    [claby.game.state :as gs]
    [claby.ux.base :as ux]))
@@ -102,7 +100,7 @@
       (.click (jq "#lapy-arrows button") volume-toggle)
       (.click (jq "#surprise img")
               (fn []
-                (.requestFullscreen (.-documentElement js/document))
+                ;; (.requestFullscreen (.-documentElement js/document))
                 (.click (jq "#surprise img") nil)
                 (ux/start-game this))))
 

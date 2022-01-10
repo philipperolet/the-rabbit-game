@@ -28,9 +28,9 @@ body {
 }
 
 #lapyrinthe td {
-    width: 22px;
-    height: 22px;
-    background-size: 22px 22px;
+    width: 21px;
+    height: 21px;
+    background-size: 21px 20px;
 }
 
 #lapyrinthe td.wall {
@@ -185,4 +185,12 @@ body {
 
 #copyrights p {
     margin: 0;
+}
+
+body #h {
+    min-height: auto;
+    padding-bottom: 8px;
+}
+#lapyrinthe h2.subtitle span {
+    margin-left: -6em;
 }
