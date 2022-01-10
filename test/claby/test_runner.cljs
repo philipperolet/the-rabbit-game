@@ -2,7 +2,7 @@
 (ns claby.test-runner
   (:require
     ;; require all the namespaces that you want to test
-    [claby.core-test]
+    [claby.ux.base-test]
     [figwheel.main.testing :refer [run-tests-async]]))
 
 (defn -main [& args]
