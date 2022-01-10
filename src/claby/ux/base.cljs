@@ -23,7 +23,7 @@
 
 (defonce levels
   [{:message "Lapinette enceinte doit manger un maximum de fraises"
-    :mzero.game.generation/density-map {:fruit 5
+    :mzero.game.generation/density-map {:fruit 15
                                         :cheese 0}}
    {:message "Attention au fromage non-pasteurisé !"
     :mzero.game.generation/density-map {:fruit 5

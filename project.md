@@ -1,25 +1,16 @@
-# Plan
+- update claby with last version of mzero-game
+- get naming right
+- option to see artificial players play
+- option to on/off niceties (sound / transitions) 
+- clean docs appropriately
+  - README.md
+  - project.clj
+  - project.md
 
 ## Backlog
-### v0.2.1
-- random player senses are only a 7*7 grid, the step and the score
-- exhaustive-player senses are only a 7*7 grid, the step and the score
-
-### v0.3.0
 - option to store game & player data in a db for random player
 - * for exhaustive player
 - tools to inspect games
-
-### v0.4.0
-- Add player using reinforcement learning - basic
-  - get back to speed on RL
-  - design algo
-
-### Next versions
-- Then use DL in a basic way to model part of it
-- then look up DL players
-- then look up alphazero
-
 
 ## Changelog
 ### 1.0.0 - UX for AI & Human gaming

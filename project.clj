@@ -1,7 +1,6 @@
-(defproject claby "1.0.0"
-  :description "UX for the claby game (in repo mzero) in a browser. It allows human play
-(**Lapyrinthe**), or visualization of AI play (**AI world**)"
-  :url "https://github.com/sittingbull/claby"
+(defproject mzero-game-gui "1.0.0"
+  :description "This is a ClojureScript GUI for the [Mzero Game](https://github.com/sittingbull/mzero-game)."
+  :url "https://github.com/sittingbull/mzero-game-gui"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
@@ -17,7 +16,7 @@
                  [http-kit "2.5.0"]                 
                  [reagent "0.10.0"]
                  [compojure "1.6.2"]
-                 [mzero "0.2.5-alpha"]]
+                 [mzero-game "0.2.6"]]
 
   :jvm-opts ["-Xss1g"
              "-Dclojure.tools.logging.factory=clojure.tools.logging.impl/jul-factory"]
