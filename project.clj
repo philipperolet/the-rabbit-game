@@ -16,7 +16,7 @@
                  [http-kit "2.5.0"]                 
                  [reagent "0.10.0"]
                  [compojure "1.6.2"]
-                 [mzero-game "0.2.6"]]
+                 [mzero-game "0.2.7"]]
 
   :jvm-opts ["-Xss1g"
              "-Dclojure.tools.logging.factory=clojure.tools.logging.impl/jul-factory"]

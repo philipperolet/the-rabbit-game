@@ -100,7 +100,7 @@
       (.click (jq "#lapy-arrows button") volume-toggle)
       (.click (jq "#surprise img")
               (fn []
-                (.requestFullscreen (.-documentElement js/document))
+                ;; (.requestFullscreen (.-documentElement js/document))
                 (.click (jq "#surprise img") nil)
                 (ux/start-game this))))
 

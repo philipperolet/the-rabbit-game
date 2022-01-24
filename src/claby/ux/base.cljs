@@ -14,39 +14,39 @@
    [reagent.dom :refer [render]]
    [mzero.game.state :as gs]
    [mzero.game.events :as ge]
+   [mzero.game.generation :as gg]
    [cljs-http.client :as http]
    [cljs.reader :refer [read-string]]
-   [clojure.core.async :refer [<!] :refer-macros [go]]
-   [clojure.string :as str]))
+   [clojure.core.async :refer [<!] :refer-macros [go]]))
 
-(defonce game-size 15)
+(defonce game-size 26)
 
 (defonce levels
   [{:message "Lapinette enceinte doit manger un maximum de fraises"
-    :mzero.game.generation/density-map {:fruit 15
-                                        :cheese 0}}
+    ::gg/density-map {:fruit 5
+                     :cheese 0}}
    {:message "Attention au fromage non-pasteurisé !"
-    :mzero.game.generation/density-map {:fruit 5
-                                        :cheese 3}
+    ::gg/density-map {:fruit 5
+                     :cheese 3}
     :message-color "darkgoldenrod"}
    {:message "Evite les apéros alcoolisés"
-    :mzero.game.generation/density-map {:fruit 5
-                                        :cheese 3}
+    ::gg/density-map {:fruit 5
+                     :cheese 3}
     :message-color "darkblue"
     :enemies [:drink :drink]}
    {:message "Les souris ont infesté la maison!"
-    :mzero.game.generation/density-map {:fruit 5
-                                        :cheese 3}
+    ::gg/density-map {:fruit 5
+                     :cheese 3}
     :message-color "darkmagenta"
     :enemies [:drink :mouse :mouse]}
    {:message "Le covid ça fait peur!"
-    :mzero.game.generation/density-map {:fruit 5
-                                        :cheese 3}
+    ::gg/density-map {:fruit 5
+                     :cheese 3}
     :message-color "darkcyan"
     :enemies [:virus :virus]}
    {:message "Allez on arrête de déconner."
-    :mzero.game.generation/density-map {:fruit 5
-                                        :cheese 5}
+    ::gg/density-map {:fruit 5
+                     :cheese 5}
     :message-color "darkgreen"
     :enemies [:drink :drink :virus :virus :mouse :mouse]}])
 
@@ -74,9 +74,12 @@
 (defn parse-params
   "Parse URL parameters into a hashmap"
   []
-  (let [param-strs (-> (.-location js/window) (split #"\?") last (split #"\&"))]
-    (into {} (for [[k v] (map #(split % #"=") param-strs)]
-               [(keyword k) v]))))
+  (let [param-strs (-> (.-location js/window) (split #"\?") last (split #"\&"))
+        add-default-player
+        #(cond-> % (nil? (:player %)) (assoc :player "human"))]
+    (-> (into {} (for [[k v] (map #(split % #"=") param-strs)]
+                   [(keyword k) v]))
+        add-default-player)))
 
 
 ;;; Game progression
@@ -187,13 +190,19 @@
         (fn [state]
           (reset! game-state state)
           (.hide (jq "#loading") 200)
-          (start-level ux))]
-    
+          (start-level ux))
+        load-game-from-server
+        (fn []
+          (server-get "start"
+                      load-callback
+                      {"level" (str (levels @level))}))
+        generate-game-locally
+        #(load-callback (gg/create-nice-game game-size (levels @level)))]
     (-> (jq "#loading")
         (.show 200) (.promise)
-        (.then (fn [] (server-get "start"
-                                  load-callback
-                                  {"level" (str (levels @level))}))))))
+        (.then (case (get (parse-params) :player)
+                 "human" generate-game-locally
+                 load-game-from-server)))))
 
 (defn start-game
   [ux]
