@@ -3,6 +3,7 @@ body {
 }
 #lapy-arrows {
     position: fixed;
+    padding: 1em;
 }
 #lapy-arrows > img {
     height: 70px;
@@ -15,7 +16,10 @@ body {
 #lapy-arrows button img {
     height: 45px;
 }
-		
+
+#lapy-arrows button img.off {
+    opacity: 0.5;
+}
 
 #lapyrinthe {
     margin-top: 1em;

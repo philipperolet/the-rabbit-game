@@ -16,7 +16,8 @@
    :won (js/Audio. "won.mp3")
    :nextlevel (js/Audio. "nextlevel.wav")})
 
-(defonce music-on (atom true))
+(defonce music-on (atom false))
+(defonce fx-on (atom true))
 
 (set! (.-loop gameMusic) true)
 
@@ -80,15 +81,18 @@
   (.addClass (jq "#h h2.subtitle") "initial")
   (.css (jq "#h h2.subtitle span") "color" (get-in ux/levels [@ux/level :message-color])))
 
-(defn- volume-toggle []
+(defn- fx-toggle []
+  (if @fx-on
+    (.addClass (jq "#lapy-arrows #fx-btn img") "off")
+    (.removeClass (jq "#lapy-arrows #fx-btn img") "off"))
+  (swap! fx-on not))
+
+(defn- music-toggle []
   (if @music-on
-    (do (.pause gameMusic)
-        (.remove (jq "#lapy-arrows button img"))
-        (.append (jq "#lapy-arrows button") "<img src=\"img/mute.png\">"))
-    (do (.play gameMusic)
-        (.remove (jq "#lapy-arrows button img"))
-        (.append (jq "#lapy-arrows button") "<img src=\"img/volume.png\">")))
+    (do (.addClass (jq "#lapy-arrows #music-btn img") "off") (.pause gameMusic))
+    (do (.removeClass (jq "#lapy-arrows #music-btn img") "off") (.play gameMusic)))
   (swap! music-on not))
+
 
 (defonce lapy-ux
   (reify ux/ClapyUX
@@ -97,7 +101,8 @@
       (.click (jq ".game-over button")
               (fn []
                 (ux/start-game this)))
-      (.click (jq "#lapy-arrows button") volume-toggle)
+      (.click (jq "#lapy-arrows #fx-btn") fx-toggle)
+      (.click (jq "#lapy-arrows #music-btn") music-toggle)
       (.click (jq "#surprise img")
               (fn []
                 ;; (.requestFullscreen (.-documentElement js/document))
@@ -140,7 +145,7 @@
               nil)]
         
         (set! (.-onended (sounds transition-type)) on-sound-end-callback)
-        (.play (sounds transition-type))
+        (when @fx-on (.play (sounds transition-type)))
         (.fadeTo (jq "#h h2.subtitle") 100 0)
         (.setTimeout js/window
                      (fn []
@@ -151,7 +156,7 @@
     (score-update [this score]
       (when (pos? score)
         (.load scoreSound)
-        (.play scoreSound)))
+        (when @fx-on (.play scoreSound))))
     
     (enemy-style [this type]
       (str "{background-image: url(../img/" type ".gif)}"))))
