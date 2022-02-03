@@ -1,3 +1,12 @@
+- Server should return a world
+
+
+
+
+
+
+
+# Legacy
 - update claby with last version of mzero-game
 - get naming right
 - option to see artificial players play

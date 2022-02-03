@@ -127,7 +127,9 @@
         (when @music-on (-> (.play gameMusic)))
         (.fadeTo (jq "#h") 1000 1
                  (fn []
-                   (swap! ux/game-state #(assoc % ::gs/status :active))
+                   (swap! ux/world
+                          update ::gs/game-state
+                          assoc ::gs/status :active)
                    (when callback (callback))))
         (.fadeOut (jq elt-to-fade) 1000)))
     

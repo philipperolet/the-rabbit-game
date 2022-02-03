@@ -18,7 +18,9 @@
       (ux/start-game this))
 
     (start-level [this]
-      (swap! ux/game-state #(assoc % ::gs/status :active)))
+      (swap! ux/world
+             update ::gs/game-state
+             assoc ::gs/status :active))
     
     (animate-transition [this transition-type]
       (js/alert (transition-message transition-type))

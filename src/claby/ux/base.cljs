@@ -15,11 +15,14 @@
    [mzero.game.state :as gs]
    [mzero.game.events :as ge]
    [mzero.game.generation :as gg]
+   [mzero.ai.world :as aiw]
    [cljs-http.client :as http]
    [cljs.reader :refer [read-string]]
    [clojure.core.async :refer [<!] :refer-macros [go]]))
 
 (defonce game-size 26)
+
+(defonce params (atom {}))
 
 (defonce levels
   [{:message "Lapinette enceinte doit manger un maximum de fraises"
@@ -51,7 +54,7 @@
     :enemies [:drink :drink :virus :virus :mouse :mouse]}])
 
 (defonce jq (js* "$"))
-(defonce game-state (atom {}))
+(defonce world (atom {}))
 (defonce level (atom 0))
 
 (def autorun-flag
@@ -71,6 +74,7 @@
 
   ([endpoint callback] (server-get endpoint callback {})))
 
+
 (defn parse-params
   "Parse URL parameters into a hashmap"
   []
@@ -81,14 +85,13 @@
                    [(keyword k) v]))
         add-default-player)))
 
-
 ;;; Game progression
 ;;;;;;
 
 (defn ai-game-step
   "Moves the game forward one step (for AI players)"
   []
-  (when (= :active (@game-state ::gs/status))
+  (when (aiw/active? @world)
     (server-get "next"
                 (fn [movement]
                   (let [bwidth-str (.css (jq "td.player") "border-width")
@@ -98,11 +101,11 @@
                             js/parseFloat)
                         new-size (+ 0.67 (mod bwidth 5))]
                     (.css (jq "td.player") "border-width" (str new-size "px")))
-                  (if movement
-                    (do (.css (jq "td.player") "opacity" 1.0)
-                        (swap! game-state ge/move-player movement))
-                    #_(.css (jq "td.player") "opacity"
-                          (- (js/parseFloat (.css (jq "td.player") "opacity")) 0.2)))))))
+                  (when movement
+                    (.css (jq "td.player") "opacity" 1.0)
+                    (swap! world
+                           update ::aiw/requested-movements
+                           assoc :player movement))))))
 
 (defn move-ai-player
   "Moves the game forward according to user input (for AI players)"
@@ -126,10 +129,12 @@
           :other)]
     (when (not= :other command)
         (.preventDefault e)
-        (swap! game-state ge/move-player command))))
+        (swap! world
+               update ::aiw/requested-movements
+               assoc :player command))))
 
 (defn user-keypress [e]
-  (if (= (:player (parse-params)) "human")
+  (if (= (:player @params) "human")
     (move-human-player e)
     (move-ai-player e)))
 
@@ -166,29 +171,41 @@
           enemies)))
 
 
-(defonce game-step (atom 0))
-(defonce enemy-move-interval {:drink 4 :mouse 2 :virus 1})
-(defn move-enemies []
-  (swap! game-step inc)
-  (when (= :active (@game-state ::gs/status))
-    (->> (get-in levels [@level :enemies])
-         (keep-indexed #(if (= 0 (mod @game-step (enemy-move-interval %2))) %1))
-         (reduce ge/move-enemy-random @game-state)
-         (reset! game-state))))
+(defonce enemy-move-interval {:drink 8 :mouse 4 :virus 2})
+
+(defn move-enemies! []
+  (when (and (aiw/active? @world) (-> @world ::gs/game-state ::gs/enemy-positions count (> 0)))
+    (let [time-to-move
+          (fn [index enemy-type]
+            (when (= 0 (mod (-> @world ::aiw/game-step) (enemy-move-interval enemy-type)))
+              index))
+          enemies-indices
+          (keep-indexed time-to-move (get-in levels [@level :enemies]))
+          assoc-enemy-movement
+          (fn [requested-movements index]
+            (assoc requested-movements
+                   index
+                   (ge/move-enemy-random (-> @world ::gs/game-state) index)))]
+      (swap! world
+             update ::aiw/requested-movements
+             #(reduce assoc-enemy-movement % enemies-indices)))))
+
+(defn game-step! []
+  (move-enemies!)
+  (when (and (not= "human" (-> @params :player)) @autorun-flag)
+    (ai-game-step))
+  (aiw/run-step world 0))
 
 (defn- setup-auto-movement
   "Setup auto enemy move for human play or auto full-game move for ai play"
   []
-  (let [tick-interval (int (get (parse-params) :tick "130"))
-        move-ai-game #(when @autorun-flag (ai-game-step))]
-    (if (= "human" (-> (parse-params) :player))
-      (.setInterval js/window move-enemies tick-interval)
-      (.setInterval js/window move-ai-game (/ tick-interval 2)))))
+  (let [tick-interval (int (get @params :tick "65"))]
+    (.setInterval js/window game-step! tick-interval)))
 
 (defn- load-game-board [ux]
   (let [load-callback
-        (fn [state]
-          (reset! game-state state)
+        (fn [world_]
+          (reset! world world_)
           (.hide (jq "#loading") 200)
           (start-level ux))
         load-game-from-server
@@ -197,10 +214,10 @@
                       load-callback
                       {"level" (str (levels @level))}))
         generate-game-locally
-        #(load-callback (gg/create-nice-game game-size (levels @level)))]
+        #(load-callback (aiw/world game-size nil true (levels @level)))]
     (-> (jq "#loading")
         (.show 200) (.promise)
-        (.then (case (get (parse-params) :player)
+        (.then (case (get @params :player)
                  "human" generate-game-locally
                  load-game-from-server)))))
 
@@ -250,10 +267,10 @@
      [:h2.subtitle [:span (get-in levels [@level :message])]]
      [:div.col.col-lg-2]
      [:div.col-md-auto
-      [show-score ux (@game-state ::gs/score)]
-      [:table (gs/get-html-for-state @game-state)]]
+      [show-score ux (-> @world ::gs/game-state ::gs/score)]
+      [:table (gs/get-html-for-state (-> @world ::gs/game-state))]]
      [:div.col.col-lg-2]
-     [game-transition ux (@game-state ::gs/status)]]))
+     [game-transition ux (-> @world ::gs/game-state ::gs/status)]]))
 
 ;; conditionally start your application based on the presence of an "app" element
 ;; this is particularly helpful for testing this ns without launching the app
@@ -266,9 +283,10 @@
   "Runs the Lapyrinthe game with the specified UX. There must be an 'app' element in the html page."
   [ux]
   {:pre [(gdom/getElement "app")]}
-  (reset! level (int (get (parse-params) :cheatlev "0")))
-  (setup-auto-movement)
+  (reset! params (parse-params))
+  (reset! level (int (get @params :cheatlev "0")))
   (init ux)
+  (setup-auto-movement)
   (render [claby ux] (gdom/getElement "app")))
 
 ;; specify reload hook with ^;after-load metadata

@@ -24,18 +24,18 @@
       (URLDecoder/decode "UTF-8")))
 
 (defn start-handler
-  "Get fresh game state, with player having moved once"
+  "Get fresh game world, with player having moved once"
   [req]
   (let [args-for-game
         (format (str mzero-arg-string " -L '%s'")
                 (get-level-from-query-string req))
-        game-state-string
-        (-> (aim/go args-for-game) :world ::gs/game-state pr-str)]
+        world-string
+        (-> (aim/go args-for-game) :world pr-str)]
     
     {:status  200
      :headers {"Content-Type" "text/plain"
                "Access-Control-Allow-Origin" "*"} 
-     :body game-state-string}))
+     :body world-string}))
 
 (defn next-handler
   "Get player's next movement."
