@@ -91,21 +91,20 @@
 (defn ai-game-step
   "Moves the game forward one step (for AI players)"
   []
-  (when (aiw/active? @world)
-    (server-get "next"
-                (fn [movement]
-                  (let [bwidth-str (.css (jq "td.player") "border-width")
-                        bwidth
-                        (-> bwidth-str
-                            (subs 0 (- (count bwidth-str) 2))
-                            js/parseFloat)
-                        new-size (+ 0.67 (mod bwidth 5))]
-                    (.css (jq "td.player") "border-width" (str new-size "px")))
-                  (when movement
-                    (.css (jq "td.player") "opacity" 1.0)
-                    (swap! world
-                           update ::aiw/requested-movements
-                           assoc :player movement))))))
+  (server-get "next"
+              (fn [movement]
+                (let [bwidth-str (.css (jq "td.player") "border-width")
+                      bwidth
+                      (-> bwidth-str
+                          (subs 0 (- (count bwidth-str) 2))
+                          js/parseFloat)
+                      new-size (+ 0.67 (mod bwidth 5))]
+                  (.css (jq "td.player") "border-width" (str new-size "px")))
+                (when movement
+                  (.css (jq "td.player") "opacity" 1.0)
+                  (swap! world
+                         update ::aiw/requested-movements
+                         assoc :player movement)))))
 
 (defn move-ai-player
   "Moves the game forward according to user input (for AI players)"
@@ -174,7 +173,7 @@
 (defonce enemy-move-interval {:drink 8 :mouse 4 :virus 2})
 
 (defn move-enemies! []
-  (when (and (aiw/active? @world) (-> @world ::gs/game-state ::gs/enemy-positions count (> 0)))
+  (when (-> @world ::gs/game-state ::gs/enemy-positions count (> 0))
     (let [time-to-move
           (fn [index enemy-type]
             (when (= 0 (mod (-> @world ::aiw/game-step) (enemy-move-interval enemy-type)))
@@ -191,10 +190,11 @@
              #(reduce assoc-enemy-movement % enemies-indices)))))
 
 (defn game-step! []
-  (move-enemies!)
-  (when (and (not= "human" (-> @params :player)) @autorun-flag)
-    (ai-game-step))
-  (aiw/run-step world 0))
+  (when (aiw/active? @world)
+    (move-enemies!)
+    (when (and (not= "human" (-> @params :player)) @autorun-flag)
+      (ai-game-step))
+    (aiw/run-step world 0)))
 
 (defn- setup-auto-movement
   "Setup auto enemy move for human play or auto full-game move for ai play"
