@@ -254,7 +254,7 @@
   [ux score]
   (score-update ux score)
   [:div.score
-   [:span (str "Score: " score)]
+   [:span (str "Score: " (.toFixed score 0))]
    [:br]
    [:span (str "Level: " (inc @level))]])
 
