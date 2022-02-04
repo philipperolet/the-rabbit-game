@@ -80,7 +80,7 @@
 (defn between-levels []
   (.css (jq "#h h2.subtitle") (clj->js {:top "" :font-size "" :opacity 1}))
   (.addClass (jq "#h h2.subtitle") "initial")
-  (.css (jq "#h h2.subtitle span") "color" (get-in ux/levels [(ux/current-level @ux/world) :message-color])))
+  (.css (jq "#h h2.subtitle span") "color" (get-in ux/levels [(inc (ux/current-level @ux/world)) :message-color])))
 
 (defn- fx-toggle []
   (if @fx-on
@@ -111,11 +111,12 @@
                 (ux/start-game this)))
       (.click (jq "#lapy-arrows #fx-btn") fx-toggle)
       (.click (jq "#lapy-arrows #music-btn") music-toggle)
-      (.click (jq "#surprise img")
+      (ux/start-game this)
+      #_(.click (jq "#surprise img")
               (fn []
                 ;; (.requestFullscreen (.-documentElement js/document))
                 (.click (jq "#surprise img") nil)
-                (ux/start-game this))))
+                )))
 
     (start-level [this]
       ;; Choose element to fade and callback depending on

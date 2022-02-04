@@ -20,7 +20,7 @@
    [cljs.reader :refer [read-string]]
    [clojure.core.async :refer [<!] :refer-macros [go]]))
 
-(defonce game-size 16)
+(defonce game-size 12)
 
 (defonce params (atom {}))
 
@@ -172,11 +172,11 @@
 
 
 (defonce enemy-move-interval {:drink 8 :mouse 4 :virus 2})
-
+(defonce level-start-step (atom 0))
 (defn move-enemies! []
   (when (and (-> @world ::gs/game-state ::gs/enemy-positions count (> 0))
              ;; wait an instant before enemies start moving
-             (-> @world ::aiw/game-step (>= 20)))
+             (-> @world ::aiw/game-step (>= (+ 50 @level-start-step))))
     (let [time-to-move
           (fn [index enemy-type]
             (when (= 0 (mod (-> @world ::aiw/game-step) (enemy-move-interval enemy-type)))
@@ -205,16 +205,24 @@
   (let [tick-interval (int (get @params :tick "65"))]
     (.setInterval js/window game-step! tick-interval)))
 
+(def current-level-game-state (atom {}))
 (defn- load-game-board [ux]
   (let [remaining-levels ;; cheatlev option to skip levels
         (drop (int (get @params :cheatlev "0")) levels)
         world-already-initialized? (seq @world)
         load-callback
         (fn [world_]
+          (reset! current-level-game-state (-> world_ ::gs/game-state))
           (reset! world world_)
+          (add-enemies-style ux (get-in levels [(current-level @world) :enemies]))
           (.hide (jq "#loading") 200)
           (start-level ux))
-        next-level #(load-callback (aiw/update-to-next-level @world))
+        next-level
+        (fn []
+          (when (= (-> @world ::gs/game-state ::gs/status) :over)
+            (swap! world assoc ::gs/game-state @current-level-game-state))
+          (load-callback (aiw/update-to-next-level @world))
+          (reset! level-start-step (-> @world ::aiw/game-step)))
         generate-game-locally
         #(load-callback (aiw/multilevel-world game-size nil remaining-levels))
         load-game-from-server
@@ -235,7 +243,6 @@
 (defn start-game
   [ux]
   (.addEventListener js/window "keydown" user-keypress)
-  (add-enemies-style ux (get-in levels [(current-level @world) :enemies]))
   (load-new-level ux))
 
 (defn game-transition
