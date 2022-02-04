@@ -20,7 +20,7 @@
    [cljs.reader :refer [read-string]]
    [clojure.core.async :refer [<!] :refer-macros [go]]))
 
-(defonce game-size 26)
+(defonce game-size 12)
 
 (defonce params (atom {}))
 
@@ -203,29 +203,36 @@
     (.setInterval js/window game-step! tick-interval)))
 
 (defn- load-game-board [ux]
-  (let [load-callback
+  (let [world-already-initialized? (seq @world)
+        load-callback
         (fn [world_]
           (reset! world world_)
           (.hide (jq "#loading") 200)
           (start-level ux))
+        next-level #(load-callback (aiw/update-to-next-level @world))
+        generate-game-locally
+        #_(load-callback (aiw/world game-size nil true (levels @level)))
+        #(load-callback (aiw/multilevel-world game-size nil levels))
         load-game-from-server
         (fn []
           (server-get "start"
                       load-callback
-                      {"level" (str (levels @level))}))
-        generate-game-locally
-        #(load-callback (aiw/world game-size nil true (levels @level)))]
-    (-> (jq "#loading")
-        (.show 200) (.promise)
-        (.then (case (get @params :player)
-                 "human" generate-game-locally
-                 load-game-from-server)))))
+                      {"level" (str (levels @level))}))]
+    (cond
+      world-already-initialized? next-level
+      (= (get @params :player) "human") generate-game-locally
+      :else load-game-from-server)))
+
+(defn- load-new-level [ux]
+  (-> (jq "#loading")
+      (.show 200) (.promise)
+      (.then (load-game-board ux))))
 
 (defn start-game
   [ux]
   (.addEventListener js/window "keydown" user-keypress)
   (add-enemies-style ux (get-in levels [@level :enemies]))
-  (load-game-board ux))
+  (load-new-level ux))
 
 (defn game-transition
   "Component rendering a change in game status. 3 possible transitions may occur:
@@ -254,7 +261,7 @@
   [ux score]
   (score-update ux score)
   [:div.score
-   [:span (str "Score: " (.toFixed score 0))]
+   [:span (str "Score: " (.toFixed (or score 0) 0))]
    [:br]
    [:span (str "Level: " (inc @level))]])
 
