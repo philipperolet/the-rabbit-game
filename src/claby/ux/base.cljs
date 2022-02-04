@@ -20,7 +20,7 @@
    [cljs.reader :refer [read-string]]
    [clojure.core.async :refer [<!] :refer-macros [go]]))
 
-(defonce game-size 12)
+(defonce game-size 16)
 
 (defonce params (atom {}))
 
@@ -176,7 +176,9 @@
 (defonce enemy-move-interval {:drink 8 :mouse 4 :virus 2})
 
 (defn move-enemies! []
-  (when (-> @world ::gs/game-state ::gs/enemy-positions count (> 0))
+  (when (and (-> @world ::gs/game-state ::gs/enemy-positions count (> 0))
+             ;; wait an instant before enemies start moving
+             (-> @world ::aiw/game-step (>= 20)))
     (let [time-to-move
           (fn [index enemy-type]
             (when (= 0 (mod (-> @world ::aiw/game-step) (enemy-move-interval enemy-type)))
