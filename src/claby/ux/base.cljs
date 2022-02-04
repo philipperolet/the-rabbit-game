@@ -156,8 +156,6 @@
    - nextlevel (when level is won but there are next levels);
    - over (when game is lost);
    - won (when the last level is won).")
-
-  (score-update [this score] "Every time the score updates :)")
   
   (enemy-style [this type]
     "How to style enemies (string with css style for the enemy type)"))
@@ -263,7 +261,6 @@
 
 (defn show-score
   [ux score]
-  (score-update ux score)
   [:div.score
    [:span (str "Score: " (.toFixed (or score 0) 0))]
    [:br]

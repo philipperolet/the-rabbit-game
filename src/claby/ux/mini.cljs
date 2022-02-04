@@ -26,8 +26,6 @@
       (js/alert (transition-message transition-type))
       (if-not (= transition-type :won) (ux/start-game this)))
 
-    (score-update [this score])
-    
     (enemy-style [this type]
       (let [color (case type "drink" "red" "mouse" "purple" "virus" "green")]
         (str "{background-color: " color ";}")))))

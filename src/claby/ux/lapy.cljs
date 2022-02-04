@@ -21,6 +21,7 @@
 
 (set! (.-loop gameMusic) true)
 
+
 (defn next-level-callback []
   (.animate (jq "#h h2.subtitle") (clj->js {:top "0em" :font-size "1.2em"}) 2500
             (fn []
@@ -98,6 +99,13 @@
   (reify ux/ClapyUX
     
     (init [this]
+      
+      (add-watch ux/world :score-sound
+                 (fn [_ _ old new]
+                   (when (< 0.5 (- (-> new ::gs/game-state ::gs/score)
+                                   (-> old ::gs/game-state ::gs/score)))
+                     (.load scoreSound)
+                     (when @fx-on (.play scoreSound)))))
       (.click (jq ".game-over button")
               (fn []
                 (ux/start-game this)))
@@ -154,11 +162,6 @@
                        (.fadeTo (jq "#h") 500 0)
                        (.fadeIn (jq (str ".game-" (name transition-type))) 1000 in-between-callback))
                      1000)))
-    
-    (score-update [this score]
-      (when (pos? score)
-        (.load scoreSound)
-        (when @fx-on (.play scoreSound))))
     
     (enemy-style [this type]
       (str "{background-image: url(../img/" type ".gif)}"))))
