@@ -27,40 +27,43 @@
 (defonce levels
   [{:message "Lapinette enceinte doit manger un maximum de fraises"
     ::gg/density-map {:fruit 5
-                     :cheese 0}}
+                      :cheese 0}}
    {:message "Attention au fromage non-pasteurisé !"
     ::gg/density-map {:fruit 5
-                     :cheese 3}
+                      :cheese 3}
     :message-color "darkgoldenrod"}
    {:message "Evite les apéros alcoolisés"
     ::gg/density-map {:fruit 5
-                     :cheese 3}
+                      :cheese 3}
     :message-color "darkblue"
     :enemies [:drink :drink]}
    {:message "Les souris ont infesté la maison!"
     ::gg/density-map {:fruit 5
-                     :cheese 3}
+                      :cheese 3}
     :message-color "darkmagenta"
     :enemies [:drink :mouse :mouse]}
    {:message "Le covid ça fait peur!"
     ::gg/density-map {:fruit 5
-                     :cheese 3}
+                      :cheese 3}
     :message-color "darkcyan"
     :enemies [:virus :virus]}
    {:message "Allez on arrête de déconner."
     ::gg/density-map {:fruit 5
-                     :cheese 5}
+                      :cheese 5}
     :message-color "darkgreen"
     :enemies [:drink :drink :virus :virus :mouse :mouse]}])
 
 (defonce jq (js* "$"))
 (defonce world (atom {}))
-(defonce level (atom 0))
 
 (def autorun-flag
   "On = game with AI player will run auto. Off = game with AI player
   can run manually step by step"
   (atom false))
+
+
+(defn current-level [world]
+  (- (count levels) (inc (count (::aiw/next-levels world)))))
 
 (defn server-get
   "Send HTTP GET request at claby server's `endpoint`, to be handled by `callback`
@@ -179,7 +182,7 @@
             (when (= 0 (mod (-> @world ::aiw/game-step) (enemy-move-interval enemy-type)))
               index))
           enemies-indices
-          (keep-indexed time-to-move (get-in levels [@level :enemies]))
+          (keep-indexed time-to-move (get-in levels [(current-level @world) :enemies]))
           assoc-enemy-movement
           (fn [requested-movements index]
             (assoc requested-movements
@@ -203,7 +206,9 @@
     (.setInterval js/window game-step! tick-interval)))
 
 (defn- load-game-board [ux]
-  (let [world-already-initialized? (seq @world)
+  (let [remaining-levels ;; cheatlev option to skip levels
+        (drop (int (get @params :cheatlev "0")) levels)
+        world-already-initialized? (seq @world)
         load-callback
         (fn [world_]
           (reset! world world_)
@@ -211,13 +216,12 @@
           (start-level ux))
         next-level #(load-callback (aiw/update-to-next-level @world))
         generate-game-locally
-        #_(load-callback (aiw/world game-size nil true (levels @level)))
-        #(load-callback (aiw/multilevel-world game-size nil levels))
+        #(load-callback (aiw/multilevel-world game-size nil remaining-levels))
         load-game-from-server
         (fn []
           (server-get "start"
                       load-callback
-                      {"level" (str (levels @level))}))]
+                      {"level" (str remaining-levels)}))]
     (cond
       world-already-initialized? next-level
       (= (get @params :player) "human") generate-game-locally
@@ -231,7 +235,7 @@
 (defn start-game
   [ux]
   (.addEventListener js/window "keydown" user-keypress)
-  (add-enemies-style ux (get-in levels [@level :enemies]))
+  (add-enemies-style ux (get-in levels [(current-level @world) :enemies]))
   (load-new-level ux))
 
 (defn game-transition
@@ -244,7 +248,7 @@
   ;; Get transition type from game status
   (when-let [transition-type
              (case status
-               :won (if (< (inc @level) (count levels))
+               :won (if (< (inc (current-level @world)) (count levels))
                       :nextlevel
                       :won)
                :over :over
@@ -252,8 +256,6 @@
 
     ;; render animation and component
     (.removeEventListener js/window "keydown" user-keypress)
-    (if (= transition-type :nextlevel)
-      (swap! level inc))
     (animate-transition ux transition-type)
     [:div]))
 
@@ -263,7 +265,7 @@
   [:div.score
    [:span (str "Score: " (.toFixed (or score 0) 0))]
    [:br]
-   [:span (str "Level: " (inc @level))]])
+   [:span (str "Level: " (inc (current-level @world)))]])
 
 (defn claby [ux]
   (if (re-find #"Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini"
@@ -271,7 +273,7 @@
     [:h2.subtitle "Le jeu est prévu pour fonctionner sur ordinateur (mac/pc)"]
 
     [:div#lapyrinthe.row.justify-content-md-center
-     [:h2.subtitle [:span (get-in levels [@level :message])]]
+     [:h2.subtitle [:span (get-in levels [(current-level @world) :message])]]
      [:div.col.col-lg-2]
      [:div.col-md-auto
       [show-score ux (-> @world ::gs/game-state ::gs/score)]
@@ -286,12 +288,13 @@
   (when-let [el (gdom/getElement "app")]             
     (render [claby] el)))
 
+(defn skip-to-level [level]
+  (swap! world update ::next-levels))
 (defn run-game
   "Runs the Lapyrinthe game with the specified UX. There must be an 'app' element in the html page."
   [ux]
   {:pre [(gdom/getElement "app")]}
   (reset! params (parse-params))
-  (reset! level (int (get @params :cheatlev "0")))
   (init ux)
   (setup-auto-movement)
   (render [claby ux] (gdom/getElement "app")))

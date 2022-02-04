@@ -79,7 +79,7 @@
 (defn between-levels []
   (.css (jq "#h h2.subtitle") (clj->js {:top "" :font-size "" :opacity 1}))
   (.addClass (jq "#h h2.subtitle") "initial")
-  (.css (jq "#h h2.subtitle span") "color" (get-in ux/levels [@ux/level :message-color])))
+  (.css (jq "#h h2.subtitle span") "color" (get-in ux/levels [(ux/current-level @ux/world) :message-color])))
 
 (defn- fx-toggle []
   (if @fx-on
