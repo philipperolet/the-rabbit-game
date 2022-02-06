@@ -20,7 +20,7 @@
    [cljs.reader :refer [read-string]]
    [clojure.core.async :refer [<!] :refer-macros [go]]))
 
-(defonce game-size 12)
+(defonce game-size 16)
 
 (defonce params (atom {}))
 
@@ -72,6 +72,7 @@
   ([endpoint callback query-param-map]
    (go (let [response (<! (http/get (str "http://127.0.0.1:8080/" endpoint)
                                     {:with-credentials? false
+                                     
                                      :query-params query-param-map}))]
          (callback (read-string (:body response))))))
 
@@ -229,7 +230,8 @@
         (fn []
           (server-get "start"
                       load-callback
-                      {"level" (str remaining-levels)}))]
+                      {"levels" (str remaining-levels)
+                       "board-size" game-size}))]
     (cond
       world-already-initialized? next-level
       (= (get @params :player) "human") generate-game-locally

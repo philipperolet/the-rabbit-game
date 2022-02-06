@@ -10,27 +10,39 @@
             [compojure.core :refer [GET defroutes]]
             [compojure.route :as route]
             [mzero.ai.main :as aim]
+            [mzero.ai.world :as aiw]
             [mzero.game.state :as gs]
             [clojure.string :as str]))
 
 (def mzero-arg-string
   "Argument string passed to mzero game when launched, see `mzero.ai.main`" "")
 
-(defn- get-level-from-query-string [request]
+(defn- get-levels-from-query-string [request]
   (-> (:query-string request)
-      (#(re-find #"level=[^&]*" %))
+      (#(re-find #"levels=[^&]*" %))
       (str/split #"=")
       (nth 1)
-      (URLDecoder/decode "UTF-8")))
+      (URLDecoder/decode "UTF-8")
+      read-string))
+
+(defn- get-size-from-query-string [request]
+  (-> (:query-string request)
+      (#(re-find #"board-size=[^&]*" %))
+      (str/split #"=")
+      (nth 1)
+      (URLDecoder/decode "UTF-8")
+      read-string))
+
 
 (defn start-handler
   "Get fresh game world, with player having moved once"
   [req]
-  (let [args-for-game
-        (format (str mzero-arg-string " -L '%s'")
-                (get-level-from-query-string req))
+  (let [board-size (get-size-from-query-string req)
+        levels (get-levels-from-query-string req)
+        world 
+        (aiw/multilevel-world board-size nil levels)
         world-string
-        (-> (aim/go args-for-game) :world pr-str)]
+        (-> (aim/go mzero-arg-string world) :world pr-str)]
     
     {:status  200
      :headers {"Content-Type" "text/plain"
