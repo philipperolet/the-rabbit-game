@@ -17,6 +17,7 @@
    [mzero.game.generation :as gg]
    [mzero.ai.world :as aiw]
    [cljs-http.client :as http]
+   [claby.ux.leaderboard :as cll]
    [cljs.reader :refer [read-string]]
    [clojure.core.async :refer [<!] :refer-macros [go]]))
 
@@ -283,10 +284,10 @@
     [:div#lapyrinthe.row.justify-content-md-center
      [:h2.subtitle [:span (get-in levels [(current-level @world) :message])]]
      [:div.col.col-lg-2]
-     [:div.col-md-auto
+     [:div.col.col-lg-8
       [show-score ux (-> @world ::gs/game-state ::gs/score)]
       [:table (gs/get-html-for-state (-> @world ::gs/game-state))]]
-     [:div.col.col-lg-2]
+     [:div.col.col-lg-2 [cll/leaderboard ux]]
      [game-transition ux (-> @world ::gs/game-state ::gs/status)]]))
 
 ;; conditionally start your application based on the presence of an "app" element
