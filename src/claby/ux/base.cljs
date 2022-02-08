@@ -307,8 +307,10 @@
            :player-type (:player @params)})
         revive-action #(start-game ux)
         new-action #(-> (.-location js/window) (.reload))]
-    (render [cll/submit-score-form get-score revive-action new-action]
-            (gdom/getElement "svform"))))
+    (render [cll/submit-score-form get-score revive-action new-action :won]
+            (gdom/getElement "svform-win"))
+    (render [cll/submit-score-form get-score revive-action new-action :over]
+            (gdom/getElement "svform-lose"))))
 
 (defn run-game
   "Runs the Lapyrinthe game with the specified UX. There must be an 'app' element in the html page."

@@ -85,7 +85,7 @@
   (let [score (assoc score :timestamp (c/currTimeMillis))]
     (write-high-score! score)))
 
-(defn submit-score-form [get-score revive-action new-action]
+(defn submit-score-form [get-score revive-action new-action game-status]
   (let [score (get-score)
         saveable-score? (seq (:name @score-data))
         save-score-msg (when saveable-score? "Save score & ")
@@ -107,19 +107,20 @@
          :maxlength "12"
          :value (:name @score-data)
          :on-change #(swap! score-data assoc :name (.. % -target -value))}]
-       [:small "Max 12 chars. No name = no save."]]
-      [:div.col-md-2
-       [:button.btn.btn-warning
-        {:type "button"
-         :on-click #(action :revive)}
-        (str save-score-msg "Revive Rabbit")]
-       [:div.helptext [:small "Retry level"]]]
+       [:div.helptext [:small "Max 12 chars. No name = no save."]]]      
       [:div.col-md-2
         [:button.btn.btn-danger
          {:type "button"
           :on-click #(action :new)}
          (str save-score-msg "New Rabbit")]
        [:div.helptext [:small "Restart game"]]]
+      (when (= game-status :over)
+        [:div.col-md-2
+         [:button.btn.btn-warning
+          {:type "button"
+           :on-click #(action :revive)}
+          (str save-score-msg "Revive Rabbit")]
+         [:div.helptext [:small "Retry level"]]])
       [:div.col-md-2]]]))
 
 ;;; test & mock utilities

@@ -163,15 +163,15 @@ body {
     border-radius: 100%;
 }
 
-#svform button {
+#svform-win button, #svform-lose button {
     margin-top: 0.25em;
     display: block;
 }
 
-#svform input {
+#svform-win input, #svform-lose input {
     margin-bottom: 0px;
 }
-#svform .helptext {
+#svform-win .helptext, #svform-lose .helptext {
     text-align: left;
 }
 
