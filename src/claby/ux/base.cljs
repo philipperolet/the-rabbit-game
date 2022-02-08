@@ -299,20 +299,26 @@
 (defn skip-to-level [level]
   (swap! world update ::next-levels))
 
+(defn- setup-leaderboard [ux]
+  (cll/get-high-scores! "human" 10)
+  (let [get-score
+        (fn []
+          {:score (-> @world ::gs/game-state ::gs/score)
+           :player-type (:player @params)})
+        revive-action #(start-game ux)
+        new-action #(-> (.-location js/window) (.reload))]
+    (render [cll/submit-score-form get-score revive-action new-action]
+            (gdom/getElement "svform"))))
+
 (defn run-game
   "Runs the Lapyrinthe game with the specified UX. There must be an 'app' element in the html page."
   [ux]
   {:pre [(gdom/getElement "app")]}
   (reset! params (parse-params))
-  (cll/get-high-scores! "human" 10)
   (init ux)
   (setup-auto-movement)
   (render [claby ux] (gdom/getElement "app"))
-  (render [cll/submit-score-form
-           (fn []
-             {:score (-> @world ::gs/game-state ::gs/score)
-              :player-type (:player @params)})]
-          (gdom/getElement "svform")))
+  (setup-leaderboard ux))
 
 ;; specify reload hook with ^;after-load metadata
 (defn ^:after-load on-reload []

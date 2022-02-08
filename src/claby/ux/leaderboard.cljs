@@ -80,29 +80,46 @@
           (when (:error results)
             (throw (ex-info "Error writing score" results)))))))
 
-(def score-data (r/atom {:name "" :show-form true}))
+(def score-data (r/atom {:name ""}))
 (defn submit-score! [score]
   (let [score (assoc score :timestamp (c/currTimeMillis))]
     (write-high-score! score)))
 
-(defn submit-score-form [get-score]
-  [:form
-   [:h3 (str "Save your big score - " (:score (get-score)))]
-
-   [:div.form-group
-    [:label {:for "score-name"} "Name:"]
-    [:input#score-name.form-control
-     {:type "text"
-      :placeholder "E.g. MaxRabbit"
-      :value (:name @score-data)
-      :on-change #(swap! score-data assoc :name (.. % -target -value))}]
-    [:small "Min 3 chars, max 12 chars."]]
-
-   [:button.btn.btn-primary
-    {:type "button"
-     :on-click #(submit-score! (assoc (get-score) :name (-> @score-data :name)))
-     :disabled (not (<= 3 (count (:name @score-data)) 12))}
-    "Submit"]])
+(defn submit-score-form [get-score revive-action new-action]
+  (let [score (get-score)
+        saveable-score? (seq (:name @score-data))
+        save-score-msg (when saveable-score? "Save score & ")
+        action
+        (fn [action-type]
+          (submit-score! (assoc score :name (-> @score-data :name)))
+          (case action-type
+            :revive (revive-action)
+            :new (new-action)))]
+    [:form
+     [:h1 (str "Score - " (:score score))]
+     [:div.form-row
+      [:div.col-md-4]
+      [:div.col-md-2
+       [:input#score-name.form-control
+        {:type "text"
+         :placeholder "Type name to save score"
+         :maxlength "12"
+         :value (:name @score-data)
+         :on-change #(swap! score-data assoc :name (.. % -target -value))}]
+       [:small "Max 12 chars. No name = no save."]]
+      [:div.col-md-2
+       [:button.btn.btn-warning
+        {:type "button"
+         :on-click #(action :revive)}
+        (str save-score-msg "Revive Rabbit")]
+       [:div.helptext [:small "Retry level"]]]
+      [:div.col-md-2
+        [:button.btn.btn-danger
+         {:type "button"
+          :on-click #(action :new)}
+         (str save-score-msg "New Rabbit")]
+       [:div.helptext [:small "Restart game"]]]
+      [:div.col-md-2]]]))
 
 ;;; test & mock utilities
 ;;;;;;
