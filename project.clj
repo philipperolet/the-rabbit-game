@@ -12,6 +12,7 @@
                  [org.clojure/tools.cli "1.0.194"]
                  [org.clojure/tools.logging "1.1.0"]
                  [org.clojure/core.async "1.3.610"]
+                 [cljs-aws "0.4.3"]
                  [cljs-http "0.1.46"]
                  [http-kit "2.5.0"]                 
                  [reagent "0.10.0"]

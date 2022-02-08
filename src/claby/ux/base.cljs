@@ -280,7 +280,6 @@
   (if (re-find #"Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini"
                (.-userAgent js/navigator))
     [:h2.subtitle "Le jeu est prévu pour fonctionner sur ordinateur (mac/pc)"]
-
     [:div#lapyrinthe.row.justify-content-md-center
      [:h2.subtitle [:span (get-in levels [(current-level @world) :message])]]
      [:div.col.col-lg-2]
@@ -299,14 +298,21 @@
 
 (defn skip-to-level [level]
   (swap! world update ::next-levels))
+
 (defn run-game
   "Runs the Lapyrinthe game with the specified UX. There must be an 'app' element in the html page."
   [ux]
   {:pre [(gdom/getElement "app")]}
   (reset! params (parse-params))
+  (cll/get-high-scores! "human" 10)
   (init ux)
   (setup-auto-movement)
-  (render [claby ux] (gdom/getElement "app")))
+  (render [claby ux] (gdom/getElement "app"))
+  (render [cll/submit-score-form
+           (fn []
+             {:score (-> @world ::gs/game-state ::gs/score)
+              :player-type (:player @params)})]
+          (gdom/getElement "svform")))
 
 ;; specify reload hook with ^;after-load metadata
 (defn ^:after-load on-reload []

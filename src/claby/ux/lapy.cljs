@@ -148,7 +148,6 @@
       
       (let [on-sound-end-callback
             (if (= transition-type :nextlevel) #(ux/start-game this))
-
             in-between-callback
             (case transition-type
               :nextlevel between-levels
