@@ -91,7 +91,8 @@
         save-score-msg (when saveable-score? "Save score & ")
         action
         (fn [action-type]
-          (submit-score! (assoc score :name (-> @score-data :name)))
+          (when saveable-score?
+            (submit-score! (assoc score :name (-> @score-data :name))))
           (case action-type
             :revive (revive-action)
             :new (new-action)))]
