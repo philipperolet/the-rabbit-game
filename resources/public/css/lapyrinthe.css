@@ -121,7 +121,6 @@ body {
 
 #loading {
     z-index: 99;
-    display: none;
 }
 
 #surprise img, #loading img {
