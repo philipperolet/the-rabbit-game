@@ -72,31 +72,30 @@
       (update :score #(hash-map :n (str %)))
       (update :player-type #(hash-map :s %))))
 
-(defn write-high-score! [score]
+(defn write-high-score! [score callback]
   (let [write-request
         {:item (score->query-item score)
          :table-name table-name}]
     (go (let [results (<! (ddb/put-item write-request))]
           (when (:error results)
-            (throw (ex-info "Error writing score" results)))))))
+            (throw (ex-info "Error writing score" results)))
+          (callback)))))
 
 (def score-data (r/atom {:name ""}))
-(defn submit-score! [score]
+(defn submit-score! [score callback]
   (let [score (assoc score :timestamp (c/currTimeMillis))]
-    (write-high-score! score)))
+    (write-high-score! score callback)))
 
 (defn submit-score-form [get-score revive-action new-action game-status]
   (let [score (get-score)
         saveable-score? (seq (:name @score-data))
         save-score-msg (when saveable-score? "Save score & ")
         action
-        (fn [action-type]
-          (when saveable-score?
-            (submit-score! (assoc score :name (-> @score-data :name))))
-          (case action-type
-            :revive (revive-action)
-            :new (new-action)))]
-    [:form
+        (fn [action-fn]
+          (if saveable-score?
+            (submit-score! (assoc score :name (-> @score-data :name)) action-fn)
+            (action-fn)))]
+    [:div
      [:h1 (str "Score - " (:score score))]
      [:div.form-row
       [:div.col-md-4]
@@ -110,14 +109,14 @@
       [:div.col-md-2
         [:button.btn.btn-danger
          {:type "button"
-          :on-click #(action :new)}
+          :on-click #(action new-action)}
          (str save-score-msg "New Rabbit")]
        [:div.helptext [:small "Restart game"]]]
       (when (= game-status :over)
         [:div.col-md-2
          [:button.btn.btn-warning
           {:type "button"
-           :on-click #(action :revive)}
+           :on-click #(action revive-action)}
           (str save-score-msg "Revive Rabbit")]
          [:div.helptext [:small "Retry level"]]])
       [:div.col-md-2]]]))
