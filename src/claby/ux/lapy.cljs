@@ -28,7 +28,7 @@
               (.removeClass (jq "#h h2.subtitle") "initial"))))
 
 (defonce start-level-data
-  {:initial ["#surprise" #(.fadeOut (jq "#h h1") 2000)]
+  {:initial ["#surprise" #(.fadeOut (jq "#h h1.intro") 2000)]
    :game-over [".game-over" nil]
    :nextlevel [".game-nextlevel" next-level-callback]})
 

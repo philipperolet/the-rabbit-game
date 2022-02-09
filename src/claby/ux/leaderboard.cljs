@@ -104,7 +104,6 @@
        [:input#score-name.form-control
         {:type "text"
          :placeholder "Type name to save score"
-         :maxlength "12"
          :value (:name @score-data)
          :on-change #(swap! score-data assoc :name (.. % -target -value))}]
        [:div.helptext [:small "Max 12 chars. No name = no save."]]]      
