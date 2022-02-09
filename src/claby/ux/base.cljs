@@ -279,7 +279,10 @@
 (defn claby [ux]
   (if (re-find #"Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini"
                (.-userAgent js/navigator))
-    [:h2.subtitle "Le jeu est prévu pour fonctionner sur ordinateur (mac/pc)"]
+    (do (.hide (jq "#lapy-arrows"))
+      [:div.mobile-incompatible
+        [:h1 "Game not yet available for mobile devices"]
+        [:h4 "Sorry :/"]])
     [:div#lapyrinthe.row.justify-content-md-center
      [:h2.subtitle [:span (get-in levels [(current-level @world) :message])]]
      [:div.col.col-lg-2]
