@@ -23,32 +23,41 @@
 
 (defonce game-size 16)
 
+(defonce language (atom "en"))
+
 (defonce params (atom {}))
 
 (defonce levels
-  [{:message "Lapinette enceinte doit manger un maximum de fraises"
+  [{:message
+    {:en "Little rabbit must eat all the strawberries"
+     :fr "Lapinette enceinte doit manger un maximum de fraises"}
     ::gg/density-map {:fruit 5
                       :cheese 0}}
-   {:message "Attention au fromage non-pasteurisé !"
+   {:message {:fr "Attention au fromage non-pasteurisé !"
+              :en "Beware unpasteurized cheese!"}
     ::gg/density-map {:fruit 5
                       :cheese 3}
     :message-color "darkgoldenrod"}
-   {:message "Evite les apéros alcoolisés"
+   {:message {:en "Avoid alcoholic drinks"
+              :fr "Evite les apéros alcoolisés"}
     ::gg/density-map {:fruit 5
                       :cheese 3}
     :message-color "darkblue"
     :enemies [:drink :drink]}
-   {:message "Les souris ont infesté la maison!"
+   {:message {:en "Mice run loose in the house!"
+              :fr "Les souris ont infesté la maison!"}
     ::gg/density-map {:fruit 5
                       :cheese 3}
     :message-color "darkmagenta"
     :enemies [:drink :mouse :mouse]}
-   {:message "Le covid ça fait peur!"
+   {:message {:en "Scary covid is here"
+              :fr "Le covid ça fait peur!"}
     ::gg/density-map {:fruit 5
                       :cheese 3}
     :message-color "darkcyan"
     :enemies [:virus :virus]}
-   {:message "Allez on arrête de déconner."
+   {:message {:en "All right, let's raise the stakes."
+              :fr "Allez on arrête de déconner."}
     ::gg/density-map {:fruit 5
                       :cheese 5}
     :message-color "darkgreen"
@@ -284,7 +293,7 @@
         [:h1 "Game not yet available for mobile devices"]
         [:h4 "Sorry :/"]])
     [:div#lapyrinthe.row.justify-content-md-center
-     [:h2.subtitle [:span (get-in levels [(current-level @world) :message])]]
+     [:h2.subtitle [:span (get-in levels [(current-level @world) :message (keyword @language)])]]
      [:div.col.col-lg-2]
      [:div.col.col-lg-8
       [show-score ux (-> @world ::gs/game-state ::gs/score)]

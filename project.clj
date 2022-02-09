@@ -1,4 +1,4 @@
-(defproject mzero-game-gui "1.0.2-leaderboard"
+(defproject mzero-game-gui "1.0.2"
   :description "This is a ClojureScript GUI for the [Mzero Game](https://github.com/sittingbull/mzero-game)."
   :url "https://github.com/sittingbull/mzero-game-gui"
   :license {:name "Eclipse Public License"
