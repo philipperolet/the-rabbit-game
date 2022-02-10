@@ -1,4 +1,4 @@
-(defproject mzero-game-gui "1.0.2"
+(defproject mzero-game-gui "1.0.3-alpha"
   :description "This is a ClojureScript GUI for the [Mzero Game](https://github.com/sittingbull/mzero-game)."
   :url "https://github.com/sittingbull/mzero-game-gui"
   :license {:name "Eclipse Public License"
@@ -17,7 +17,7 @@
                  [http-kit "2.5.0"]                 
                  [reagent "0.10.0"]
                  [compojure "1.6.2"]
-                 [mzero-game "0.3.0"]]
+                 [mzero-game "0.3.2-alpha"]]
 
   :jvm-opts ["-Xss1g"
              "-Dclojure.tools.logging.factory=clojure.tools.logging.impl/jul-factory"]

@@ -6,7 +6,8 @@
    [clojure.test.check.properties]
    [reagent.dom.server :refer [render-to-static-markup]]
    [mzero.game.state :as gs]
-   [claby.ux.base :as ux]))
+   [claby.ux.base :as ux]
+   [mzero.ai.world :as aiw]))
 
 (defonce jq (js* "$"))
 (defonce gameMusic (js/Audio. "neverever.mp3"))
@@ -80,7 +81,7 @@
 (defn between-levels []
   (.css (jq "#h h2.subtitle") (clj->js {:top "" :font-size "" :opacity 1}))
   (.addClass (jq "#h h2.subtitle") "initial")
-  (.css (jq "#h h2.subtitle span") "color" (get-in ux/levels [(inc (ux/current-level @ux/world)) :message-color])))
+  (.css (jq "#h h2.subtitle span") "color" (get-in ux/levels [(aiw/current-level @ux/world) :message-color])))
 
 (defn- fx-toggle []
   (if @fx-on
@@ -95,6 +96,25 @@
   (swap! music-on not))
 
 
+(defn- setup-transitions
+  [ux]
+  (letfn [(transition-type [new]
+            (cond
+              (and (= :won (-> new ::gs/game-state ::gs/status))
+                   (aiw/remaining-levels? new)) :nextlevel
+              (= :over (-> new ::gs/game-state ::gs/status)) :over
+              (= :won (-> new ::gs/game-state ::gs/status)) :won))
+          (game-transition-watcher [_ _ old new]
+            (when-let [transition-type
+                       (and (not (transition-type old)) (transition-type new))]
+              (ux/animate-transition ux transition-type)))]
+    (add-watch ux/world :game-transitions game-transition-watcher)))
+
+(defn- setup-button-events
+  []
+  (.click (jq "#lapy-arrows #fx-btn") fx-toggle)
+  (.click (jq "#lapy-arrows #music-btn") music-toggle))
+
 (defonce lapy-ux
   (reify ux/ClapyUX
     
@@ -106,17 +126,9 @@
                                    (-> old ::gs/game-state ::gs/score)))
                      (.load scoreSound)
                      (when @fx-on (.play scoreSound)))))
-      (.click (jq ".game-over button")
-              (fn []
-                (ux/start-game this)))
-      (.click (jq "#lapy-arrows #fx-btn") fx-toggle)
-      (.click (jq "#lapy-arrows #music-btn") music-toggle)
-      (ux/start-game this)
-      #_(.click (jq "#surprise img")
-              (fn []
-                ;; (.requestFullscreen (.-documentElement js/document))
-                (.click (jq "#surprise img") nil)
-                )))
+      (setup-button-events)
+      (setup-transitions this)
+      (ux/start-game this))
 
     (start-level [this]
       ;; Choose element to fade and callback depending on
@@ -143,25 +155,26 @@
         (.fadeOut (jq elt-to-fade) 1000)))
     
     (animate-transition [this transition-type]
+      (.fadeTo (jq "#h") 10 0)
+      (.removeEventListener js/window "keydown" ux/user-keypress)        
       (.scroll js/window 0 0)
       (.pause gameMusic)
+      (ux/toggle-game-execution false)
       
       (let [on-sound-end-callback
-            (if (= transition-type :nextlevel) #(ux/start-game this))
+            (when (= transition-type :nextlevel) #(ux/start-game this))
             in-between-callback
             (case transition-type
               :nextlevel between-levels
               :won #(final-animation 0)
               nil)]
-        
         (set! (.-onended (sounds transition-type)) on-sound-end-callback)
         (when @fx-on (.play (sounds transition-type)))
         (.fadeTo (jq "#h h2.subtitle") 100 0)
         (.setTimeout js/window
                      (fn []
-                       (.fadeTo (jq "#h") 500 0)
                        (.fadeIn (jq (str ".game-" (name transition-type))) 1000 in-between-callback))
-                     1000)))
+                     100)))
     
     (enemy-style [this type]
       (str "{background-image: url(../img/" type ".gif)}"))))

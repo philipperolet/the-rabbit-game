@@ -13,9 +13,10 @@
    [reagent.core :as reagent :refer [atom]]
    [reagent.dom :refer [render]]
    [mzero.game.state :as gs]
-   [mzero.game.events :as ge]
+   [mzero.ai.game-runner :as gr]
    [mzero.game.generation :as gg]
    [mzero.ai.world :as aiw]
+   [mzero.ai.player :as aip]
    [cljs-http.client :as http]
    [claby.ux.leaderboard :as cll]
    [cljs.reader :refer [read-string]]
@@ -31,49 +32,47 @@
   [{:message
     {:en "Little rabbit must eat all the strawberries"
      :fr "Lapinette enceinte doit manger un maximum de fraises"}
-    ::gg/density-map {:fruit 5
+    ::gg/density-map {:fruit 2
                       :cheese 0}}
    {:message {:fr "Attention au fromage non-pasteurisé !"
               :en "Beware unpasteurized cheese!"}
-    ::gg/density-map {:fruit 5
+    ::gg/density-map {:fruit 2
                       :cheese 3}
     :message-color "darkgoldenrod"}
    {:message {:en "Avoid alcoholic drinks"
               :fr "Evite les apéros alcoolisés"}
-    ::gg/density-map {:fruit 5
+    ::gg/density-map {:fruit 2
                       :cheese 3}
     :message-color "darkblue"
     :enemies [:drink :drink]}
    {:message {:en "Mice run loose in the house!"
               :fr "Les souris ont infesté la maison!"}
-    ::gg/density-map {:fruit 5
+    ::gg/density-map {:fruit 2
                       :cheese 3}
     :message-color "darkmagenta"
     :enemies [:drink :mouse :mouse]}
    {:message {:en "Scary covid is here"
               :fr "Le covid ça fait peur!"}
-    ::gg/density-map {:fruit 5
+    ::gg/density-map {:fruit 2
                       :cheese 3}
     :message-color "darkcyan"
     :enemies [:virus :virus]}
    {:message {:en "All right, let's raise the stakes."
               :fr "Allez on arrête de déconner."}
-    ::gg/density-map {:fruit 5
+    ::gg/density-map {:fruit 2
                       :cheese 5}
     :message-color "darkgreen"
-    :enemies [:drink :drink :virus :virus :mouse :mouse]}])
+    :enemies [:drink :drink :virus :virus :mouse :mouse]}
+   {:message {:en "Fake level"
+              :fr "Fake level"}
+    ::gg/density-map {:fruit 2
+                      :cheese 0}
+    :message-color "darkgreen"
+    :enemies []}])
 
 (defonce jq (js* "$"))
 (defonce world (atom {}))
 
-(def autorun-flag
-  "On = game with AI player will run auto. Off = game with AI player
-  can run manually step by step"
-  (atom false))
-
-
-(defn current-level [world]
-  (- (count levels) (inc (count (::aiw/next-levels world)))))
 
 (defn server-get
   "Send HTTP GET request at claby server's `endpoint`, to be handled by `callback`
@@ -102,8 +101,34 @@
 ;;; Game progression
 ;;;;;;
 
-(defn ai-game-step
-  "Moves the game forward one step (for AI players)"
+(def next-movement-atom (atom nil))
+(defrecord ShallowUXPlayer []
+  aip/Player
+  (init-player [_ _ _])
+  (update-player [this _]
+    (let [next-movement @next-movement-atom]
+      (reset! next-movement-atom nil)
+      (assoc this :next-movement next-movement))))
+
+(def player ;; Shallow player to wrap moves sent by human or AI
+  (atom (->ShallowUXPlayer)))
+
+(defn move-human-player!
+  "Request a movement for a human player"
+  [e]
+  (let [command
+        (case (.-key e)
+          ("ArrowUp" "e" "E") :up
+          ("ArrowDown" "d" "D") :down
+          ("ArrowLeft" "s" "S") :left
+          ("ArrowRight" "f" "F") :right
+          :other)]
+    (when (not= :other command)
+        (.preventDefault e)
+        (reset! next-movement-atom command))))
+
+(defn move-ai-player!
+  "Request a movement for an AI player"
   []
   (server-get "next"
               (fn [movement]
@@ -116,40 +141,40 @@
                   (.css (jq "td.player") "border-width" (str new-size "px")))
                 (when movement
                   (.css (jq "td.player") "opacity" 1.0)
-                  (swap! world
-                         update ::aiw/requested-movements
-                         assoc :player movement)))))
+                  (reset! next-movement-atom movement)))))
 
-(defn move-ai-player
+(def game-runner (gr/->MonoThreadRunner world player {:number-of-steps 1}))
+
+(defn game-step! []
+  (when (aiw/active? @world)
+    (when (= "ai" (-> @params :player)) (move-ai-player!))
+    (gr/run-game game-runner)))
+
+(def game-execution-interval-id (atom nil))
+(defn- toggle-game-execution
+  "Start/pause game"
+  ([run?]
+   (if run?
+     (let [tick-interval (int (get @params :tick "65"))]
+       (reset! game-execution-interval-id
+               (.setInterval js/window game-step! tick-interval)))
+     (do
+       (.clearInterval js/window @game-execution-interval-id)
+       (reset! game-execution-interval-id nil))))
+  ([]
+   (toggle-game-execution @game-execution-interval-id)))
+
+(defn ai-game-control
   "Moves the game forward according to user input (for AI players)"
   [e]
   (cond
-    (= (.-key e) " ")
-    (swap! autorun-flag not)
-    
-    (and (some #{(.-key e)} ["n" "N"]) (not @autorun-flag))
-    (ai-game-step)))
-
-(defn move-human-player
-  "Move player on the board by changing player-position (for human players)"
-  [e]
-  (let [command
-        (case (.-key e)
-          ("ArrowUp" "e" "E") :up
-          ("ArrowDown" "d" "D") :down
-          ("ArrowLeft" "s" "S") :left
-          ("ArrowRight" "f" "F") :right
-          :other)]
-    (when (not= :other command)
-        (.preventDefault e)
-        (swap! world
-               update ::aiw/requested-movements
-               assoc :player command))))
+    (= (.-key e) " ") (toggle-game-execution)
+    (and (some #{(.-key e)} ["n" "N"]) (not @game-execution-interval-id)) (game-step!)))
 
 (defn user-keypress [e]
-  (if (= (:player @params) "human")
-    (move-human-player e)
-    (move-ai-player e)))
+  (case (:player @params)
+    "human" (move-human-player! e)
+    "ai" (ai-game-control e)))
 
 ;;;
 ;;; Component & app rendering
@@ -181,41 +206,6 @@
                          "</style>"))
           enemies)))
 
-
-(defonce enemy-move-interval {:drink 8 :mouse 4 :virus 2})
-(defonce level-start-step (atom 0))
-(defn move-enemies! []
-  (when (and (-> @world ::gs/game-state ::gs/enemy-positions count (> 0))
-             ;; wait an instant before enemies start moving
-             (-> @world ::aiw/game-step (>= (+ 50 @level-start-step))))
-    (let [time-to-move
-          (fn [index enemy-type]
-            (when (= 0 (mod (-> @world ::aiw/game-step) (enemy-move-interval enemy-type)))
-              index))
-          enemies-indices
-          (keep-indexed time-to-move (get-in levels [(current-level @world) :enemies]))
-          assoc-enemy-movement
-          (fn [requested-movements index]
-            (assoc requested-movements
-                   index
-                   (ge/move-enemy-random (-> @world ::gs/game-state) index)))]
-      (swap! world
-             update ::aiw/requested-movements
-             #(reduce assoc-enemy-movement % enemies-indices)))))
-
-(defn game-step! []
-  (when (aiw/active? @world)
-    (move-enemies!)
-    (when (and (not= "human" (-> @params :player)) @autorun-flag)
-      (ai-game-step))
-    (aiw/run-step world 0)))
-
-(defn- setup-auto-movement
-  "Setup auto enemy move for human play or auto full-game move for ai play"
-  []
-  (let [tick-interval (int (get @params :tick "65"))]
-    (.setInterval js/window game-step! tick-interval)))
-
 (def current-level-game-state (atom {}))
 (defn- load-game-board [ux]
   (let [remaining-levels ;; cheatlev option to skip levels
@@ -225,17 +215,18 @@
         (fn [world_]
           (reset! current-level-game-state (-> world_ ::gs/game-state))
           (reset! world world_)
-          (add-enemies-style ux (get-in levels [(current-level @world) :enemies]))
+          (add-enemies-style ux (get-in levels [(aiw/current-level @world) :enemies]))
           (.hide (jq "#loading") 200)
           (start-level ux))
         next-level
         (fn []
           (when (= (-> @world ::gs/game-state ::gs/status) :over)
             (swap! world assoc ::gs/game-state @current-level-game-state))
-          (load-callback (aiw/update-to-next-level @world))
-          (reset! level-start-step (-> @world ::aiw/game-step)))
+          (load-callback (aiw/update-to-next-level @world)))
         generate-game-locally
-        #(load-callback (aiw/multilevel-world game-size nil remaining-levels))
+        #(load-callback
+          (-> (aiw/multilevel-world game-size nil remaining-levels)
+              (assoc ::aiw/levels-data levels)))
         load-game-from-server
         (fn []
           (server-get "start"
@@ -255,35 +246,15 @@
 (defn start-game
   [ux]
   (.addEventListener js/window "keydown" user-keypress)
+  (toggle-game-execution true)
   (load-new-level ux))
 
-(defn game-transition
-  "Component rendering a change in game status. 3 possible transitions may occur:
-   - nextlevel (when level is won but there are next levels);
-   - over (when game is lost);
-   - won (when the last level is won)."
-  [ux status]
-  
-  ;; Get transition type from game status
-  (when-let [transition-type
-             (case status
-               :won (if (< (inc (current-level @world)) (count levels))
-                      :nextlevel
-                      :won)
-               :over :over
-               nil)]
-
-    ;; render animation and component
-    (.removeEventListener js/window "keydown" user-keypress)
-    (animate-transition ux transition-type)
-    [:div]))
-
 (defn show-score
-  [ux score]
+  [_ score]
   [:div.score
    [:span (str "Score: " (.toFixed (or score 0) 0))]
    [:br]
-   [:span (str "Level: " (inc (current-level @world)))]])
+   [:span (str "Level: " (aiw/current-level @world))]])
 
 (defn claby [ux]
   (if (re-find #"Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini"
@@ -293,13 +264,12 @@
         [:h1 "Game not yet available for mobile devices"]
         [:h4 "Sorry :/"]])
     [:div#lapyrinthe.row.justify-content-md-center
-     [:h2.subtitle [:span (get-in levels [(current-level @world) :message (keyword @language)])]]
+     [:h2.subtitle [:span (get-in levels [(aiw/current-level @world) :message (keyword @language)])]]
      [:div.col.col-lg-2]
      [:div.col.col-lg-8
       [show-score ux (-> @world ::gs/game-state ::gs/score)]
       [:table (gs/get-html-for-state (-> @world ::gs/game-state))]]
-     [:div.col.col-lg-2 [cll/leaderboard ux]]
-     [game-transition ux (-> @world ::gs/game-state ::gs/status)]]))
+     [:div.col.col-lg-2 [cll/leaderboard ux]]]))
 
 ;; conditionally start your application based on the presence of an "app" element
 ;; this is particularly helpful for testing this ns without launching the app
@@ -308,16 +278,17 @@
   (when-let [el (gdom/getElement "app")]             
     (render [claby] el)))
 
-(defn skip-to-level [level]
-  (swap! world update ::next-levels))
-
 (defn- setup-leaderboard [ux]
   (cll/get-high-scores! "human" 10)
   (let [get-score
         (fn []
           {:score (-> @world ::gs/game-state ::gs/score)
            :player-type (:player @params)})
-        revive-action #(start-game ux)
+        revive-action
+        (fn []
+          (swap! current-level-game-state assoc ::gs/score 0.0)
+          (swap! world assoc ::aiw/game-step (-> @world ::aiw/current-level-start-step))
+          (start-game ux))
         new-action #(-> (.-location js/window) (.reload))]
     (render [cll/submit-score-form get-score revive-action new-action :won]
             (gdom/getElement "svform-win"))
@@ -330,7 +301,6 @@
   {:pre [(gdom/getElement "app")]}
   (reset! params (parse-params))
   (init ux)
-  (setup-auto-movement)
   (render [claby ux] (gdom/getElement "app"))
   (setup-leaderboard ux))
 
