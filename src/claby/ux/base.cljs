@@ -73,19 +73,28 @@
 (defonce jq (js* "$"))
 (defonce world (atom {}))
 
+(defn- to-json-str
+  "Convert to JSON string with namespaced keywords"
+  [data]
+  (.stringify js/JSON (clj->js data :keyword-fn #(subs (str %) 1))))
 
-(defn server-get
-  "Send HTTP GET request at claby server's `endpoint`, to be handled by `callback`
+(defn- from-json-str
+  "Opposite of to-json-str"
+  [json-str]
+  (js->clj (.parse js/JSON json-str) :keywordize-keys true))
 
-  Callback expects exactly one param, the request body parsed via read-string."
-  ([endpoint callback query-param-map]
-   (go (let [response (<! (http/get (str "http://127.0.0.1:8080/" endpoint)
-                                    {:with-credentials? false
-                                     
-                                     :query-params query-param-map}))]
-         (callback (read-string (:body response))))))
-
-  ([endpoint callback] (server-get endpoint callback {})))
+(defn post-next-request!
+  "Request next move given world. Callback expects exactly one param,
+  the request body parsed via read-string."
+  ([callback]
+   (go (let [thin-world
+             (update @world ::aiw/next-levels #(repeat (count %) :hidden))
+             response
+             (<! (http/post (str "http://localhost:8080/next")
+                            {:with-credentials? false
+                             :headers {"Access-Control-Allow-Origin" "*"}
+                             :json-params (to-json-str thin-world)}))]
+         (callback (read-string (:body response)))))))
 
 
 (defn parse-params
@@ -127,24 +136,30 @@
         (.preventDefault e)
         (reset! next-movement-atom command))))
 
+(def ai-ready-to-play (atom true))
+
+(defn- change-style-for-mini-theme []
+  (let [bwidth-str (.css (jq "td.player") "border-width")
+        bwidth
+        (-> bwidth-str
+            (subs 0 (- (count bwidth-str) 2))
+            js/parseFloat)
+        new-size (+ 0.67 (mod bwidth 5))]
+    (.css (jq "td.player") "border-width" (str new-size "px"))))
+
 (defn move-ai-player!
   "Request a movement for an AI player"
   []
-  (server-get "next"
-              (fn [movement]
-                (let [bwidth-str (.css (jq "td.player") "border-width")
-                      bwidth
-                      (-> bwidth-str
-                          (subs 0 (- (count bwidth-str) 2))
-                          js/parseFloat)
-                      new-size (+ 0.67 (mod bwidth 5))]
-                  (.css (jq "td.player") "border-width" (str new-size "px")))
-                (when movement
-                  (.css (jq "td.player") "opacity" 1.0)
-                  (reset! next-movement-atom movement)))))
+  (when (compare-and-set! ai-ready-to-play true false)
+    (post-next-request!
+     (fn [movement]
+       (reset! ai-ready-to-play true)
+       #_(change-style-for-mini-theme)
+       (when movement
+         (.css (jq "td.player") "opacity" 1.0)
+         (reset! next-movement-atom movement))))))
 
 (def game-runner (gr/->MonoThreadRunner world player {:number-of-steps 1}))
-
 (defn game-step! []
   (when (aiw/active? @world)
     (when (= "ai" (-> @params :player)) (move-ai-player!))
@@ -162,7 +177,7 @@
        (.clearInterval js/window @game-execution-interval-id)
        (reset! game-execution-interval-id nil))))
   ([]
-   (toggle-game-execution @game-execution-interval-id)))
+   (toggle-game-execution (not @game-execution-interval-id))))
 
 (defn ai-game-control
   "Moves the game forward according to user input (for AI players)"
@@ -223,20 +238,13 @@
           (when (= (-> @world ::gs/game-state ::gs/status) :over)
             (swap! world assoc ::gs/game-state @current-level-game-state))
           (load-callback (aiw/update-to-next-level @world)))
-        generate-game-locally
+        generate-game
         #(load-callback
           (-> (aiw/multilevel-world game-size nil remaining-levels)
-              (assoc ::aiw/levels-data levels)))
-        load-game-from-server
-        (fn []
-          (server-get "start"
-                      load-callback
-                      {"levels" (str remaining-levels)
-                       "board-size" game-size}))]
-    (cond
-      world-already-initialized? next-level
-      (= (get @params :player) "human") generate-game-locally
-      :else load-game-from-server)))
+              (assoc ::aiw/levels-data levels)))]
+    (if world-already-initialized?
+      next-level
+      generate-game)))
 
 (defn- load-new-level [ux]
   (-> (jq "#loading")
@@ -246,7 +254,7 @@
 (defn start-game
   [ux]
   (.addEventListener js/window "keydown" user-keypress)
-  (toggle-game-execution true)
+  (toggle-game-execution (= "human" (:player @params)))
   (load-new-level ux))
 
 (defn show-score

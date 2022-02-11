@@ -1,14 +1,21 @@
 (ns claby.ux.server-test
   (:require [claby.ux.server :as sut]
-            [clojure.test :refer [is deftest]]))
+            [clojure.test :refer [is deftest]]
+            [mzero.ai.world :as aiw]
+            [mzero.game.events :as ge]
+            [clojure.data.json :as json]))
 
+(def world (aiw/world 12 12))
+(def request {:body (json/write-str world :key-fn #(subs (str %) 1))})
 
-(deftest get-level-from-query-string
-  (let [test-string-out
-        "{:message \"Lapinette fraises\", :mzero.game.generation/density-map {:fruit 5, :cheese 0}}"	    
-        test-string-in
-        "truc=a&level=%7B%3Amessage%20%22Lapinette%20fraises%22%2C%20%3Amzero.game.generation%2Fdensity-map%20%7B%3Afruit%205%2C%20%3Acheese%200%7D%7D&toto=tata"]
+(deftest parse-world
+  (is (= world (#'sut/parse-world request))))
 
-    (is (= test-string-out
-           (#'sut/get-level-from-query-string
-            {:query-string test-string-in})))))
+(deftest update-player
+  (let [player (#'sut/update-player nil
+                                    request
+                                    {:player-type "simulator"
+                                     :player-opts {:seed 3}})
+        updated-player (#'sut/update-player player request nil)]
+    (is (some #{(:next-movement player)} ge/directions))
+    (is (some #{(:next-movement updated-player)} ge/directions))))

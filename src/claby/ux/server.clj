@@ -5,82 +5,88 @@
   
   Endpoints are expected to return textual representations of clj objects that
   will be parsed with `read-string`"
-  (:import (java.net URLDecoder))
   (:require [org.httpkit.server :as server]
-            [compojure.core :refer [GET defroutes]]
+            [compojure.core :refer [POST OPTIONS defroutes]]
             [compojure.route :as route]
             [mzero.ai.main :as aim]
+            [mzero.ai.player :as aip]
+            [ring.middleware.json :refer [wrap-json-body]]
+            [clojure.string :as cstr]
+            [clojure.tools.logging :as log]
+            [clojure.data.json :as json]
             [mzero.ai.world :as aiw]
-            [mzero.game.state :as gs]
-            [clojure.string :as str]))
+            [mzero.game
+             [state :as gs]
+             [board :as gb]]))
 
-(def mzero-arg-string
-  "Argument string passed to mzero game when launched, see `mzero.ai.main`" "")
+(def server-args (atom nil))
+(def player-atom (atom nil))
 
-(defn- get-levels-from-query-string [request]
-  (-> (:query-string request)
-      (#(re-find #"levels=[^&]*" %))
-      (str/split #"=")
-      (nth 1)
-      (URLDecoder/decode "UTF-8")
-      read-string))
+(defn- parse-world [move-request]
+  (letfn [(decode-game-state [gs]
+            (-> (update gs ::gb/game-board (partial mapv #(mapv keyword %)))
+                (update ::gs/status keyword)))
+          (decode-world [k v]
+            (cond-> v
+              (= k ::gs/game-state)
+              decode-game-state))]
+    (json/read-str (:body move-request) :key-fn keyword :value-fn decode-world)))
 
-(defn- get-size-from-query-string [request]
-  (-> (:query-string request)
-      (#(re-find #"board-size=[^&]*" %))
-      (str/split #"=")
-      (nth 1)
-      (URLDecoder/decode "UTF-8")
-      read-string))
+(defn- update-player
+  [player move-request {:as player-args :keys [player-type player-opts]}]
+  (let [world (parse-world move-request)
+        player (or player (aip/load-player player-type player-opts world))]
+    (aip/update-player player world)))
 
-
-(defn start-handler
-  "Get fresh game world, with player having moved once"
-  [req]
-  (let [board-size (get-size-from-query-string req)
-        levels (get-levels-from-query-string req)
-        world 
-        (aiw/multilevel-world board-size nil levels)
-        world-string
-        (-> (aim/go mzero-arg-string world) :world pr-str)]
-    
-    {:status  200
-     :headers {"Content-Type" "text/plain"
-               "Access-Control-Allow-Origin" "*"} 
-     :body world-string}))
-
+(def last-step (atom 0))
+(def missteps (atom 0))
 (defn next-handler
   "Get player's next movement."
-  [_]
+  [req]
+  (swap! player-atom update-player req @server-args)
+  (let [{:as world :keys [::aiw/game-step]} (parse-world req)]
+    (swap! missteps + (dec (- game-step @last-step)))
+    (reset! last-step game-step)
+    (when (zero? (mod (::aiw/game-step world) 25))
+      (log/info (aiw/data->string world))
+      (log/info (str "Move: " (:next-movement @player-atom)))
+      (log/info (str "Missteps: " @missteps))))
   {:status  200
    :headers {"Content-Type" "text/plain"
              "Access-Control-Allow-Origin" "*"}
-   :body
-   (str (-> (aim/n) :player :next-movement))})
+   :body (str (:next-movement @player-atom))})
 
 (defroutes app-routes
-  (GET "/start" [] start-handler)
-  (GET "/next" [] next-handler)
+  (POST "/next" [] (wrap-json-body next-handler))
+  (OPTIONS "/next" _ {:status  200
+                      :headers {"Content-Type" "text/plain"
+                                "Access-Control-Allow-Origin" "*"
+                                "Access-Control-Allow-Headers" "*"}})
   (route/not-found "404 - You Must Be New Here"))
 
-(defn- validate-args
+(defn- bad-options? [args]
+  (let [first-char-hyphen?
+        #(= (first %) "-")]
+    (->> args
+         (filter first-char-hyphen?)
+         (remove #{"-t" "-o"})
+         seq)))
+
+(defn- validate-args!
   "Checks whether args are well-formed and fitted to server use, and
   store them as string"
   [args]
-  (let [arg-string (str/join " " args)]
-    (when (some #(str/includes? arg-string %) ["-n " "-h " "-i " "-L"])
-      (throw (java.lang.IllegalArgumentException.
-              "`-n`, `-h`, `-L` or `-i`  should not be used in server mode.")))
-    (aim/parse-run-args arg-string) ;; used to throw error in case of malformed args
-    (alter-var-root #'mzero-arg-string (fn [_] (str arg-string " -n 1")))))
+  (when (bad-options?  args)
+    (throw (java.lang.IllegalArgumentException.
+              "Only -t and -o options should be used in server mode.")))
+  (let [arg-string (cstr/join " " args)]
+    (reset! server-args (aim/parse-run-args arg-string))))
+
 
 (defn serve
-  "Start the server
-
-  `args`: arguments passed to mzero game when launched, see `mzero.ai.main`."
+  "Start the server."
   [& args]
   (let [port 8080]
-    (validate-args args)
+    (validate-args! args)
     (server/run-server #'app-routes {:port port})
     (println (str "Running webserver at http:/127.0.0.1:" port "/"))))
-

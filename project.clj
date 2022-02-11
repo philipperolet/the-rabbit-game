@@ -14,9 +14,11 @@
                  [org.clojure/core.async "1.3.610"]
                  [cljs-aws "0.4.3"]
                  [cljs-http "0.1.46"]
-                 [http-kit "2.5.0"]                 
+                 [http-kit "2.5.0"]
+                 [org.clojure/data.json "2.4.0"]
                  [reagent "0.10.0"]
                  [compojure "1.6.2"]
+                 [ring/ring-json "0.5.1"]
                  [mzero-game "0.3.2-alpha"]]
 
   :jvm-opts ["-Xss1g"
