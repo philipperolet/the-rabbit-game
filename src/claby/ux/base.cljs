@@ -19,10 +19,11 @@
    [mzero.ai.player :as aip]
    [cljs-http.client :as http]
    [claby.ux.leaderboard :as cll]
+   [claby.ux.playerboard :as cpb]
    [cljs.reader :refer [read-string]]
    [clojure.core.async :refer [<!] :refer-macros [go]]))
 
-(defonce game-size 16)
+(defonce game-size 24)
 
 (defonce language (atom "en"))
 
@@ -32,38 +33,38 @@
   [{:message
     {:en "Little rabbit must eat all the strawberries"
      :fr "Lapinette enceinte doit manger un maximum de fraises"}
-    ::gg/density-map {:fruit 2
+    ::gg/density-map {:fruit 5
                       :cheese 0}}
    {:message {:fr "Attention au fromage non-pasteurisé !"
               :en "Beware unpasteurized cheese!"}
-    ::gg/density-map {:fruit 2
+    ::gg/density-map {:fruit 5
                       :cheese 3}
     :message-color "darkgoldenrod"}
    {:message {:en "Avoid alcoholic drinks"
               :fr "Evite les apéros alcoolisés"}
-    ::gg/density-map {:fruit 2
+    ::gg/density-map {:fruit 5
                       :cheese 3}
     :message-color "darkblue"
     :enemies [:drink :drink]}
    {:message {:en "Mice run loose in the house!"
               :fr "Les souris ont infesté la maison!"}
-    ::gg/density-map {:fruit 2
+    ::gg/density-map {:fruit 5
                       :cheese 3}
     :message-color "darkmagenta"
     :enemies [:drink :mouse :mouse]}
    {:message {:en "Scary covid is here"
               :fr "Le covid ça fait peur!"}
-    ::gg/density-map {:fruit 2
+    ::gg/density-map {:fruit 5
                       :cheese 3}
     :message-color "darkcyan"
     :enemies [:virus :virus]}
    {:message {:en "All right, let's raise the stakes."
               :fr "Allez on arrête de déconner."}
-    ::gg/density-map {:fruit 2
+    ::gg/density-map {:fruit 5
                       :cheese 5}
     :message-color "darkgreen"
     :enemies [:drink :drink :virus :virus :mouse :mouse]}
-   {:message {:en "Fake level"
+   #_{:message {:en "Fake level"
               :fr "Fake level"}
     ::gg/density-map {:fruit 2
                       :cheese 0}
@@ -90,7 +91,7 @@
    (go (let [thin-world
              (update @world ::aiw/next-levels #(repeat (count %) :hidden))
              response
-             (<! (http/post (str "http://localhost:8080/next")
+             (<! (http/post (str "http://localhost:8080/" (:ai-type @params "good"))
                             {:with-credentials? false
                              :headers {"Access-Control-Allow-Origin" "*"}
                              :json-params (to-json-str thin-world)}))]
@@ -258,9 +259,9 @@
   (load-new-level ux))
 
 (defn show-score
-  [_ score]
+  []
   [:div.score
-   [:span (str "Score: " (.toFixed (or score 0) 0))]
+   [:span (str "Score: " (.toFixed (or (-> @world ::gs/game-state ::gs/score) 0) 0))]
    [:br]
    [:span (str "Level: " (aiw/current-level @world))]])
 
@@ -273,11 +274,16 @@
         [:h4 "Sorry :/"]])
     [:div#lapyrinthe.row.justify-content-md-center
      [:h2.subtitle [:span (get-in levels [(aiw/current-level @world) :message (keyword @language)])]]
-     [:div.col.col-lg-2]
-     [:div.col.col-lg-8
-      [show-score ux (-> @world ::gs/game-state ::gs/score)]
-      [:table (gs/get-html-for-state (-> @world ::gs/game-state))]]
-     [:div.col.col-lg-2 [cll/leaderboard ux]]]))
+     [:div.col.col-md-3]
+     [:div.col.col-md-5
+      [:table#game-board.panel-bordered (gs/get-html-for-state (-> @world ::gs/game-state))]]
+     [:div.col.col-md-4
+      [:div.row
+       [:div.col.col-md-3]
+       [:div.col.col-md-9 [cpb/playerboard (:player @params)]]]
+      [:div.row
+       [:div.col.col-md-6 [cll/leaderboard "human"]]
+       [:div.col.col-md-6 [cll/leaderboard "ai"]]]]]))
 
 ;; conditionally start your application based on the presence of an "app" element
 ;; this is particularly helpful for testing this ns without launching the app
@@ -288,6 +294,7 @@
 
 (defn- setup-leaderboard [ux]
   (cll/get-high-scores! "human" 10)
+  (cll/get-high-scores! "ai" 10)
   (let [get-score
         (fn []
           {:score (-> @world ::gs/game-state ::gs/score)
@@ -310,6 +317,7 @@
   (reset! params (parse-params))
   (init ux)
   (render [claby ux] (gdom/getElement "app"))
+  (render [show-score] (gdom/getElement "score-thing"))
   (setup-leaderboard ux))
 
 ;; specify reload hook with ^;after-load metadata

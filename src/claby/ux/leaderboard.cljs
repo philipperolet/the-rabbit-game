@@ -7,7 +7,6 @@
 
 ;; init & commons
 ;;;;;
-(defonce jq (js* "$"))
 (def table-name "rabbit-game-leaderboard")
 (def index-name "PlayerType-Score-index")
 
@@ -39,14 +38,17 @@
 
 (defn score-row [index score-item]
   [:tr {:key (str "cll-" index)}
-   [:td (:name score-item)] [:td " - "]   [:td (:score score-item)]])
+   [:td.name (str (inc index) ". " (:name score-item))]
+   [:td " - "]
+   [:td.highscore (:score score-item)]])
 
-(defn leaderboard []
+(defn leaderboard [player-type]
   [:div
-   [:h5 "Leaderboard - Humans"]
-   [:table.leaderboard
+   [:table.leaderboard.panel-bordered
+    [:thead
+     [:tr [:td [:h5 (str "Best " player-type "s")]]]]
     [:tbody
-     (map-indexed score-row (:human @leaderboard-data))]]])
+     (map-indexed score-row ((keyword player-type) @leaderboard-data))]]])
 
 (defn get-high-scores! [player-type limit]
   (let [query-request
@@ -126,9 +128,9 @@
 (defn- mock-data! [nb-items]
   (let [ts (c/currTimeMillis)
         timestamps (range ts (+ ts nb-items))
-        names (map #(str "Jack" %) (range nb-items))
-        scores (repeatedly nb-items #(rand-int 100))
-        types (repeat nb-items "test")]
+        names (map #(str "Jean-Luc" %) (range nb-items))
+        scores (repeatedly nb-items #(rand-int 30))
+        types (repeat nb-items "human")]
     (map score-item timestamps names scores types)))
 
 (defn- send-mock-data! []

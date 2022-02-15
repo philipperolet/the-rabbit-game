@@ -4,6 +4,7 @@ body {
 #lapy-arrows {
     position: fixed;
     padding: 1em;
+    top: 5em;
 }
 #lapy-arrows > img {
     height: 70px;
@@ -25,13 +26,23 @@ body {
     margin-top: 1em;
 }
 
-#lapyrinthe table {
+#lapyrinthe div.col {
+    padding-left: 2px;
+}
+#lapyrinthe div.row {
+    padding-bottom: 2px;
+}
+#lapyrinthe row {
+    margin-bottom: 2px;
+}
+
+#h .panel-bordered {
     border: 5px solid black;
     border-radius: 10px;
     padding: 1em;
 }
 
-#lapyrinthe td {
+#lapyrinthe #game-board td {
     width: 21px;
     height: 21px;
     background-size: 21px 20px;
@@ -66,12 +77,11 @@ body {
     width: 17px;
 }
 		
-#lapyrinthe .score {
-    position: relative;
+#h .score {
+    position: fixed;
+    top: 0;
+    left: 0;
     height: 3.3em;
-    top: -3em;
-    float: right;
-    right: 874px;
     width: 6em;
     border: 5px solid black;
     font-weight: 900;
@@ -101,6 +111,7 @@ body {
     border: 1px solid black;
     border-radius: 10px;
     padding: 0.5em;
+    z-index: 2000;
 }
 #h h1.intro {
     position: fixed;
@@ -160,18 +171,6 @@ body {
     left: 33%;
     display: block;
     border-radius: 100%;
-}
-
-#svform-win button, #svform-lose button {
-    margin-top: 0.25em;
-    display: block;
-}
-
-#svform-win input, #svform-lose input {
-    margin-bottom: 0px;
-}
-#svform-win .helptext, #svform-lose .helptext {
-    text-align: left;
 }
 
 .game-won p {

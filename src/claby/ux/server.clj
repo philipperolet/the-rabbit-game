@@ -21,6 +21,7 @@
 
 (def server-args (atom nil))
 (def player-atom (atom nil))
+(def player-type-atom (atom nil))
 
 (defn- parse-world [move-request]
   (letfn [(decode-game-state [gs]
@@ -35,15 +36,25 @@
 (defn- update-player
   [player move-request {:as player-args :keys [player-type player-opts]}]
   (let [world (parse-world move-request)
-        player (or player (aip/load-player player-type player-opts world))]
+        player
+        (if (not= @player-type-atom player-type)
+          (aip/load-player player-type player-opts world)
+          player)]
     (aip/update-player player world)))
 
 (def last-step (atom 0))
 (def missteps (atom 0))
-(defn next-handler
+
+(defn next-move-handler
   "Get player's next movement."
-  [req]
-  (swap! player-atom update-player req @server-args)
+  [ai-kind req]
+  (let [player-type
+        (case ai-kind
+          :good "tree-exploration"
+          :bad "simulator"
+          :ugly "random")]
+    (swap! player-atom update-player req {:player-type player-type :player-opts {}})
+    (reset! player-type-atom player-type))
   (let [{:as world :keys [::aiw/game-step]} (parse-world req)]
     (swap! missteps + (dec (- game-step @last-step)))
     (reset! last-step game-step)
@@ -56,12 +67,18 @@
              "Access-Control-Allow-Origin" "*"}
    :body (str (:next-movement @player-atom))})
 
+(def options-response
+  {:status  200
+   :headers {"Content-Type" "text/plain"
+             "Access-Control-Allow-Origin" "*"
+             "Access-Control-Allow-Headers" "*"}})
 (defroutes app-routes
-  (POST "/next" [] (wrap-json-body next-handler))
-  (OPTIONS "/next" _ {:status  200
-                      :headers {"Content-Type" "text/plain"
-                                "Access-Control-Allow-Origin" "*"
-                                "Access-Control-Allow-Headers" "*"}})
+  (POST "/good" [] (wrap-json-body (partial next-move-handler :good)))
+  (OPTIONS "/good" _ options-response)
+  (POST "/bad" [] (wrap-json-body (partial next-move-handler :ugly)))
+  (OPTIONS "/bad" _ options-response)
+  (POST "/ugly" [] (wrap-json-body (partial next-move-handler :ugly)))
+  (OPTIONS "/ugly" _ options-response)
   (route/not-found "404 - You Must Be New Here"))
 
 (defn- bad-options? [args]
