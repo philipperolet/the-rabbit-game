@@ -1,14 +1,7 @@
 (ns claby.ux.playerboard
   (:require [goog.string :as gstring]
-            [reagent.core :as r]))
-
-(defonce jq (js* "$"))
-
-(defn- se
-  "Show emoji `code`"
-  [code]
-  [:span.emoji {:data (str code)
-                :dangerouslySetInnerHTML {:__html (str "&#" code ";")}}])
+            [reagent.core :as r]
+            [claby.utils :refer [se load-local jq]]))
 
 (def data
   {:human
@@ -16,9 +9,6 @@
     " (you!) is playing." ]
    :ai
    [:span "An " [:span.pb-high "AI" (se 0x1F916)] " is playing." ]})
-
-(defn- load-local [query]
-  (js/window.open (str "http://localhost:9500" (or query "")) "_self"))
 
 (def ai-game
   {:good (partial load-local "?player=ai&ai-type=good")

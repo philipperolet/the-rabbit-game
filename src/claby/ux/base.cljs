@@ -20,10 +20,10 @@
    [cljs-http.client :as http]
    [claby.ux.leaderboard :as cll]
    [claby.ux.playerboard :as cpb]
+   [claby.ux.game-board :as cgb]
+   [claby.utils :refer [jq]]
    [cljs.reader :refer [read-string]]
    [clojure.core.async :refer [<!] :refer-macros [go]]))
-
-(defonce game-size 15)
 
 (defonce language (atom "en"))
 
@@ -69,9 +69,8 @@
     ::gg/density-map {:fruit 2
                       :cheese 0}
     :message-color "darkgreen"
-    :enemies []}])
+      :enemies []}])
 
-(defonce jq (js* "$"))
 (defonce world (atom {}))
 
 (defn- to-json-str
@@ -239,7 +238,7 @@
           (load-callback (aiw/update-to-next-level @world)))
         generate-game
         #(load-callback
-          (-> (aiw/multilevel-world game-size nil remaining-levels)
+          (-> (aiw/multilevel-world cgb/game-size nil remaining-levels)
               (assoc ::aiw/levels-data levels)))]
     (if world-already-initialized?
       next-level
@@ -272,7 +271,7 @@
    [:br]
    [:span (str "Level: " (aiw/current-level @world))]])
 
-(defn claby [ux]
+(defn claby []
   (if (re-find #"Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini"
                (.-userAgent js/navigator))
     (do (.hide (jq "#lapy-arrows"))
@@ -283,7 +282,7 @@
      [:h2.subtitle [:span (get-in levels [(aiw/current-level @world) :message (keyword @language)])]]
      [:div.col.col-md-3]
      [:div.col.col-md-5
-      [:table#game-board.panel-bordered (gs/get-html-for-state (-> @world ::gs/game-state))]]
+      (cgb/game-board @world {:player-type (:player @params)})]
      [:div.col.col-md-4
       [:div.row
        [:div.col.col-md-3]
@@ -323,7 +322,7 @@
   {:pre [(gdom/getElement "app")]}
   (reset! params (parse-params))
   (init ux)
-  (render [claby ux] (gdom/getElement "app"))
+  (render [claby] (gdom/getElement "app"))
   (render [show-score] (gdom/getElement "score-thing"))
   (setup-leaderboard ux))
 
@@ -334,4 +333,3 @@
   ;; your application
   ;; (swap! app-state update-in [:__figwheel_counter] inc)
   )
-

@@ -1,0 +1,52 @@
+
+/* Playing area */
+#game-board td {
+    width: 21px;
+    height: 21px;
+    background-size: 21px 20px;
+}
+
+#game-board td.wall {
+    background-image: url("../img/wall.png");
+}
+
+#game-board td.fruit {
+    background-image: url("../img/strawberry.gif");
+}
+
+#game-board td.cheese {
+    background-image: url("../img/cheese.gif");
+}
+
+#game-board td.player {
+    background-image: url("../img/rabbit3.png");
+}
+
+/* Player stripe */
+#game-board tr.now-playing td {
+    width: 100%;
+}
+
+#game-board .now-playing span {
+    font-size: 1.1em;
+    font-weight: 900;
+    color: black;
+}
+
+#game-board .now-playing.human {
+    background-color: lightgreen;
+}
+
+#game-board .now-playing.ai {
+    background-color: lightblue;
+}
+#game-board .now-playing a {
+    cursor: default;
+    text-decoration: underline;
+    font-weight: normal;
+    color: #800;
+    margin-left: 1em;
+}
+#game-board .now-playing a:hover {
+    color: black;
+}
