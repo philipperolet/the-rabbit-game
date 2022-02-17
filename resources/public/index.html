@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
 	<meta charset="utf-8">
-	<title>Le Lapyrinthe</title>
+	<title>The Rabbit Game - Le Lapyrinthe</title>
 	<meta content="width=device-width, initial-scale=1.0" name="viewport">
 	<meta content="" name="keywords">
 	<meta content="" name="description">
@@ -51,11 +51,35 @@
 	    <a href="https://github.com/sittingbull/mzero-game" target="_blank"> About the Game / Source code</a><br>
 	    <a href="mailto:pr@machine-zero.com" target="_blank"> Contact &#128512;</a>
 	</div>
-	<div id="surprise">
-	    <img src="img/question.gif">
+	<div id="intro-screen">
+	  <div class="row justify-content-center">
+	    <div class="col col-md-3"></div>
+	    <div class="col col-md-6 offset-md-6">
+	      <div class="is-title">
+		<h1>The Rabbit Game (Le Lapyrinthe)</h1>
+		<h2>A game cute for humans and tough for AIs</h2>
+	      </div>
+	      <div class="intro-bullet">
+		<span class="ib-strong">&#x1f9d1; Play the game </span> as a human
+		<div>to have a little fun</div>
+	      </div>
+	      
+	      <div class="intro-bullet">
+		<span class="ib-strong">&#x1f916; Watch machines </span> play the game
+		<div>and learn a bit about how artificial intelligence works</div></div>
+	      <div class="intro-bullet">
+		<span class="ib-strong">&#x1f4bb; Hackers:</span> train your own AI
+		<div>make it compete to get the best score</div></div>
+	      <div class="intro-bullet">
+		<span class="ib-strong">&#x1f9d1; Reasearchers:</span> find new algos to clear the last levels
+		<div>really hard for ML-based algorithms (but not that hard for humans)</div>
+	      </div>
+	    </div>
+	  </div>
 	</div>
 	<div id="loading">
-	    <img src="img/loading.gif">
+	  <img src="img/loading.gif">
+	  <button class="btn btn-success"> Go >> </button>
 	</div>
 	<div class="game-over">
 	  <img src="img/over.gif">
@@ -66,19 +90,19 @@
 	  <img>
 	</div>
 	<div class="game-nextlevel">
-	    <img src="img/nextlevel.gif">
+	  <img src="img/nextlevel.gif">
 	</div>
 	
 	<div id="h">
 	  <div id="score-thing"></div>
-	    <div class="container">
-		<div class="row centered">
-		    <h1 class="intro">The Rabbit Game (Le Lapyrinthe)</h1>
-		</div>
-		<div id="app"></div>
-		<!--/row -->
+	  <div class="container">
+	    <div class="row centered">
+
 	    </div>
-	    <!-- /container -->
+	    <div id="app"></div>
+	    <!--/row -->
+	  </div>
+	  <!-- /container -->
 	</div>
 	<!--/header-->
 

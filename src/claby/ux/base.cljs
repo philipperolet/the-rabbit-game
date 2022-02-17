@@ -23,7 +23,7 @@
    [cljs.reader :refer [read-string]]
    [clojure.core.async :refer [<!] :refer-macros [go]]))
 
-(defonce game-size 24)
+(defonce game-size 15)
 
 (defonce language (atom "en"))
 
@@ -33,11 +33,11 @@
   [{:message
     {:en "Little rabbit must eat all the strawberries"
      :fr "Lapinette enceinte doit manger un maximum de fraises"}
-    ::gg/density-map {:fruit 5
+    ::gg/density-map {:fruit 3
                       :cheese 0}}
    {:message {:fr "Attention au fromage non-pasteurisé !"
               :en "Beware unpasteurized cheese!"}
-    ::gg/density-map {:fruit 5
+    ::gg/density-map {:fruit 3
                       :cheese 3}
     :message-color "darkgoldenrod"}
    {:message {:en "Avoid alcoholic drinks"
@@ -167,7 +167,7 @@
     (gr/run-game game-runner)))
 
 (def game-execution-interval-id (atom nil))
-(defn- toggle-game-execution
+(defn toggle-game-execution
   "Start/pause game"
   ([run?]
    (if run?
@@ -231,9 +231,7 @@
         (fn [world_]
           (reset! current-level-game-state (-> world_ ::gs/game-state))
           (reset! world world_)
-          (add-enemies-style ux (get-in levels [(aiw/current-level @world) :enemies]))
-          (.hide (jq "#loading") 200)
-          (start-level ux))
+          (add-enemies-style ux (get-in levels [(aiw/current-level @world) :enemies])))
         next-level
         (fn []
           (when (= (-> @world ::gs/game-state ::gs/status) :over)
@@ -247,16 +245,25 @@
       next-level
       generate-game)))
 
-(defn- load-new-level [ux]
-  (-> (jq "#loading")
-      (.show 200) (.promise)
-      (.then (load-game-board ux))))
+(defn loading-finished [btn-callback]
+  (-> (jq "#loading button")
+      (.off)
+      (.click btn-callback))
+  (.hide (jq "#loading img"))
+  (.show (jq "#loading button")))
 
-(defn start-game
+(defn- show-loading []
+  (.hide (jq "#loading button"))
+  (.show (jq "#loading img"))
+  (-> (jq "#loading")
+      (.show 200) (.promise)))
+
+(defn prepare-game
   [ux]
   (.addEventListener js/window "keydown" user-keypress)
-  (toggle-game-execution (= "human" (:player @params)))
-  (load-new-level ux))
+  (-> (show-loading)
+      (.then (load-game-board ux))
+      (.then #(start-level ux))))
 
 (defn show-score
   []
@@ -303,7 +310,7 @@
         (fn []
           (swap! current-level-game-state assoc ::gs/score 0.0)
           (swap! world assoc ::aiw/game-step (-> @world ::aiw/current-level-start-step))
-          (start-game ux))
+          (prepare-game ux))
         new-action #(-> (.-location js/window) (.reload))]
     (render [cll/submit-score-form get-score revive-action new-action :won]
             (gdom/getElement "svform-win"))

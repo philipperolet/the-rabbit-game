@@ -15,16 +15,17 @@
   (reify ux/ClapyUX
     
     (init [this]
-      (ux/start-game this))
+      (ux/prepare-game this))
 
     (start-level [this]
       (swap! ux/world
              update ::gs/game-state
-             assoc ::gs/status :active))
+             assoc ::gs/status :active)
+      (ux/toggle-game-execution (= "human" (:player @ux/params))))
     
     (animate-transition [this transition-type]
       (js/alert (transition-message transition-type))
-      (if-not (= transition-type :won) (ux/start-game this)))
+      (if-not (= transition-type :won) (ux/prepare-game this)))
 
     (enemy-style [this type]
       (let [color (case type "drink" "red" "mouse" "purple" "virus" "green")]

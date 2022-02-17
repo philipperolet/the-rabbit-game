@@ -104,52 +104,83 @@ body {
     top: 5em;
 }
 
-#h h2.subtitle span, #h h1.intro {
+#h h2.subtitle span, #intro-screen .is-title {
     background-color: white;
     opacity: 0.85;
     font-weight: 900;
     border: 1px solid black;
     border-radius: 10px;
     padding: 0.5em;
-    z-index: 2000;
-}
-#h h1.intro {
-    position: fixed;
-    top: 5em;
-    margin-left: 33%;
 }
 
-#surprise, #loading {
+#intro-screen, #loading {
     position: fixed;
     width: 100%;
     height: 100%;
     z-index: 90;
 }
-#surprise {
+
+#intro-screen {
     background-image: url("../img/rabbit-wallp.jpg");
     background-repeat: repeat;
 }
 
-#loading {
-    z-index: 99;
+#intro-screen .row {
+    height: 100%;
 }
 
-#surprise img, #loading img {
-    width: 25%;
-    margin-left: 37.5%;
-    margin-top: 5%;
+#intro-screen .row .col {
+    padding-top: 8em;
+}
+#intro-screen .intro-bullet {
+    padding-top: 0.5em;
+    font-size: 1.5em;
+    background-color: #fffc;
+}
+
+#intro-screen .intro-bullet div {
+    font-style: italic;
+    font-size: 0.8em;
+    margin-left: 1.8em;
+}
+
+#intro-screen .ib-strong {
+    font-weight: 900;
+}
+
+#intro-screen h1, #intro-screen h2 {
+    font-family: 'Dancing Script', cursive;
+    text-align: center;
+}
+#intro-screen h1 {
+    font-weight: 900;
+    color: #333;
+    font-size: 2.3em;
+}
+
+#intro-screen h2 {
+    color: #666;
+    font-size: 1.7em;
+}
+
+#loading {
+    text-align: center;
+    top: 66%;
+}
+
+#loading img {
+    width: 20%;
     opacity: 0.7;
+}
+
+#loading button {
+    display: none;
 }
 
 #loading img {
     border-radius: 20px;
     border: 5px solid black;
 }
-
-#surprise img:hover {
-    opacity: 1;
-}
-
 
 .game-over, .game-won, .game-nextlevel {
     display: none;

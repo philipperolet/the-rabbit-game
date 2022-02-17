@@ -29,9 +29,9 @@
               (.removeClass (jq "#h h2.subtitle") "initial"))))
 
 (defonce start-level-data
-  {:initial ["#surprise" #(.fadeOut (jq "#h h1.intro") 2000)]
+  {:initial ["#intro-screen" #(.fadeOut (jq "#intro-screen h1") 2000) 4000]
    :game-over [".game-over" nil]
-   :nextlevel [".game-nextlevel" next-level-callback]})
+   :nextlevel [".game-nextlevel" next-level-callback 4000]})
 
 (defn final-animation [i]
   (cond
@@ -128,31 +128,39 @@
                      (when @fx-on (.play scoreSound)))))
       (setup-button-events)
       (setup-transitions this)
-      (ux/start-game this))
+      (ux/prepare-game this))
 
     (start-level [this]
       ;; Choose element to fade and callback depending on
       ;; whether the surprise ? has already been clicked and hidden or not
-      (let [[elt-to-fade callback]
+      (let [[elt-to-fade callback fade-time]
             (cond
-              (.is (jq "#surprise") ":visible")
+              (.is (jq "#intro-screen") ":visible")
               (start-level-data :initial)
 
               (.is (jq ".game-over") ":visible")
               (start-level-data :game-over)
               
               :else
-              (start-level-data :nextlevel))]
+              (start-level-data :nextlevel))
+            start-level-callback
+            (fn []
+              (when @music-on (-> (.play gameMusic)))
+              (println "Callback called at second " (.getMilliseconds (js/Date.)))
+              (.hide (jq "#loading button"))
+              (.fadeTo (jq "#h") 1000 1
+                       (fn []
+                         (swap! ux/world
+                                update ::gs/game-state
+                                assoc ::gs/status :active)
+                         (when callback (callback))
+                         (ux/toggle-game-execution (= "human" (:player @ux/params)))))
+              (.fadeOut (jq elt-to-fade) 1000))
+            timeout-id
+            (js/setTimeout start-level-callback fade-time)]
 
         ;; music and fading to begin level, and game activity
-        (when @music-on (-> (.play gameMusic)))
-        (.fadeTo (jq "#h") 1000 1
-                 (fn []
-                   (swap! ux/world
-                          update ::gs/game-state
-                          assoc ::gs/status :active)
-                   (when callback (callback))))
-        (.fadeOut (jq elt-to-fade) 1000)))
+        (ux/loading-finished #(do (js/clearTimeout timeout-id) (start-level-callback)))))
     
     (animate-transition [this transition-type]
       (.fadeTo (jq "#h") 10 0)
@@ -160,20 +168,22 @@
       (.scroll js/window 0 0)
       (.pause gameMusic)
       (ux/toggle-game-execution false)
-      
-      (let [on-sound-end-callback
-            (when (= transition-type :nextlevel) #(ux/start-game this))
+      (let [after-animation-callback
+            (fn [] (when (= transition-type :nextlevel) (ux/prepare-game this)))
             in-between-callback
             (case transition-type
               :nextlevel between-levels
               :won #(final-animation 0)
               nil)]
-        (set! (.-onended (sounds transition-type)) on-sound-end-callback)
+        #_(set! (.-onended (sounds transition-type)) on-sound-end-callback)
+        
         (when @fx-on (.play (sounds transition-type)))
-        (.fadeTo (jq "#h h2.subtitle") 100 0)
         (.setTimeout js/window
                      (fn []
-                       (.fadeIn (jq (str ".game-" (name transition-type))) 1000 in-between-callback))
+                       (-> (.fadeIn (jq (str ".game-" (name transition-type))) 1000)
+                           (.promise)
+                           (.then in-between-callback)
+                           (.then after-animation-callback)))
                      100)))
     
     (enemy-style [this type]

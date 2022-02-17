@@ -180,10 +180,8 @@ input {
 #h {
     background: url(../img/rabbit-wallp.jpg) repeat;
     text-align: center;
-  background-attachment: relative;
-  background-position: center center;
-  min-height: 700px;
-  width: 100%;
+/*    background-attachment: relative;
+    background-position: center center;
   -webkit-background-size: 100%;
   -moz-background-size: 100%;
   -o-background-size: 100%;
@@ -191,15 +189,12 @@ input {
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
-  background-size: cover;
+  background-size: cover;*/
+
+    min-height: 700px;
+  width: 100%;
 }
 
-#h h1 {
-  font-weight: 900;
-  color: #333;
-  font-family: 'Dancing Script', cursive;
-  font-size: 40px;
-}
 
 #h h2 {
   color: #1BA39C;
