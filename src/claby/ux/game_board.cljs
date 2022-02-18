@@ -8,11 +8,11 @@
 
 (def player-stripe-message
   {:human
-   [:span "A " [:span.pb-high "human" (se 0x1F9D1)] " (you!) is playing. "
+   [:span (se 0x1F9D1) "A human (you!) is playing" (se 0x1F9D1)
     [:a {:on-click (partial load-local (str "?player=ai&ai-type=good"))}
      "See a machine play"]]
    :ai
-   [:span "An " [:span.pb-high "AI" (se 0x1F916)] " is playing."
+   [:span (se 0x1F916) "An AI is playing" (se 0x1F916)
     [:a {:on-click #(js/alert "Player selection modal!")} "Try another player"]]})
 
 (defn player-stripe [{:as player :keys [player-type]}]

@@ -79,7 +79,7 @@
 (defn playerboard [player-type]
   [:table#playerboard.panel-bordered
    [:thead 
-    [:tr.now-playing  {:class player-type} [:td {:colspan 6} [:span ((keyword player-type) data)]]]]
+    [:tr.now-playing  {:class player-type} [:td.claby-panel-title {:colspan 6} ((keyword player-type) data)]]]
    [:tbody
     [:tr [:td (custom-board)]]
     [:tr.see-ai-message

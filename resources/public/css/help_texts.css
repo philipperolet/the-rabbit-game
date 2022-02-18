@@ -1,0 +1,12 @@
+#stat-modals .modal-body {
+    text-align: left;
+    font-size: 1.1em;
+}
+
+#stat-modals .stat-description > div {
+    padding-top: 1em;
+}
+
+#stat-modals .stat-description > div .stat-descr-header {
+    font-weight: 900;
+}

@@ -21,6 +21,8 @@
    [claby.ux.leaderboard :as cll]
    [claby.ux.playerboard :as cpb]
    [claby.ux.game-board :as cgb]
+   [claby.ux.player :as cpl]
+   [claby.ux.help-texts :refer [stat-description-modals]]
    [claby.utils :refer [jq]]
    [cljs.reader :refer [read-string]]
    [clojure.core.async :refer [<!] :refer-macros [go]]))
@@ -279,11 +281,13 @@
         [:h1 "Game not yet available for mobile devices"]
         [:h4 "Sorry :/"]])
     [:div#lapyrinthe.row.justify-content-md-center
+     (stat-description-modals)
      [:h2.subtitle [:span (get-in levels [(aiw/current-level @world) :message (keyword @language)])]]
-     [:div.col.col-md-3]
-     [:div.col.col-md-5
+     [:div.col.col-lg-3
+      (cpl/current-player (:player @params))]
+     [:div.col.col-lg-5
       (cgb/game-board @world {:player-type (:player @params)})]
-     [:div.col.col-md-4
+     [:div.col.col-lg-4
       [:div.row
        [:div.col.col-md-3]
        [:div.col.col-md-9 [cpb/playerboard (:player @params)]]]

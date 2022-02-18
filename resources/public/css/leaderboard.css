@@ -3,12 +3,9 @@
     padding: 1em;
     background-color: white;
 }
-.leaderboard thead h5, .leaderboard td.name {
+.leaderboard td.name {
     text-align: left;
     padding-left: 0.5em;
-}
-.leaderboard thead h5 {
-    font-weight: 900;
 }
 
 .leaderboard td.highscore {

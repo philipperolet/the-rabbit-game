@@ -1,4 +1,7 @@
 @import 'game_board.css';
+@import 'common.css';
+@import 'player.css';
+@import 'help_texts.css';
 
 body {
     background-color: black;
@@ -40,8 +43,6 @@ body {
 
 #h .panel-bordered {
     border: 5px solid black;
-    border-radius: 10px;
-    padding: 1em;
 }
 
 #lapyrinthe td.player,

@@ -9,17 +9,11 @@
     width: 100%;
 }
 
-#playerboard .now-playing span {
-    font-size: 1.1em;
-    font-weight: 900;
-    color: black;
-}
-
-#playerboard .now-playing.human {
+#playerboard .now-playing.human td.claby-panel-title {
     background-color: lightgreen;
 }
 
-#playerboard .now-playing.ai {
+#playerboard .now-playing.ai td.claby-panel-title {
     background-color: lightblue;
 }
 

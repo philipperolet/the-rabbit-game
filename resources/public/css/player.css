@@ -1,0 +1,83 @@
+/** Help modal **/
+.modal .modal-title {
+    font-weight: 900;
+    font-size: 1.2em;
+}
+.modal .modal-title .close {
+    float: right;
+}
+/** Player card **/
+.player-card {
+    width: 100%;
+    background-color: white;
+    text-align: left;
+}
+.player-card > div {
+    padding-left: 0.3em;
+}
+.player-card .img {
+    padding: 1em;
+    text-align: center;
+}
+
+.player-card .img img {
+    width: 50%;
+}
+
+.player-card .name {
+    font-size: 1.1em;
+    text-decoration: underline;
+    color: black;
+    background-color: #f8f8c0;
+    text-align: center;
+}
+.player-card .short-description {
+    color: gray;
+}
+
+.player-card .technology {
+    
+}
+
+.player-card .technology span {
+    color: darkred;
+    text-decoration: none;
+}
+
+
+.player-card table thead tr,
+.player-card table tr.max-level-row {
+    text-align: center;
+    background-color: lightyellow;
+    border-top: thin black solid;
+    font-weight: 600;
+}
+
+.player-card table tr.max-level-row td:last-child {
+    font-weight: 900;
+    color: darkred;
+}
+.player-card table td:first-child {
+    width: 9em;
+    padding-left: 0.3em;
+}
+
+.player-card .stat-row td.statbar {
+    width: 1em;
+    color: green;
+}
+
+.player-card .stat-row.max-stat td.statbar {
+    color: blue;
+    font-weight:900;
+}
+.player-card .stat-row.max-stat td.statbar .glyphicon {
+    background-color: blue;
+}
+.player-card .stat-row.max-stat td.statbar:last-child {
+    width: 4.5em;
+}
+
+.player-card .stat-row td.statbar .glyphicon-remove {
+    color: darkred;
+}

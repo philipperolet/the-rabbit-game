@@ -46,7 +46,7 @@
   [:div
    [:table.leaderboard.panel-bordered
     [:thead
-     [:tr [:td [:h5 (str "Best " player-type "s")]]]]
+     [:tr [:td.claby-panel-title {:colspan 3} (str "Best " player-type "s")]]]
     [:tbody
      (map-indexed score-row ((keyword player-type) @leaderboard-data))]]])
 
