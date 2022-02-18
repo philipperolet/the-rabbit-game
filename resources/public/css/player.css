@@ -21,7 +21,7 @@
 }
 
 .player-card .img img {
-    width: 50%;
+    height: 7em;
 }
 
 .player-card .name {
@@ -45,9 +45,12 @@
 }
 
 
+.player-card table thead tr {
+        text-align: center;
+}
+
 .player-card table thead tr,
 .player-card table tr.max-level-row {
-    text-align: center;
     background-color: lightyellow;
     border-top: thin black solid;
     font-weight: 600;
@@ -56,6 +59,7 @@
 .player-card table tr.max-level-row td:last-child {
     font-weight: 900;
     color: darkred;
+    font-size: 1.2em;
 }
 .player-card table td:first-child {
     width: 9em;
@@ -74,7 +78,7 @@
 .player-card .stat-row.max-stat td.statbar .glyphicon {
     background-color: blue;
 }
-.player-card .stat-row.max-stat td.statbar:last-child {
+.player-card .stat-row td.statbar:last-child {
     width: 4.5em;
 }
 

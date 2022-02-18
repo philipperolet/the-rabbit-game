@@ -47,12 +47,12 @@
 
 (defn next-move-handler
   "Get player's next movement."
-  [ai-kind req]
+  [player req]
   (let [player-type
-        (case ai-kind
-          :good "tree-exploration"
-          :bad "simulator"
-          :ugly "random")]
+        (case player
+          "tree-explorator" "tree-exploration"
+          "simulator" "simulator"
+          "random" "random")]
     (swap! player-atom update-player req {:player-type player-type :player-opts {}})
     (reset! player-type-atom player-type))
   (let [{:as world :keys [::aiw/game-step]} (parse-world req)]
@@ -72,13 +72,10 @@
    :headers {"Content-Type" "text/plain"
              "Access-Control-Allow-Origin" "*"
              "Access-Control-Allow-Headers" "*"}})
+
 (defroutes app-routes
-  (POST "/good" [] (wrap-json-body (partial next-move-handler :good)))
-  (OPTIONS "/good" _ options-response)
-  (POST "/bad" [] (wrap-json-body (partial next-move-handler :ugly)))
-  (OPTIONS "/bad" _ options-response)
-  (POST "/ugly" [] (wrap-json-body (partial next-move-handler :ugly)))
-  (OPTIONS "/ugly" _ options-response)
+  (POST "/:player" [player] (wrap-json-body (partial next-move-handler player)))
+  (OPTIONS "/:player" [_] options-response)
   (route/not-found "404 - You Must Be New Here"))
 
 (defn- bad-options? [args]

@@ -1,22 +1,10 @@
 (ns claby.ux.player
   (:require [clojure.string :as cstr]
             [claby.utils :refer [se]]
-            [claby.ux.help-texts :refer [modal-id-for-stat stat-descriptions]]))
+            [claby.ux.help-texts :refer [modal-id-for-stat]]
+            [claby.ux.ais :refer [ais]]))
 
-(def mock-ai
-  {:name "Mock"
-   :pic-url "img/mock.gif"
-   :technology "Absent"
-   :endpoint "https://some-url.dafdsfeswsaewerfdsae.com/mock"
-   :short-description "This is a mock AI. It cannot really play."
-   :long-description {:general {:title "Info under the title"}
-                      :stats-description {:intelligence ""}}
-   :stats {:intelligence 0
-           :speed 5
-           :understandability 3
-           :ease-of-use 8
-           :autonomy -1}
-   :max-level 1})
+
 
 (def stat-col-nb 6)
 
@@ -58,7 +46,7 @@
      (map stat-row stats)
      (max-level-row max-level)]]])
 
-(defn current-player [_player]
+(defn current-player [player]
   [:div#current-player.panel-bordered
      [:div.claby-panel-title "Current player"]
-     (player-card mock-ai)])
+     (player-card (ais (keyword player)))])

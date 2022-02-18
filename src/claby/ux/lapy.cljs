@@ -146,7 +146,6 @@
             start-level-callback
             (fn []
               (when @music-on (-> (.play gameMusic)))
-              (println "Callback called at second " (.getMilliseconds (js/Date.)))
               (.hide (jq "#loading button"))
               (.fadeTo (jq "#h") 1000 1
                        (fn []

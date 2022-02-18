@@ -19,11 +19,10 @@
    [mzero.ai.player :as aip]
    [cljs-http.client :as http]
    [claby.ux.leaderboard :as cll]
-   [claby.ux.playerboard :as cpb]
    [claby.ux.game-board :as cgb]
    [claby.ux.player :as cpl]
    [claby.ux.help-texts :refer [stat-description-modals]]
-   [claby.utils :refer [jq]]
+   [claby.utils :refer [jq player-type]]
    [cljs.reader :refer [read-string]]
    [clojure.core.async :refer [<!] :refer-macros [go]]))
 
@@ -92,7 +91,7 @@
    (go (let [thin-world
              (update @world ::aiw/next-levels #(repeat (count %) :hidden))
              response
-             (<! (http/post (str "http://localhost:8080/" (:ai-type @params "good"))
+             (<! (http/post (str "http://localhost:8080/" (:player @params "random"))
                             {:with-credentials? false
                              :headers {"Access-Control-Allow-Origin" "*"}
                              :json-params (to-json-str thin-world)}))]
@@ -164,7 +163,7 @@
 (def game-runner (gr/->MonoThreadRunner world player {:number-of-steps 1}))
 (defn game-step! []
   (when (aiw/active? @world)
-    (when (= "ai" (-> @params :player)) (move-ai-player!))
+    (when (not= "human" (-> @params :player)) (move-ai-player!))
     (gr/run-game game-runner)))
 
 (def game-execution-interval-id (atom nil))
@@ -189,9 +188,9 @@
     (and (some #{(.-key e)} ["n" "N"]) (not @game-execution-interval-id)) (game-step!)))
 
 (defn user-keypress [e]
-  (case (:player @params)
-    "human" (move-human-player! e)
-    "ai" (ai-game-control e)))
+  (if (= (:player @params) "human")
+    (move-human-player! e)
+    (ai-game-control e)))
 
 ;;;
 ;;; Component & app rendering
@@ -286,11 +285,10 @@
      [:div.col.col-lg-3
       (cpl/current-player (:player @params))]
      [:div.col.col-lg-5
-      (cgb/game-board @world {:player-type (:player @params)})]
+      (cgb/game-board @world (:player @params))]
      [:div.col.col-lg-4
       [:div.row
-       [:div.col.col-md-3]
-       [:div.col.col-md-9 [cpb/playerboard (:player @params)]]]
+       [:div.col.col-md-3]]
       [:div.row
        [:div.col.col-md-6 [cll/leaderboard "human"]]
        [:div.col.col-md-6 [cll/leaderboard "ai"]]]]]))
@@ -308,7 +306,7 @@
   (let [get-score
         (fn []
           {:score (-> @world ::gs/game-state ::gs/score)
-           :player-type (:player @params)})
+           :player-type (player-type (:player @params))})
         revive-action
         (fn []
           (swap! current-level-game-state assoc ::gs/score 0.0)
