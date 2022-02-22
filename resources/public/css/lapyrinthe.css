@@ -1,3 +1,4 @@
+@import 'game_info.css';
 @import 'game_board.css';
 @import 'common.css';
 @import 'player.css';
@@ -6,6 +7,11 @@
 body {
     background-color: black;
 }
+
+a {
+    cursor: pointer;
+}
+
 #lapy-arrows {
     position: fixed;
     padding: 1em;
@@ -43,6 +49,7 @@ body {
 
 #h .panel-bordered {
     border: 5px solid black;
+    margin-bottom: 1em;
 }
 
 #lapyrinthe td.player,
@@ -156,6 +163,7 @@ body {
 
 #loading button {
     display: none;
+    margin-top: 5em;
 }
 
 #loading img {

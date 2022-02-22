@@ -1,4 +1,6 @@
-(ns claby.ux.help-texts)
+(ns claby.ux.help-texts
+  (:require [claby.utils :refer [modal]]
+            [claby.ux.ais :refer [ais]]))
 
 (def max-level
   [:div
@@ -61,36 +63,45 @@
    :ease-of-use ease-of-use
    :autonomy autonomy})
 
-(defn content-of [{:as stat-description :keys [descr in-game real-life]}]
+(defn- stat-content [{:as stat-description :keys [descr in-game real-life]}]
   [:div.stat-description
    descr
    [:div [:p.stat-descr-header "In the rabbit game"] in-game]
    [:div [:p.stat-descr-header "In real life applications"] real-life]])
 
-(defn modal [id title contents]
-  [:div.modal.fade
-   {:id id
-    :tabindex -1
-    :role "dialog"
-    :aria-labelledby (str id "title")
-    :aria-hidden "true"}
-   [:div.modal-dialog {:role "document"}
-    [:div.modal-content
-     [:div.modal-header
-      [:div.modal-title {:id (str id "title")} title
-       [:button.close {:type "button" :data-dismiss "modal" :aria-label "Close"}
-        [:span {:aria-hidden "true"} "x"]]]]
-     [:div.modal-body contents]]]])
-
-(defn modal-id-for-stat [stat-key]
-  (str "modal-id-" stat-key))
+(def stat-modal-id
+  (memoize
+   (fn [stat-key]
+     (str "stat-modal-id-" stat-key))))
 
 (defn stat-description-modals []
   (letfn [(create-modal [[stat-key {:as stat-description :keys [title]}]]
             [:div {:key (str "modal-" (name stat-key))}
-             (modal (modal-id-for-stat (name stat-key))
+             (modal (stat-modal-id (name stat-key))
                     title
-                    (content-of stat-description))])]
+                    (stat-content stat-description))])]
     [:div#stat-modals
      (map create-modal stat-descriptions)
      (modal "modal-max-level" "Max level" max-level)]))
+
+(def learn-more-modal-id
+  (memoize
+   (fn [id]
+     (str "modal-learn-more-" id))))
+
+(defn- learn-more-content
+  [{:as player-data :keys [long-description pic-url short-description technology]}]
+  [:div.learn-more
+   [:div.img [:img {:src pic-url}]]
+   [:div.technology "Technology:  " [:span technology]]
+   [:div.short-description short-description]
+   [:hline]
+   [:div.long-description long-description]])
+
+(defn learn-more-modals []
+  (letfn [(create-modal [{:as player-data :keys [id name]}]
+            [:div {:key (learn-more-modal-id id)}
+             (modal (learn-more-modal-id id)
+                    (str "More about " name)
+                    (learn-more-content player-data))])]
+    [:div#learn-more-modals (map create-modal ais)]))

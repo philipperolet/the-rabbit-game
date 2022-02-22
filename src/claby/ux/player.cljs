@@ -1,7 +1,7 @@
 (ns claby.ux.player
   (:require [clojure.string :as cstr]
-            [claby.utils :refer [se]]
-            [claby.ux.help-texts :refer [modal-id-for-stat]]
+            [claby.utils :refer [se modal]]
+            [claby.ux.help-texts :refer [stat-modal-id learn-more-modal-id]]
             [claby.ux.ais :refer [ais]]))
 
 
@@ -19,7 +19,7 @@
     [:tr.stat-row {:class (when max? "max-stat") :key (str "key-" stat-key)}
      [:td
       [:a {:data-toggle "modal"
-           :data-target (str "#" (modal-id-for-stat (name stat-key)))}
+           :data-target (str "#" (stat-modal-id (name stat-key)))}
        (cstr/capitalize (name stat-key))]]
      (map stat-td (range stat-col-nb))
      [:td.statbar (when max? [:span [:span.glyphicon.glyphicon-stop] "MAX"])]]))
@@ -34,12 +34,24 @@
    [:td {:colspan 2} (se (+ 9311 max-level))]])
 
 (defn player-card
-  [{:as player :keys [name pic-url technology short-description stats max-level]}]
+  [{:as player-data
+    :keys [id name pic-url technology short-description stats max-level disabled?]}]
   [:div.player-card
+   (if disabled?
+     {:class  "available-soon"
+      :customtooltip "Available soon"}
+     {:id id})
    [:div.img [:img {:src pic-url}]]
    [:div.name name]
-   [:div.technology "Technology:  " [:span technology]]
-   [:div.short-description short-description]
+   [:div.technology
+    (if (< (count technology) 25)
+      "Technology:"
+      "Tech:")
+    [:span technology]]
+   [:div.short-description short-description
+    [:a {:data-toggle "modal"
+         :data-target (str "#" (learn-more-modal-id id))}
+     " Learn more"]]
    [:table.stats
     [:thead [:tr [:td {:colspan 8} "Stats"]]]
     [:tbody
@@ -47,6 +59,39 @@
      (max-level-row max-level)]]])
 
 (defn current-player [player]
-  [:div#current-player.panel-bordered
+  (let [player-data
+        (first (filter #(= player (:id %)) ais))]
+    [:div#current-player.panel-bordered
      [:div.claby-panel-title "Current player"]
-     (player-card (ais (keyword player)))])
+     (player-card player-data)]))
+
+;; Player selection modal
+;;;;;
+
+(defn- create-player-selection-card
+  [{:as player-data :keys [id]} selected-id selected-ref]
+  [:div.player-selection.col-sm-6.col-md-4.col-lg-3
+   {:class (when (= selected-id id) "player-selected")
+    :key (str "player-selection-" id)
+    :on-click (fn [_]
+                (when (not (:disabled? player-data))
+                  (reset! selected-ref id)))}
+   (player-card player-data)])
+
+(defn- player-selection-body [selected-id selected-ref]
+  [:div.row
+   (map #(create-player-selection-card % selected-id selected-ref) ais)])
+
+(defn- player-selection-footer [selection-action selection-id]
+  [:div
+   [:button.btn.btn-secondary {:type "button" :data-dismiss "modal"} "Close"]
+   [:button.btn.btn-primary
+    {:type "button" :on-click (partial selection-action selection-id)
+     :disabled (not selection-id)}
+    "Try selected player"]])
+
+(defn player-selection-modal [selected-id selected-ref on-modal-submit]
+  (modal "player-selection-modal"
+         "Select a player"
+         (player-selection-body selected-id selected-ref)
+         (player-selection-footer on-modal-submit selected-id)))

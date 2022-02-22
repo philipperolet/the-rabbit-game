@@ -40,8 +40,13 @@
 #game-board .now-playing.ai {
     background-color: lightblue;
 }
-#game-board .now-playing a {
-    cursor: default;
+
+#game-board .now-playing .btn {
+    padding: 0.3em 1em;
+    margin: 0.5em;
+}
+
+/*#game-board .now-playing a {
     text-decoration: underline;
     font-weight: normal;
     color: #800;
@@ -49,4 +54,5 @@
 }
 #game-board .now-playing a:hover {
     color: black;
-}
+}*/
+

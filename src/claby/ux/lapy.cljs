@@ -29,7 +29,7 @@
               (.removeClass (jq "#h h2.subtitle") "initial"))))
 
 (defonce start-level-data
-  {:initial ["#intro-screen" #(.fadeOut (jq "#intro-screen h1") 2000) 4000]
+  {:initial ["#intro-screen" #(.fadeOut (jq "#intro-screen h1") 2000) 30000]
    :game-over [".game-over" nil]
    :nextlevel [".game-nextlevel" next-level-callback 4000]})
 

@@ -6,44 +6,64 @@
 .modal .modal-title .close {
     float: right;
 }
-/** Player card **/
+/** Player card  & learn more **/
 .player-card {
-    width: 100%;
+    width: 19em;
+    height: 29.5em;
     background-color: white;
+    text-align: left;
+    position: relative;
+}
+
+.learn-more {
     text-align: left;
 }
 .player-card > div {
     padding-left: 0.3em;
 }
+.learn-more .img,
 .player-card .img {
     padding: 1em;
     text-align: center;
 }
 
+.learn-more .img img,
 .player-card .img img {
     height: 7em;
 }
 
+.learn-more .name,
 .player-card .name {
     font-size: 1.1em;
-    text-decoration: underline;
+    font-weight: 900;
     color: black;
     background-color: #f8f8c0;
     text-align: center;
 }
+
 .player-card .short-description {
     color: gray;
 }
 
+.learn-more .technology,
 .player-card .technology {
     
 }
 
+.learn-more .technology span,
 .player-card .technology span {
     color: darkred;
     text-decoration: none;
 }
 
+.learn-more .long-description {
+    padding-top: 1em;
+    border-top: 1px solid black;
+}
+.player-card table {
+    position: absolute;
+    bottom: 0;
+}
 
 .player-card table thead tr {
         text-align: center;
@@ -59,7 +79,7 @@
 .player-card table tr.max-level-row td:last-child {
     font-weight: 900;
     color: darkred;
-    font-size: 1.2em;
+    font-size: 1.5em;
 }
 .player-card table td:first-child {
     width: 9em;
@@ -84,4 +104,63 @@
 
 .player-card .stat-row td.statbar .glyphicon-remove {
     color: darkred;
+}
+
+/* Current player */
+#current-player #human {
+    height:auto
+}
+
+#current-player #human .technology,
+#current-player #human .short-description,
+#current-player #human .stats {
+    display: none;
+}
+
+/* Player selection modal */
+#player-selection-modal .modal-dialog {
+    width: 80%;
+}
+
+#player-selection-modal .modal-body {
+    max-height: 34em;
+    overflow-y: auto;
+}
+.player-selection {
+    padding-bottom: 2.2em;
+}
+
+.player-selection .player-card {
+    font-size: 0.8em;
+    outline: 2px black solid;
+}
+
+.player-selection.player-selected .player-card:hover,
+.player-selection .player-card:hover {
+    outline: medium blue solid;
+}
+
+.player-selection.player-selected .player-card {
+    outline: medium #b00 solid;
+}
+.player-selection.player-selected .player-card .img {
+    background-color: #b001;
+}
+.player-selection .player-card.available-soon {
+    outline: thin black solid;
+    opacity: 0.6;
+}
+
+[customtooltip]:before {            
+     position : absolute;
+     content : attr(customtooltip);
+     opacity : 0;
+     top: 0px;
+     z-index: 9999;
+}
+
+[customtooltip]:hover:before {        
+    opacity : 1;
+    background-color: lightyellow;
+    font-size: 1.2em;
 }

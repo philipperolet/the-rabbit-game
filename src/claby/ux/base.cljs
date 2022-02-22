@@ -21,14 +21,18 @@
    [claby.ux.leaderboard :as cll]
    [claby.ux.game-board :as cgb]
    [claby.ux.player :as cpl]
-   [claby.ux.help-texts :refer [stat-description-modals]]
-   [claby.utils :refer [jq player-type]]
+   [claby.ux.help-texts :refer [stat-description-modals learn-more-modals]]
+   [claby.ux.game-info :refer [game-info]]
+   [claby.utils :refer [jq player-type load-local]]
    [cljs.reader :refer [read-string]]
    [clojure.core.async :refer [<!] :refer-macros [go]]))
 
 (defonce language (atom "en"))
 
 (defonce params (atom {}))
+
+(defonce game-state (atom {}))
+(def selected-player-cursor (reagent/cursor game-state [:selected-player]))
 
 (defonce levels
   [{:message
@@ -272,6 +276,15 @@
    [:br]
    [:span (str "Level: " (aiw/current-level @world))]])
 
+(defn player-selection-modal [selected-player-cursor]
+  (let [current-level (aiw/current-level @world)
+        on-player-selection
+        (fn [selected-id]
+          (load-local (str "?player=" (name selected-id) "&cheatlev=" current-level)))]
+    (cpl/player-selection-modal @selected-player-cursor
+                                selected-player-cursor
+                                on-player-selection)))
+
 (defn claby []
   (if (re-find #"Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini"
                (.-userAgent js/navigator))
@@ -280,18 +293,19 @@
         [:h1 "Game not yet available for mobile devices"]
         [:h4 "Sorry :/"]])
     [:div#lapyrinthe.row.justify-content-md-center
+     (player-selection-modal selected-player-cursor)
      (stat-description-modals)
+     (learn-more-modals)
      [:h2.subtitle [:span (get-in levels [(aiw/current-level @world) :message (keyword @language)])]]
+     [:div.col.col-lg-1]
      [:div.col.col-lg-3
       (cpl/current-player (:player @params))]
      [:div.col.col-lg-5
       (cgb/game-board @world (:player @params))]
-     [:div.col.col-lg-4
-      [:div.row
-       [:div.col.col-md-3]]
-      [:div.row
-       [:div.col.col-md-6 [cll/leaderboard "human"]]
-       [:div.col.col-md-6 [cll/leaderboard "ai"]]]]]))
+     [:div.col.col-lg-3
+      [game-info (:player @params)]
+      [cll/leaderboard "human"]
+      [cll/leaderboard "ai"]]]))
 
 ;; conditionally start your application based on the presence of an "app" element
 ;; this is particularly helpful for testing this ns without launching the app
