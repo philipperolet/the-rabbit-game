@@ -332,10 +332,24 @@
     (render [cll/submit-score-form get-score revive-action new-action :over]
             (gdom/getElement "svform-lose"))))
 
+(defn- animate-intro-screen
+  ([div-nb]
+   (if (< div-nb 6)
+     (-> (jq (str "#intro-screen .intro-col > div:nth-child(" div-nb ")"))
+         (.fadeIn 1500)
+         (.delay 2000)
+         (.queue #(animate-intro-screen (inc div-nb))))
+     (-> (jq "#loading .btn")
+         (.fadeOut 100) (.fadeIn 100)
+         (.fadeOut 100) (.fadeIn 100)
+         (.fadeOut 100) (.fadeIn 100))))
+  ([] (animate-intro-screen 2)))
+
 (defn run-game
   "Runs the Lapyrinthe game with the specified UX. There must be an 'app' element in the html page."
   [ux]
   {:pre [(gdom/getElement "app")]}
+  (animate-intro-screen)
   (reset! params (parse-params))
   (init ux)
   (render [claby] (gdom/getElement "app"))

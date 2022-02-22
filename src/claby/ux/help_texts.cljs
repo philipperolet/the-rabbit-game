@@ -95,7 +95,6 @@
    [:div.img [:img {:src pic-url}]]
    [:div.technology "Technology:  " [:span technology]]
    [:div.short-description short-description]
-   [:hline]
    [:div.long-description long-description]])
 
 (defn learn-more-modals []
