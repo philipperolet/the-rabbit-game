@@ -23,11 +23,14 @@
            controls-content)))
 
 (defn game-info [player]
-  [:div.panel-bordered
-   (ai-controls-modal)
-   (human-controls-modal)
-   [:div.claby-panel-title "Game info"]
-   [:div.game-info
-    [:a
-     {:data-toggle "modal" :data-target (str "#" (player-type player)"-controls-modal")}
-     "Controls"]]])
+  (let [controls-modal-id (str "#" (player-type player) "-controls-modal")]
+    [:div.panel-bordered
+     (ai-controls-modal)
+     (human-controls-modal)
+     [:div.claby-panel-title "Game info"]
+     [:div.game-info
+      [:div [:a {:data-toggle "modal" :data-target controls-modal-id} "Controls"]]
+      [:div [:a
+           {:href "https://github.com/sittingbull/mzero-game"}
+           "About the Game / Source code"]]
+      [:div [:a {:href "mailto:pr@machine-zero.com"} "Contact"]]]]))

@@ -24,7 +24,7 @@
 
 
 (defn next-level-callback []
-  (.animate (jq "#h h2.subtitle") (clj->js {:top "0em" :font-size "1.2em"}) 2500
+  (.fadeOut (jq "#h h2.subtitle") 2500
             (fn []
               (.removeClass (jq "#h h2.subtitle") "initial"))))
 

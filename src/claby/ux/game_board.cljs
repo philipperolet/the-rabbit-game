@@ -24,7 +24,17 @@
     [:td {:colspan game-size}
      [:span (player-stripe-message (keyword (player-type player)))]]]])
 
-(defn game-board [world player]
-  [:table#game-board.panel-bordered
-   (player-stripe player)
-   (gs/get-html-for-state (-> world ::gs/game-state))])
+(defn- title-row [score title level]
+  [:tfoot
+   [:tr.title-row
+    [:td {:colspan 5} (str "Score: " score)]
+    [:td {:colspan (- game-size 10)} title]
+    [:td {:colspan 5} (str "Level: " level)]]])
+
+(defn game-board [world player title]
+  (let [score (.toFixed (or (-> world ::gs/game-state ::gs/score) 0) 0)
+        level (aiw/current-level world)]
+    [:table#game-board.panel-bordered
+     (player-stripe player)
+     (gs/get-html-for-state (-> world ::gs/game-state))
+     (title-row score title level)]))

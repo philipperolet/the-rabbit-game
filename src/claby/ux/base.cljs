@@ -102,11 +102,11 @@
          (callback (read-string (:body response)))))))
 
 
+(def param-strs (-> (.-location js/window) (split #"\?") last (split #"\&")))
 (defn parse-params
   "Parse URL parameters into a hashmap"
   []
-  (let [param-strs (-> (.-location js/window) (split #"\?") last (split #"\&"))
-        add-default-player
+  (let [add-default-player
         #(cond-> % (nil? (:player %)) (assoc :player "human"))]
     (-> (into {} (for [[k v] (map #(split % #"=") param-strs)]
                    [(keyword k) v]))
@@ -269,13 +269,6 @@
       (.then (load-game-board ux))
       (.then #(start-level ux))))
 
-(defn show-score
-  []
-  [:div.score
-   [:span (str "Score: " (.toFixed (or (-> @world ::gs/game-state ::gs/score) 0) 0))]
-   [:br]
-   [:span (str "Level: " (aiw/current-level @world))]])
-
 (defn player-selection-modal [selected-player-cursor]
   (let [current-level (aiw/current-level @world)
         on-player-selection
@@ -285,27 +278,38 @@
                                 selected-player-cursor
                                 on-player-selection)))
 
+(defn page-loaded-from-inside?
+  "True when the user arrived to this page from this site, doesn't come
+  from an external link"
+  []
+  (let [full-domain
+        (fn [href-str]
+          (or (empty? href-str) (-> href-str (split #"/") (nth 2))))]
+    (= (-> js/window .-location .-href full-domain)
+       (-> js/document .-referrer full-domain))))
+
 (defn claby []
   (if (re-find #"Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini"
                (.-userAgent js/navigator))
     (do (.hide (jq "#lapy-arrows"))
       [:div.mobile-incompatible
         [:h1 "Game not yet available for mobile devices"]
-        [:h4 "Sorry :/"]])
-    [:div#lapyrinthe.row.justify-content-md-center
-     (player-selection-modal selected-player-cursor)
-     (stat-description-modals)
-     (learn-more-modals)
-     [:h2.subtitle [:span (get-in levels [(aiw/current-level @world) :message (keyword @language)])]]
-     [:div.col.col-lg-1]
-     [:div.col.col-lg-3
-      (cpl/current-player (:player @params))]
-     [:div.col.col-lg-5
-      (cgb/game-board @world (:player @params))]
-     [:div.col.col-lg-3
-      [game-info (:player @params)]
-      [cll/leaderboard "human"]
-      [cll/leaderboard "ai"]]]))
+       [:h4 "Sorry :/"]])
+    (let [title
+          (get-in levels [(aiw/current-level @world) :message (keyword @language)])]
+      [:div#lapyrinthe.row.justify-content-md-center
+       (player-selection-modal selected-player-cursor)
+       (stat-description-modals)
+       (learn-more-modals)
+       [:div.col.col-lg-3
+        [:h2.subtitle [:span title]]
+        (when (page-loaded-from-inside?) 
+          (cpl/current-player (:player @params)))]
+       [:div.col.col-lg-6
+        (cgb/game-board @world (:player @params) title)]
+       [:div.col.col-lg-3
+        [game-info (:player @params)]
+        [cll/leaderboard "player"]]])))
 
 ;; conditionally start your application based on the presence of an "app" element
 ;; this is particularly helpful for testing this ns without launching the app
@@ -315,8 +319,7 @@
     (render [claby] el)))
 
 (defn- setup-leaderboard [ux]
-  (cll/get-high-scores! "human" 10)
-  (cll/get-high-scores! "ai" 10)
+  (cll/get-high-scores! 15)
   (let [get-score
         (fn []
           {:score (-> @world ::gs/game-state ::gs/score)
@@ -339,10 +342,11 @@
          (.fadeIn 1500)
          (.delay 2000)
          (.queue #(animate-intro-screen (inc div-nb))))
-     (-> (jq "#loading .btn")
-         (.fadeOut 100) (.fadeIn 100)
-         (.fadeOut 100) (.fadeIn 100)
-         (.fadeOut 100) (.fadeIn 100))))
+     (when (.is (jq "#loading .btn") ":visible")
+       (-> (jq "#loading .btn")
+           (.fadeOut 100) (.fadeIn 100)
+           (.fadeOut 100) (.fadeIn 100)
+           (.fadeOut 100) (.fadeIn 100)))))
   ([] (animate-intro-screen 2)))
 
 (defn run-game
@@ -353,7 +357,6 @@
   (reset! params (parse-params))
   (init ux)
   (render [claby] (gdom/getElement "app"))
-  (render [show-score] (gdom/getElement "score-thing"))
   (setup-leaderboard ux))
 
 ;; specify reload hook with ^;after-load metadata

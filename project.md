@@ -1,6 +1,11 @@
 - Server should return a world
 
-
+- NNs are 
+- very good learning power for those
+  - so 3 even if simple algo
+- example of low sophistication but moderately high learning power
+- speed
+- ease of us
 
 
 

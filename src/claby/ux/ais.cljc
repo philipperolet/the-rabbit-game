@@ -103,7 +103,8 @@
     [:p [:b "HOWEVER, "] "it's the smartest machine currently
     available. Only it can clear weird levels with tough rules. And
     it's very, very autonomous and adaptable. When the task completely
-    changes, it can learn and adapt with no outside help."]]
+    changes, it can learn and adapt with no outside help."]
+    [:p "So, it can go up to the last level, 9 (and when the time comes, over 9000)."]]
    :stats {:learning-power 8
            :speed -1
            :sophistication 8
@@ -116,13 +117,26 @@
    :name "Emzerozero"
    :pic-url "img/m00.png"
    :technology "Deep learning (basic)"
-   :short-description "Simple neural network plugged on one end to the
-   game data and on the other to possible movements. Easy to code,
+   :short-description "Standard neural network plugged on one end to the
+   game data and on the other to possible movements. Easy to create,
    but not very good."
-   :long-description [:p "Megablah"]
+   :long-description
+   [:div
+    [:p "Deep Learning algorithms, sometimes also called neural networks, rely on small learning units called neurons, initially inspired by biological neurons (e.g. those in the human brain) although they differ in various respects."]
+    [:p " A lot of neurons are connected together in successive layers, and every time the algorithm is used it changes a little how much each neuron is connected to the other, which makes the program 'learn'. "]
+    [:p "This kind of algorithm has a lot of potential learning power, but requires a lot of setup and training to work well. In particular, the architecture of the layers, and the mechanisms of the updates require a lot of thinking to get the best results."]
+    [:h3 "Max level: 2"]
+    [:p "The M00 player is the result of using a standard neural network with not much effort in the architecture or setup."]
+    [:p "It is an example of algorithm with a moderately high learning power (because neural networks intrisically have this capability) but a low sophistication (because it has just been used directly without much thought). As such it will learn by itself simple things: avoid walking into walls, eat a fruit when there's one next to it, avoid cheese."]
+    [:p "However, it cannot learn complex behaviours. Therefore, the max level it can reach is 2 (when ennemies appear)."]
+    [:h3 "About its other stats"]
+    [:ul
+     [:li "It's moderately slow: neural networks notoriously require a lot of computing power to run--but this one is not very complex so it can still go fast enough for the game."]
+     [:li "It's very adaptable: it can be used on any problem and will learn simple things (but if the task is too complex, it will not be able to do well)."]
+     [:li "It's relatively easy to use, since you 'just' have to plug it to the input of the task and to the possible actions it can perform--although the 'just' still requires a little work."]]]
    :stats {:learning-power 3
-           :speed 3
-           :sophistication 2
+           :speed 2
+           :sophistication 1
            :ease-of-use 3
            :adaptability 5}
    :max-level 2})
@@ -137,7 +151,7 @@
    things on its own."
    :long-description [:p "Megablah"]
    :stats {:learning-power 4
-           :speed 2
+           :speed 1
            :sophistication 4
            :ease-of-use 2
            :adaptability 3}
@@ -188,7 +202,7 @@
    it's slower and hard to setup."
    :long-description [:p "Megablah"]
    :stats {:learning-power 5
-           :speed 1
+           :speed 0
            :sophistication 5
            :ease-of-use 1
            :adaptability 5}

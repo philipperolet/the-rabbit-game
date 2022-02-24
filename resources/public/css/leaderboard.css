@@ -3,6 +3,18 @@
     padding: 1em;
     background-color: white;
 }
+
+.leaderboard tr {
+    height: 1.8em;
+}
+.leaderboard tr:nth-child(odd) {
+    background-color: #1abc9c30;
+}
+.leaderboard td.name span.player-type {
+    font-size: 0.9em;
+    padding-left: 1em;
+    font-style: italic;
+}
 .leaderboard td.name {
     text-align: left;
     padding-left: 0.5em;

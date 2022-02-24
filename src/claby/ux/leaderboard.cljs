@@ -3,12 +3,15 @@
             [cljs.core.async :refer [go <!]]
             [cljs-aws.dynamodb :as ddb]
             [mzero.utils.commons :as c]
-            [reagent.core :as r]))
+            [reagent.core :as r]
+            [clojure.string :as cstr]))
 
 ;; init & commons
 ;;;;;
 (def table-name "rabbit-game-leaderboard")
-(def index-name "PlayerType-Score-index")
+(def player-type-idx "PlayerType-Score-index")
+(def valid-idx "Valid-Score-index")
+
 
 (defn- initialize-connection! []
   (acg/set-region! "eu-west-3")
@@ -18,52 +21,80 @@
 
 (initialize-connection!)
 
-(defn- score-item [& [ts name score player-type]]
-  {:timestamp ts :name name :score score :player-type player-type})
+(defn- ->score-item [& [ts name score player-type valid]]
+  {:timestamp ts :name name :score score :player-type player-type :valid valid})
 
 
 ;; get high scores
 ;;;;;
 
-(def leaderboard-data (r/atom {}))
+(def leaderboard-data
+  "Store each player type's top ranking at keyword `(keyword player-type)`, and
+  the mixed top ranking in a special keyword `:player`"
+  (r/atom {}))
+
 (defn- query-result-item->score [item]
   (-> item
       (update :timestamp (comp long :n))
       (update :name :s)
       (update :score (comp long :n))
-      (update :player-type :s)))
+      (update :player-type :s)
+      (update :valid :s)))
 
 (defn- query-results->scores [query-result]
   (map query-result-item->score (:items query-result)))
 
 (defn score-row [index score-item]
-  [:tr {:key (str "cll-" index)}
-   [:td.name (str (inc index) ". " (:name score-item))]
-   [:td " - "]
-   [:td.highscore (:score score-item)]])
+  (let [name-string
+        (str (inc index) ". " (:name score-item))
+        player-type-span
+        [:span.player-type  "(" (:player-type score-item) ")"]]
+    [:tr {:key (str "cll-" index)}
+     [:td.name name-string player-type-span]
+     [:td " - "]
+     [:td.highscore (:score score-item)]]))
 
-(defn leaderboard [player-type]
+(defn leaderboard
+  "Call with player-type \"player\" to get a mixed leaderboard with all
+  player types"
+  [player-type]
   [:div
    [:table.leaderboard.panel-bordered
     [:thead
-     [:tr [:td.claby-panel-title {:colspan 3} (str "Best " player-type "s")]]]
+     [:tr [:td.claby-panel-title {:colspan 3}
+           (str "Best " (cstr/capitalize player-type) "s")]]]
     [:tbody
      (map-indexed score-row ((keyword player-type) @leaderboard-data))]]])
 
-(defn get-high-scores! [player-type limit]
-  (let [query-request
-        {:expression-attribute-values {":v1" {:s player-type}}
-         :key-condition-expression "PlayerType = :v1"
-         :table-name table-name
-         :index-name index-name
-         :scan-index-forward false
-         :limit limit}]
-    (go (let [results (<! (ddb/query query-request))]
-          (if (:error results)
-            (throw (ex-info "Error retrieving scores" results))
-            (swap! leaderboard-data
-                   assoc (keyword player-type)
-                   (query-results->scores results)))))))
+(defn get-high-scores!
+  ([player-type limit]
+   (let [query-request
+         {:expression-attribute-values {":v1" {:s player-type}}
+          :key-condition-expression "PlayerType = :v1"
+          :table-name table-name
+          :index-name player-type-idx
+          :scan-index-forward false
+          :limit limit}]
+     (go (let [results (<! (ddb/query query-request))]
+           (if (:error results)
+             (throw (ex-info "Error retrieving scores" results))
+             (swap! leaderboard-data
+                    assoc (keyword player-type)
+                    (query-results->scores results)))))))
+  ([limit]
+   (let [query-request
+         {:expression-attribute-values {":v1" {:s "true"}}
+          :key-condition-expression "Valid = :v1"
+          :table-name table-name
+          :index-name valid-idx
+          :scan-index-forward false
+          :limit limit}]
+     (go (let [results (<! (ddb/query query-request))]
+           (if (:error results)
+             (throw (ex-info "Error retrieving scores" results))
+             (swap! leaderboard-data
+                    assoc :player
+                    (query-results->scores results))))))))
 
 ;;; write your score
 ;;;;;
@@ -72,7 +103,8 @@
       (update :timestamp #(hash-map :n (str %)))
       (update :name #(hash-map :s %))
       (update :score #(hash-map :n (str %)))
-      (update :player-type #(hash-map :s %))))
+      (update :player-type #(hash-map :s %))
+      (update :valid #(hash-map :s %))))
 
 (defn write-high-score! [score callback]
   (let [write-request
@@ -125,19 +157,20 @@
 
 ;;; test & mock utilities
 ;;;;;;
-(defn- mock-data! [nb-items]
+(defn- mock-name []
+  (apply str (repeatedly (+ 3 (rand-int 8)) #(rand-nth "abcdefghijklmnopqrstuvwxyz"))))
+(defn- mock-data! [nb-items player-type]
   (let [ts (c/currTimeMillis)
         timestamps (range ts (+ ts nb-items))
-        names (map #(str "Jean-Luc" %) (range nb-items))
-        scores (repeatedly nb-items #(rand-int 30))
-        types (repeat nb-items "human")]
-    (map score-item timestamps names scores types)))
+        names (map #(str (mock-name) (+ % (rand-int 100))) (range nb-items))
+        scores (repeatedly nb-items #(rand-int 30))]
+    (map ->score-item timestamps names scores (repeat player-type) (repeat "true"))))
 
-(defn- send-mock-data! []
+(defn- send-mock-data! [player-type]
   (let [request-item #(hash-map :put-request {:item (score->query-item %)})
         batch-request
         {:request-items
-         {table-name (map request-item (mock-data! 10))}}]
+         {table-name (map request-item (mock-data! 5 player-type))}}]
     (go (println (<! (ddb/batch-write-item batch-request))))))
 
 (defn- test-read-query! []

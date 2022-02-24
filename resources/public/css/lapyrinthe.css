@@ -17,6 +17,7 @@ a {
     position: fixed;
     padding: 1em;
     top: 5em;
+    display: none;
 }
 #lapy-arrows > img {
     height: 70px;
@@ -85,12 +86,15 @@ a {
     font-size: 1.2em;
     color: #bb0000;
     font-weight: 600;
-    position: relative;
+    display: none;
 }
 
 #h h2.subtitle.initial {
+    position: absolute;
     font-size: 2em;
     top: 5em;
+    display:block;
+    z-index: 91;
 }
 
 #h h2.subtitle span, #intro-screen .is-title {
