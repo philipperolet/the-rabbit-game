@@ -5,38 +5,49 @@
 @import 'help_texts.css';
 
 body {
-    background-color: black;
+    background: url(../img/rabbit-wallp.jpg) repeat;
 }
-
 a {
     cursor: pointer;
     text-decoration: underline;
 }
 
-#lapy-arrows {
-    position: fixed;
-    padding: 1em;
-    top: 5em;
-    display: none;
-}
-#lapy-arrows > img {
-    height: 70px;
-}
-#lapy-arrows button {
-    margin: 1em;
-    display: block;
-    border: 1px solid black;
-}
-#lapy-arrows button img {
-    height: 45px;
+#app {
+    text-align: center;
+    min-height: 700px;
 }
 
-#lapy-arrows button img.off {
-    opacity: 0.5;
+/* Header */
+#header {
+    background-color: black;
+    margin-bottom: 1em;
+    color: white;
+    padding: 0.2em;
+    vertical-align: center;
+    font-size: 1.1em;
 }
 
+
+#header .now-playing span {
+
+    font-weight: 900;
+}
+
+#header .now-playing.human {
+}
+
+#header .now-playing.ai {
+}
+
+#header .now-playing .btn {
+    padding: 0.3em 1em;
+    margin: 0.5em;
+}
+
+/* Main */
 #lapyrinthe {
-    margin-top: 1em;
+    width: 90%;
+    margin: 0% 5% 0%;
 }
 
 #lapyrinthe div.col {
@@ -49,7 +60,7 @@ a {
     margin-bottom: 2px;
 }
 
-#h .panel-bordered {
+.panel-bordered {
     border: 5px solid black;
     margin-bottom: 1em;
 }
@@ -67,20 +78,7 @@ a {
     width: 17px;
 }
 		
-#h .score {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 3.3em;
-    width: 6em;
-    border: 5px solid black;
-    font-weight: 900;
-    font-size: 1.2em;
-    font-family: "Lucida Sans Typewriter";
-    background-color: white;
-}
-
-#h h2.subtitle {
+h2.subtitle {
     margin-top: 0;
     margin-bottom: 1em;
     font-size: 1.2em;
@@ -89,7 +87,7 @@ a {
     display: none;
 }
 
-#h h2.subtitle.initial {
+h2.subtitle.initial {
     position: absolute;
     font-size: 2em;
     top: 5em;
@@ -97,7 +95,7 @@ a {
     z-index: 91;
 }
 
-#h h2.subtitle span, #intro-screen .is-title {
+h2.subtitle span, #intro-screen .is-title {
     background-color: white;
     opacity: 0.85;
     font-weight: 900;
@@ -232,11 +230,6 @@ a {
 
 #copyrights p {
     margin: 0;
-}
-
-body #h {
-    min-height: auto;
-    padding-bottom: 8px;
 }
 
 #lapyrinthe h2.subtitle span {

@@ -24,9 +24,9 @@
 
 
 (defn next-level-callback []
-  (.fadeOut (jq "#h h2.subtitle") 2500
+  (.fadeOut (jq "h2.subtitle") 2500
             (fn []
-              (.removeClass (jq "#h h2.subtitle") "initial"))))
+              (.removeClass (jq "h2.subtitle") "initial"))))
 
 (defonce start-level-data
   {:initial ["#intro-screen" #(.fadeOut (jq "#intro-screen h1") 2000) 30000]
@@ -79,9 +79,9 @@
                              #(.animate (jq ".game-won p.ps span.slide") (clj->js {:left "10em"}) 2000) 1000)))))
 
 (defn between-levels []
-  (.css (jq "#h h2.subtitle") (clj->js {:top "" :font-size "" :opacity 1}))
-  (.addClass (jq "#h h2.subtitle") "initial")
-  (.css (jq "#h h2.subtitle span") "color" (get-in ux/levels [(aiw/current-level @ux/world) :message-color])))
+  (.css (jq "h2.subtitle") (clj->js {:top "" :font-size "" :opacity 1}))
+  (.addClass (jq "h2.subtitle") "initial")
+  (.css (jq "h2.subtitle span") "color" (get-in ux/levels [(aiw/current-level @ux/world) :message-color])))
 
 (defn- fx-toggle []
   (if @fx-on
@@ -147,7 +147,7 @@
             (fn []
               (when @music-on (-> (.play gameMusic)))
               (.hide (jq "#loading button"))
-              (.fadeTo (jq "#h") 1000 1
+              (.fadeTo (jq "#app") 1000 1
                        (fn []
                          (swap! ux/world
                                 update ::gs/game-state
@@ -162,7 +162,7 @@
         (ux/loading-finished #(do (js/clearTimeout timeout-id) (start-level-callback)))))
     
     (animate-transition [this transition-type]
-      (.fadeTo (jq "#h") 10 0)
+      (.fadeTo (jq "#app") 10 0)
       (.removeEventListener js/window "keydown" ux/user-keypress)        
       (.scroll js/window 0 0)
       (.pause gameMusic)

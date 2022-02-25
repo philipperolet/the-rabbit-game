@@ -8,7 +8,7 @@
 }
 /** Player card  & learn more **/
 .player-card {
-    width: 19em;
+    min-width: 19em;
     height: 29.5em;
     background-color: white;
     text-align: left;
@@ -63,6 +63,7 @@
 .player-card table {
     position: absolute;
     bottom: 0;
+    width: 100%;
 }
 
 .player-card table thead tr {
@@ -99,7 +100,7 @@
     background-color: blue;
 }
 .player-card .stat-row td.statbar:last-child {
-    width: 4.5em;
+    min-width: 4.5em;
 }
 
 .player-card .stat-row td.statbar .glyphicon-remove {

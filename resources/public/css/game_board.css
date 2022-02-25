@@ -22,30 +22,6 @@
     background-image: url("../img/rabbit3.png");
 }
 
-/* Player stripe */
-#game-board tr.now-playing td {
-    width: 100%;
-}
-
-#game-board .now-playing span {
-    font-size: 1.1em;
-    font-weight: 900;
-    color: black;
-}
-
-#game-board .now-playing.human {
-    background-color: lightgreen;
-}
-
-#game-board .now-playing.ai {
-    background-color: lightblue;
-}
-
-#game-board .now-playing .btn {
-    padding: 0.3em 1em;
-    margin: 0.5em;
-}
-
 /* Title row */
 #game-board .title-row {
     border-top: thin black solid;
@@ -56,5 +32,6 @@
     border-left: thin black solid;
     border-right: thin black solid;
 }
+
 
 

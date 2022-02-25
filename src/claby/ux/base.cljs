@@ -23,7 +23,7 @@
    [claby.ux.player :as cpl]
    [claby.ux.help-texts :refer [stat-description-modals learn-more-modals]]
    [claby.ux.game-info :refer [game-info]]
-   [claby.utils :refer [jq player-type load-local]]
+   [claby.utils :refer [jq player-type load-local se]]
    [cljs.reader :refer [read-string]]
    [clojure.core.async :refer [<!] :refer-macros [go]]))
 
@@ -288,28 +288,59 @@
     (= (-> js/window .-location .-href full-domain)
        (-> js/document .-referrer full-domain))))
 
+(defn- load-modals []
+  (player-selection-modal selected-player-cursor)
+  (stat-description-modals)
+  (learn-more-modals))
+
+(def player-stripe-message
+  {:human
+   [:span (se 0x1F9D1) "A human is playing" (se 0x1F9D1)
+    [:button.btn.btn-warning {:on-click (partial load-local (str "?player=tree-explorator"))}
+     "See a machine play"]]
+   :ai
+   [:span (se 0x1F916) "An AI is playing" (se 0x1F916)
+    [:button.btn.btn-danger {:data-toggle "modal"
+         :data-target "#player-selection-modal"}
+     "Try another player"]
+    [:button.btn.btn-warning {:on-click (partial load-local "?player=human")} "Back to human"]]})
+
+(defn- header [player]
+  [:div#header.row
+   [:div.col-lg-3 "The Rabbit Game"]
+   [:div.col-lg-6.now-playing {:class (player-type player)}
+    [:span (player-stripe-message (keyword (player-type player)))]]
+   [:div.col-lg-3 "With love"]])
+
+(defn- rabbit-game-computer []
+  (let [title
+        (get-in levels [(aiw/current-level @world) :message (keyword @language)])]
+    (load-modals)
+    [:div
+     (header (:player @params))
+     [:div#lapyrinthe.row.justify-content-md-center
+      [:div.col.col-lg-3
+       [:h2.subtitle [:span title]]
+       (when (page-loaded-from-inside?) 
+         (cpl/current-player (:player @params)))]
+      [:div.col.col-lg-6
+       (cgb/game-board @world (:player @params) title)]
+      [:div.col.col-lg-3
+       [game-info (:player @params)]
+       [cll/leaderboard "player"]]]]))
+
+(defn- rabbit-game-mobile []
+  [:div.mobile-incompatible
+   [:h1 "Game not yet available for mobile devices"]
+   [:h4 "Sorry :/"]])
+
 (defn claby []
-  (if (re-find #"Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini"
-               (.-userAgent js/navigator))
-    (do (.hide (jq "#lapy-arrows"))
-      [:div.mobile-incompatible
-        [:h1 "Game not yet available for mobile devices"]
-       [:h4 "Sorry :/"]])
-    (let [title
-          (get-in levels [(aiw/current-level @world) :message (keyword @language)])]
-      [:div#lapyrinthe.row.justify-content-md-center
-       (player-selection-modal selected-player-cursor)
-       (stat-description-modals)
-       (learn-more-modals)
-       [:div.col.col-lg-3
-        [:h2.subtitle [:span title]]
-        (when (page-loaded-from-inside?) 
-          (cpl/current-player (:player @params)))]
-       [:div.col.col-lg-6
-        (cgb/game-board @world (:player @params) title)]
-       [:div.col.col-lg-3
-        [game-info (:player @params)]
-        [cll/leaderboard "player"]]])))
+  (let [mobile-device?
+        (re-find #"Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini"
+                 (.-userAgent js/navigator))]
+    (if mobile-device?
+      (rabbit-game-mobile)
+      (rabbit-game-computer))))
 
 ;; conditionally start your application based on the presence of an "app" element
 ;; this is particularly helpful for testing this ns without launching the app
