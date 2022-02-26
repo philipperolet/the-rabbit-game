@@ -54,6 +54,7 @@
 .player-card .technology span {
     color: darkred;
     text-decoration: none;
+    padding-left: 0.5em;
 }
 
 .learn-more .long-description {

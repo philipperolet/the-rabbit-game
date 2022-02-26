@@ -141,14 +141,14 @@
          :on-change #(swap! score-data assoc :name (.. % -target -value))}]
        [:div.helptext [:small "Max 12 chars. No name = no save."]]]      
       [:div.col-md-2
-        [:button.btn.btn-danger
+        [:button.btn.btn-secondary
          {:type "button"
           :on-click #(action new-action)}
          (str save-score-msg "New Rabbit")]
        [:div.helptext [:small "Restart game"]]]
       (when (= game-status :over)
         [:div.col-md-2
-         [:button.btn.btn-warning
+         [:button.btn.btn-primary
           {:type "button"
            :on-click #(action revive-action)}
           (str save-score-msg "Revive Rabbit")]

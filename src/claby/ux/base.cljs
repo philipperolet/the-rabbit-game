@@ -296,34 +296,36 @@
 (def player-stripe-message
   {:human
    [:span (se 0x1F9D1) "A human is playing" (se 0x1F9D1)
-    [:button.btn.btn-warning {:on-click (partial load-local (str "?player=tree-explorator"))}
+    [:button.btn.btn-primary {:on-click (partial load-local (str "?player=tree-explorator"))}
      "See a machine play"]]
    :ai
    [:span (se 0x1F916) "An AI is playing" (se 0x1F916)
-    [:button.btn.btn-danger {:data-toggle "modal"
+    [:button.btn.btn-primary {:data-toggle "modal"
          :data-target "#player-selection-modal"}
      "Try another player"]
-    [:button.btn.btn-warning {:on-click (partial load-local "?player=human")} "Back to human"]]})
+    [:button.btn.btn-secondary {:on-click (partial load-local "?player=human")} "Back to human"]]})
 
 (defn- header [player]
   [:div#header.row
-   [:div.col-lg-3 "The Rabbit Game"]
+   [:div#app-name.col-lg-3.d-flex.align-items-center
+    [:a {:href "."}
+     [:img {:src "img/game-icon-white.png"}] "The rabbit game"]]
    [:div.col-lg-6.now-playing {:class (player-type player)}
     [:span (player-stripe-message (keyword (player-type player)))]]
-   [:div.col-lg-3 "With love"]])
+   [:div.col-lg-3]])
 
 (defn- rabbit-game-computer []
   (let [title
         (get-in levels [(aiw/current-level @world) :message (keyword @language)])]
     (load-modals)
     [:div
+     [:h2.subtitle [:span title]]
      (header (:player @params))
-     [:div#lapyrinthe.row.justify-content-md-center
+     [:div#lapyrinthe.row
       [:div.col.col-lg-3
-       [:h2.subtitle [:span title]]
        (when (page-loaded-from-inside?) 
          (cpl/current-player (:player @params)))]
-      [:div.col.col-lg-6
+      [:div.col.col-lg-6.d-flex.justify-content-center
        (cgb/game-board @world (:player @params) title)]
       [:div.col.col-lg-3
        [game-info (:player @params)]

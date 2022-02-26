@@ -1,3 +1,44 @@
+:root {
+    --black: #212121;
+    --white: #f6f6f6;
+    --links-color: #6d9886;
+    --cta-color: #d9cab3;
+}
+
+body {
+    background-color: var(--white);
+    color: var(--black);
+    font-family: 'Lato', sans-serif;
+}
+
+a {
+    cursor: pointer;
+    text-decoration: underline;
+    color: var(--links-color);
+}
+
+.btn {
+    color: 
+    border-size: 0px;
+}
+
+.btn:hover {
+    font-weight:900;
+    background-color: #0000;
+    border-size: 2px;
+}
+
+
+.btn-primary {
+    background-color: var(--cta-color);
+    border-color: var(--cta-color);
+}
+
+.btn-secondary {
+    background-color: var(--links-color);
+    border-color: var(--links-color);
+}
+
 .claby-panel-title {
     font-size: 1.1em;
     font-weight: 900;

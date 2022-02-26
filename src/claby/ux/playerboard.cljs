@@ -74,7 +74,7 @@
        [:div.finish
         [:button.btn.btn-secondary {:on-click #(.hide (jq "#customboard"))} "Cancel"]
         [:span "  "]
-        [:button.btn.btn-success {:on-click #(js/alert "Soon, my friend.")} "See it play!"]]]]]))
+        [:button.btn.btn-primary {:on-click #(js/alert "Soon, my friend.")} "See it play!"]]]]]))
 
 (defn playerboard [player-type]
   [:table#playerboard.panel-bordered
@@ -101,12 +101,12 @@
     [:tr.or [:td {:colspan 6} "- OR -"]]
     [:tr.custom.buttons
      [:td {:colspan 2}
-      [:button.btn.btn-warning
+      [:button.btn.btn-secondary
        {:on-click #(.show (jq "#customboard"))} (se 0x1F54B)]]
      [:td {:colspan 2}
-      [:button.btn.btn-danger {:on-click #(js/window.open "https://github.com/sittingbull/mzero-game/blob/master/your-own-ai.md")} (se 0x1F4BB)]]
+      [:button.btn.btn-secondary {:on-click #(js/window.open "https://github.com/sittingbull/mzero-game/blob/master/your-own-ai.md")} (se 0x1F4BB)]]
      [:td {:colspan 2}
-      [:button.btn.btn-success {:on-click #(load-local "")}(se 0x1f9d1)]]]
+      [:button.btn.btn-primary {:on-click #(load-local "")}(se 0x1f9d1)]]]
     [:tr.custom.texts
      [:td {:colspan 2} "Customize AI"]
      [:td {:colspan 2} "Train your own"]

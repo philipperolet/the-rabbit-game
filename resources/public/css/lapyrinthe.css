@@ -7,10 +7,6 @@
 body {
     background: url(../img/rabbit-wallp.jpg) repeat;
 }
-a {
-    cursor: pointer;
-    text-decoration: underline;
-}
 
 #app {
     text-align: center;
@@ -19,18 +15,24 @@ a {
 
 /* Header */
 #header {
-    background-color: black;
+    background-color: #000a;
     margin-bottom: 1em;
     color: white;
     padding: 0.2em;
-    vertical-align: center;
-    font-size: 1.1em;
-}
-
-
-#header .now-playing span {
-
+    font-size: 1.2em;
     font-weight: 900;
+}
+#header #app-name {
+    text-align: left;
+}
+#header #app-name img {
+    height: 2em;
+}
+#header #app-name a {
+    font-family: 'Dancing Script', cursive;
+    text-decoration: none;
+    color: white;
+    font-size: 1.2em;
 }
 
 #header .now-playing.human {
@@ -46,8 +48,10 @@ a {
 
 /* Main */
 #lapyrinthe {
-    width: 90%;
-    margin: 0% 5% 0%;
+}
+
+#lapyrinthe a {
+    color: var(--primary-dark);
 }
 
 #lapyrinthe div.col {
