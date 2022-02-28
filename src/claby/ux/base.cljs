@@ -22,7 +22,7 @@
    [claby.ux.game-board :as cgb]
    [claby.ux.player :as cpl]
    [claby.ux.help-texts :refer [stat-description-modals learn-more-modals]]
-   [claby.ux.game-info :refer [game-info]]
+   [claby.ux.game-info :as cgi]
    [claby.utils :refer [jq player-type load-local se]]
    [cljs.reader :refer [read-string]]
    [clojure.core.async :refer [<!] :refer-macros [go]]))
@@ -289,9 +289,10 @@
        (-> js/document .-referrer full-domain))))
 
 (defn- load-modals []
-  (player-selection-modal selected-player-cursor)
-  (stat-description-modals)
-  (learn-more-modals))
+  [:div#all-modals
+   (player-selection-modal selected-player-cursor)
+   (stat-description-modals)
+   (learn-more-modals)])
 
 (def player-stripe-message
   {:human
@@ -301,7 +302,10 @@
    :ai
    [:span (se 0x1F916) "An AI is playing" (se 0x1F916)
     [:button.btn.btn-primary {:data-toggle "modal"
-         :data-target "#player-selection-modal"}
+                              :data-target "#player-selection-modal"
+                              :on-click (fn []
+                                          (toggle-game-execution false)
+                                          (.focus (jq "#game-board")))}
      "Try another player"]
     [:button.btn.btn-secondary {:on-click (partial load-local "?player=human")} "Back to human"]]})
 
@@ -317,18 +321,19 @@
 (defn- rabbit-game-computer []
   (let [title
         (get-in levels [(aiw/current-level @world) :message (keyword @language)])]
-    (load-modals)
     [:div
-     [:h2.subtitle [:span title]]
+     (load-modals)
      (header (:player @params))
      [:div#lapyrinthe.row
       [:div.col.col-lg-3
        (when (page-loaded-from-inside?) 
          (cpl/current-player (:player @params)))]
       [:div.col.col-lg-6.d-flex.justify-content-center
-       (cgb/game-board @world (:player @params) title)]
+       [:h2.subtitle [:span title]]
+       (cgb/game-board @world title)
+       (cgi/controls-content (keyword (player-type (:player @params))))]
       [:div.col.col-lg-3
-       [game-info (:player @params)]
+       [cgi/game-info (:player @params)]
        [cll/leaderboard "player"]]]]))
 
 (defn- rabbit-game-mobile []

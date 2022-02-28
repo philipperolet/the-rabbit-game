@@ -1,14 +1,14 @@
 
 /* Playing area */
-#game-board tbody tr {
-    line-height: 0px;
-    font-size: 5px;
+#game-board {
+    height: calc(21px * 25);
 }
 
 #game-board td {
-    width: 24px;
-    height: 24px;
-    background-size: 24px 24px;
+    width: 21px;
+    height: 21px;
+    padding: 0;
+    background-size: 21px;
     background-repeat: no-repeat;
 }
 
@@ -30,15 +30,12 @@
 
 /* Title row */
 #game-board .title-row {
-    border-top: thin black solid;
-    background: white;
+    border-top: thin var(--black) solid;
+    background: var(--white);
     font-size: 0.8em;
 }
 
 #game-board .title-row td:nth-child(2) {
-    border-left: thin black solid;
-    border-right: thin black solid;
+    border-left: thin var(--black) solid;
+    border-right: thin var(--black) solid;
 }
-
-
-

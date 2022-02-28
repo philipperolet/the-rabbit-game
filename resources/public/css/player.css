@@ -9,8 +9,8 @@
 /** Player card  & learn more **/
 .player-card {
     min-width: 19em;
-    height: 29.5em;
-    background-color: white;
+    min-height: 30.5em;
+    background-color: var(--white);
     text-align: left;
     position: relative;
 }
@@ -18,9 +18,29 @@
 .learn-more {
     text-align: left;
 }
+#learn-more-modals .modal-dialog, #stat-modals .modal-dialog
+{
+    height: 90%;
+}
+#learn-more-modals .modal-content, #stat-modals .modal-content {
+    height: 100%;
+}
+
+#learn-more-modals .modal-body, #stat-modals .modal-body {
+    overflow-y: auto;
+}
+#learn-more-modals .modal-body h4, #stat-modals .modal-body h4 {
+    font-style: italic;
+    font-weight: bolder;
+    font-size: 1.1em;
+}
+#learn-more-modals .modal-body b, #stat-modals .modal-body b {
+    padding: 0 0.2em 0;
+}
 .player-card > div {
     padding-left: 0.3em;
 }
+
 .learn-more .img,
 .player-card .img {
     padding: 1em;
@@ -36,30 +56,29 @@
 .player-card .name {
     font-size: 1.1em;
     font-weight: 900;
-    color: black;
-    background-color: #f8f8c0;
+    color: var(--black);
+    background-color: var(--cta-color);
     text-align: center;
 }
 
 .player-card .short-description {
     color: gray;
 }
-
-.learn-more .technology,
-.player-card .technology {
-    
+.player-card .learn-more-link {
+    font-size: 1.1em;
+    text-align: center;
 }
-
 .learn-more .technology span,
 .player-card .technology span {
-    color: darkred;
+    color: var(--links-color);
     text-decoration: none;
+    font-style: italic;
     padding-left: 0.5em;
 }
 
 .learn-more .long-description {
     padding-top: 1em;
-    border-top: 1px solid black;
+    border-top: 1px solid var(--black);
 }
 .player-card table {
     position: absolute;
@@ -73,8 +92,8 @@
 
 .player-card table thead tr,
 .player-card table tr.max-level-row {
-    background-color: lightyellow;
-    border-top: thin black solid;
+    background-color: var(--cta-light);
+    border-top: thin var(--black) solid;
     font-weight: 600;
 }
 
@@ -90,27 +109,25 @@
 
 .player-card .stat-row td.statbar {
     width: 1em;
-    color: green;
+    color: var(--links-color);
 }
 
 .player-card .stat-row.max-stat td.statbar {
-    color: blue;
     font-weight:900;
 }
-.player-card .stat-row.max-stat td.statbar .glyphicon {
-    background-color: blue;
-}
+
 .player-card .stat-row td.statbar:last-child {
     min-width: 4.5em;
 }
 
-.player-card .stat-row td.statbar .glyphicon-remove {
+.player-card .stat-row td.statbar .none {
     color: darkred;
 }
 
 /* Player selection modal */
 #player-selection-modal .modal-dialog {
     width: 80%;
+    max-width: unset;
 }
 
 #player-selection-modal .modal-body {
@@ -123,22 +140,22 @@
 
 .player-selection .player-card {
     font-size: 0.8em;
-    outline: 2px black solid;
+    outline: 2px var(--black) solid;
 }
 
 .player-selection.player-selected .player-card:hover,
 .player-selection .player-card:hover {
-    outline: medium blue solid;
+    outline: medium var(--link-color) solid;
 }
 
 .player-selection.player-selected .player-card {
-    outline: medium #b00 solid;
+    outline: medium var(--cta-color) solid;
 }
 .player-selection.player-selected .player-card .img {
-    background-color: #b001;
+    background-color: var(--cta-very-light);
 }
 .player-selection .player-card.available-soon {
-    outline: thin black solid;
+    outline: thin var(--black) solid;
 }
 
 .player-selection .player-card.available-soon .name {

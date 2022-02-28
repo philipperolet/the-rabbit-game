@@ -1,4 +1,11 @@
 .controls-content img {
-    height: 3em;
-    padding-right: 1em;
+    height: 2em;
+    padding-right: 0.8em;
+}
+.controls-content div {
+    padding: 0.2em;
+}
+.controls-content {
+    background-color: var(--white);
+    border: thin var(--black) solid;
 }

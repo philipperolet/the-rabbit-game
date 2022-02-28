@@ -1,12 +1,9 @@
+@import 'common.css';
 @import 'game_info.css';
 @import 'game_board.css';
-@import 'common.css';
+@import 'leaderboard.css';
 @import 'player.css';
 @import 'help_texts.css';
-
-body {
-    background: url(../img/rabbit-wallp.jpg) repeat;
-}
 
 #app {
     text-align: center;
@@ -15,10 +12,9 @@ body {
 
 /* Header */
 #header {
-    background-color: #000a;
+    background-color: var(--black);
     margin-bottom: 1em;
-    color: white;
-    padding: 0.2em;
+    color: var(--white);
     font-size: 1.2em;
     font-weight: 900;
 }
@@ -31,7 +27,7 @@ body {
 #header #app-name a {
     font-family: 'Dancing Script', cursive;
     text-decoration: none;
-    color: white;
+    color: var(--white);
     font-size: 1.2em;
 }
 
@@ -46,14 +42,21 @@ body {
     margin: 0.5em;
 }
 
+/* Footer */
+#footer {
+    position: fixed;
+    bottom: 0px;
+    color: var(--white);
+    background-color: var(--black);
+}
+#footer .done-by a {
+    
+}
+#footer .copyrights {
+    text-align: right;
+    font-size: 0.8em;
+}
 /* Main */
-#lapyrinthe {
-}
-
-#lapyrinthe a {
-    color: var(--primary-dark);
-}
-
 #lapyrinthe div.col {
     padding-left: 2px;
 }
@@ -65,7 +68,7 @@ body {
 }
 
 .panel-bordered {
-    border: 5px solid black;
+    border: 5px solid var(--black);
     margin-bottom: 1em;
 }
 
@@ -86,7 +89,7 @@ h2.subtitle {
     margin-top: 0;
     margin-bottom: 1em;
     font-size: 1.2em;
-    color: #bb0000;
+    color: var(--links-color);
     font-weight: 600;
     display: none;
 }
@@ -100,23 +103,23 @@ h2.subtitle.initial {
 }
 
 h2.subtitle span, #intro-screen .is-title {
-    background-color: white;
+    background-color: var(--white);
     opacity: 0.85;
     font-weight: 900;
-    border: 1px solid black;
+    border: 1px solid var(--black);
     border-radius: 10px;
     padding: 0.5em;
 }
 
 .full-screen-overlay {
     position: fixed;
-    width: 100%;
-    height: 100%;
     z-index: 90;
 }
 
 /* Intro screen */
 #intro-screen {
+    width: 100%;
+    height: 100%;
     background-image: url("../img/rabbit-wallp.jpg");
     background-repeat: repeat;
 }
@@ -131,7 +134,8 @@ h2.subtitle span, #intro-screen .is-title {
 #intro-screen .intro-bullet {
     padding-top: 0.5em;
     font-size: 1.5em;
-    background-color: #fffc;
+    background-color: var(--white);
+    opacity: 0.9;
 }
 
 #intro-screen .intro-bullet div {
@@ -150,12 +154,13 @@ h2.subtitle span, #intro-screen .is-title {
 }
 #intro-screen h1 {
     font-weight: 900;
-    color: #333;
+    color: var(--black);
     font-size: 2.3em;
 }
 
 #intro-screen h2 {
-    color: #666;
+    color: var(--black);
+    opacity: 0.9;
     font-size: 1.7em;
 }
 
@@ -167,7 +172,8 @@ h2.subtitle span, #intro-screen .is-title {
 
 #loading {
     text-align: center;
-    top: 66%;
+    bottom: 20px;
+    width: 100%;
 }
 
 #loading img {
@@ -182,7 +188,7 @@ h2.subtitle span, #intro-screen .is-title {
 
 #loading img {
     border-radius: 20px;
-    border: 5px solid black;
+    border: 5px solid var(--black);
 }
 
 .game-over, .game-won, .game-nextlevel {
@@ -195,8 +201,8 @@ h2.subtitle span, #intro-screen .is-title {
     z-index: 10;
 }
 
-.game-over { background-color: black; }
-.game-won, .game-nextlevel { background-color: white; }
+.game-over { background-color: var(--black); }
+.game-won, .game-nextlevel { background-color: var(--white); }
 
 .game-over img, .game-won img, .game-nextlevel img {
     position: relative;
@@ -218,8 +224,8 @@ h2.subtitle span, #intro-screen .is-title {
     position: relative;
     top: -1em;
     font-size: 1.5em;
-    background-color: white;
-    color: white;
+    background-color: var(--white);
+    color: var(--white);
     z-index: 10;
 }
 
@@ -228,14 +234,12 @@ h2.subtitle span, #intro-screen .is-title {
 
 .game-over button {
     margin-top: 1em;
-    color: black;
+    color: var(--black);
 }
 
 
-#copyrights p {
-    margin: 0;
-}
-
-#lapyrinthe h2.subtitle span {
-    margin-left: -6em;
+#lapyrinthe .controls-content {
+    position: absolute;
+    font-size: 0.8em;
+    bottom: 1em;
 }

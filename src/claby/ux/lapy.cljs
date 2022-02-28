@@ -24,7 +24,7 @@
 
 
 (defn next-level-callback []
-  (.fadeOut (jq "h2.subtitle") 2500
+  (.fadeOut (jq "h2.subtitle") 1500
             (fn []
               (.removeClass (jq "h2.subtitle") "initial"))))
 
@@ -146,7 +146,7 @@
             start-level-callback
             (fn []
               (when @music-on (-> (.play gameMusic)))
-              (.hide (jq "#loading button"))
+              (.hide (jq "#loading"))
               (.fadeTo (jq "#app") 1000 1
                        (fn []
                          (swap! ux/world

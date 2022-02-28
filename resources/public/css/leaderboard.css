@@ -1,14 +1,14 @@
 .leaderboard {
     width: 100%;
     padding: 1em;
-    background-color: white;
+    background-color: var(--white);
 }
 
 .leaderboard tr {
     height: 1.8em;
 }
 .leaderboard tr:nth-child(odd) {
-    background-color: #1abc9c30;
+    background-color: var(--links-light);
 }
 .leaderboard td.name span.player-type {
     font-size: 0.9em;

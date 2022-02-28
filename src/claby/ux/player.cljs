@@ -7,22 +7,24 @@
 
 
 (def stat-col-nb 6)
-
+(def square-utf8 9635)
+(def remove-utf8 10008)
 (defn- stat-row [[stat-key stat-val]]
   (let [max? (> stat-val 5)
         stat-td
         (fn [index]
           [:td.statbar {:key (str "key-stat-" (name stat-key) index)}
            (cond
-             (neg? stat-val) (when (zero? index) [:span.glyphicon.glyphicon-remove])
-             (<= index stat-val) [:span.glyphicon.glyphicon-stop])])]
+             (neg? stat-val) (when (zero? index) [:span.none (se remove-utf8)])
+             (<= index stat-val) (se square-utf8))])]
     [:tr.stat-row {:class (when max? "max-stat") :key (str "key-" stat-key)}
      [:td
-      [:a {:data-toggle "modal"
-           :data-target (str "#" (stat-modal-id (name stat-key)))}
+      [:a.stat-link
+       {:data-toggle "modal"
+        :data-target (str "#" (stat-modal-id (name stat-key)))}
        (cstr/capitalize (name stat-key))]]
      (map stat-td (range stat-col-nb))
-     [:td.statbar (when max? [:span [:span.glyphicon.glyphicon-stop] "MAX"])]]))
+     [:td.statbar (when max? [:span (se square-utf8) " MAX"])]]))
 
 (defn- max-level-row [max-level]
   [:tr.max-level-row
@@ -49,9 +51,11 @@
       "Tech:")
     [:span technology]]
    [:div.short-description short-description
-    [:a {:data-toggle "modal"
-         :data-target (str "#" (learn-more-modal-id id))}
-     " Learn more"]]
+    [:div.learn-more-link
+     [:a.classic-link ;; fake class to tell bootstrap to style it like a regular link
+      {:data-toggle "modal"
+       :data-target (str "#" (learn-more-modal-id id))}
+      "Learn more about me!"]]]
    [:table.stats
     [:thead [:tr [:td {:colspan 8} "Stats"]]]
     [:tbody

@@ -100,11 +100,12 @@
 
 (defn- learn-more-content
   [{:as player-data :keys [long-description pic-url short-description technology]}]
-  [:div.learn-more
-   [:div.img [:img {:src pic-url}]]
-   [:div.technology "Technology:  " [:span technology]]
-   [:div.short-description short-description]
-   [:div.long-description long-description]])
+  [:div.learn-more.row
+   [:div.img.col-4 [:img {:src pic-url}]]
+   [:div.col-8
+    [:div.technology "Technology:  " [:span technology]]
+    [:div.short-description short-description]]
+   [:div.long-description.col-12 long-description]])
 
 (defn learn-more-modals []
   (letfn [(create-modal [{:as player-data :keys [id name]}]

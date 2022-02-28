@@ -1,134 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-	<meta charset="utf-8">
-	<title>The Rabbit Game</title>
-	<meta content="width=device-width, initial-scale=1.0" name="viewport">
-	<meta content="" name="keywords">
-	<meta content="" name="description">
+  <head>
+    <meta charset="utf-8">
+    <title>The Rabbit Game</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="rabbit, game, ai, artificial, intelligence, machine, zero, artificial intelligence, machine zero" name="keywords">
+    <meta content="A game cute for humans and tough for AIs" name="description">
 
-	<!-- Favicons -->
-	<link href="img/favicon.png" rel="icon">
-	<link href="img/apple-touch-icon.png" rel="apple-touch-icon">
+    <link href="img/favicon.png" rel="icon">
+    <link href="img/apple-touch-icon.png" rel="apple-touch-icon">
 
-	<!-- Google Fonts -->
-	<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,900" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/css?family=Dancing+Script&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,900" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Dancing+Script&display=swap" rel="stylesheet">
+    <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="lib/unveil-effects/animations.css" rel="stylesheet">
+    <link href="css/lapyrinthe.css" rel="stylesheet">
+  </head>
 
-	<!-- Bootstrap CSS File -->
-	<link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-
-	<!-- Libraries CSS Files -->
-	<link href="lib/unveil-effects/animations.css" rel="stylesheet">
-
-	<!-- Main Stylesheet File -->
-	<link href="css/lapyrinthe.css" rel="stylesheet">
-	<link href="css/leaderboard.css" rel="stylesheet">
-	<link href="css/playerboard.css" rel="stylesheet">	
-	<!-- =======================================================
-	     Template Name: MinimalLanding
-	     Template URL: https://templatemag.com/minimallanding-bootstrap-landing-template/
-	     Author: TemplateMag.com
-	     License: https://templatemag.com/license/
-	     ======================================================= -->
-    </head>
-
-    <body>
-	<!-- audio autoplay loop>
-	     <source src="neverever.mp3">
-	     </audio-->
-
-	<!--  ********** HEADER SECTION ********** -->
-	<div id="lapy-arrows">
-	    <button id="music-btn" type="button" class="btn btn-light">
-		<img src="img/music-note.png" class="off">
-	    </button>
-	    <button id="fx-btn" type="button" class="btn btn-light">
-		<img src="img/volume.png">
-	    </button>
-	</div>
-	<div id="intro-screen" class="full-screen-overlay">
-	  <div class="row justify-content-center">
-	    <div class="col col-md-6 intro-col">
-	      <div class="is-title">
-		<h1>The rabbit game</h1>
-		<h2>A game cute for humans and tough for AIs</h2>
-	      </div>
-	      <div class="intro-bullet">
-		<span class="ib-strong">&#x1f9d1; Play the game</span> as a human
-		<div>to have a little fun</div>
-	      </div>
-	      <div class="intro-bullet">
-		<span class="ib-strong">&#x1f916; Watch machines</span> play the game
-		<div>and learn a bit about how artificial intelligence works</div></div>
-	      <div class="intro-bullet">
-		<span class="ib-strong">&#x1f4bb; Train your own AI,</span> make it compete for the best score
-		<div>for experienced hackers</div></div>
-	      <div class="intro-bullet">
-		<span class="ib-strong">&#x1f9d1; Find new AI algos </span> that can clear the last levels
-		<div>for researchers (last levels are hard for ML algorithms--but not that hard for humans)</div>
-	      </div>
-	    </div>
+  <body>
+    <div id="lapy-arrows">
+      <button id="music-btn" type="button" class="btn btn-light">
+	<img src="img/music-note.png" class="off">
+      </button>
+      <button id="fx-btn" type="button" class="btn btn-light">
+	<img src="img/volume.png">
+      </button>
+    </div>
+    <div id="intro-screen" class="full-screen-overlay">
+      <div class="row justify-content-center">
+	<div class="col col-md-6 intro-col">
+	  <div class="is-title">
+	    <h1>The rabbit game</h1>
+	    <h2>A game cute for humans and tough for AIs</h2>
+	  </div>
+	  <div class="intro-bullet">
+	    <span class="ib-strong">&#x1f9d1; Play the game</span> as a human
+	    <div>to have a little fun</div>
+	  </div>
+	  <div class="intro-bullet">
+	    <span class="ib-strong">&#x1f916; Watch machines</span> play the game
+	    <div>and learn a bit about how artificial intelligence works</div></div>
+	  <div class="intro-bullet">
+	    <span class="ib-strong">&#x1f4bb; Train your own AI,</span> make it compete for the best score
+	    <div>for experienced hackers</div></div>
+	  <div class="intro-bullet">
+	    <span class="ib-strong">&#x1f9d1; Find new AI algos </span> that can clear the last levels
+	    <div>for researchers (last levels are hard for ML algorithms--but not that hard for humans)</div>
 	  </div>
 	</div>
-	<div id="loading" class="full-screen-overlay">
-	  <img src="img/loading.gif">
-	  <button class="btn btn-primary"> Start game </button>
-	</div>
-	<div class="game-over">
-	  <img src="img/over.gif">
-	  <div id="svform-lose"></div>
-	</div>
-	<div class="game-won">
-	  <div id="svform-win"></div>
-	  <img>
-	</div>
-	<div class="game-nextlevel">
-	  <img src="img/nextlevel.gif">
-	</div>
-	<div id="app" class="container-fluid"></div>	
-	<!--/header-->
+      </div>
+    </div>
+    <div id="loading" class="full-screen-overlay">
+      <img src="img/loading.gif">
+      <button class="btn btn-primary"> Start! </button>
+    </div>
+    <div class="game-over">
+      <img src="img/over.gif">
+      <div id="svform-lose"></div>
+    </div>
+    <div class="game-won">
+      <div id="svform-win"></div>
+      <img>
+    </div>
+    <div class="game-nextlevel">
+      <img src="img/nextlevel.gif">
+    </div>
+    <div id="app" class="container-fluid"></div>	
 
-	<!--  ********** WHITE SECTION ********** -->
-	<div id="w">
-	    <div class="container">
-		<div class="row centered">
-		    <div class="col-md-8 col-md-offset-2">
-			<h4>FAIT AVEC <i class="glyphicon glyphicon-heart"> PAR <a href="https://github.com/sittingbull" target="_blank">{Fil|Lapin}ou</a></i></h4>
-		    </div>
-		    <!--col-md-8 -->
-		</div>
-		<!--/row -->
-	    </div>
-	    <!--/container -->
+    <div class="container">
+      <div class="row centered">
+	<div class="col-md-8 col-md-offset-2">
+	  
 	</div>
-	<!--/w -->
-
-	<div id="copyrights">
-	    <div class="container">
-		<p>
-		    &copy; Copyrights <strong>Lapi</strong>. All Rights Reserved
-		    <span class="credits">
-			<!--
-			     You are NOT allowed to delete the credit link to TemplateMag with free version.
-			     You can delete the credit link only if you bought the pro version.
-			     Buy the pro version with working PHP/AJAX contact form: https://templatemag.com/minimallanding-bootstrap-landing-template/
-			     Licensing information: https://templatemag.com/license/
-			-->
-			Created with MinimalLanding template by <a href="https://templatemag.com/">TemplateMag</a>
-		    </span></p>
-	    </div>
+      </div>
+    </div>
+    <div id="footer" class="container-fluid">
+      <div class="row">
+	<div class="done-by col col-lg-6">Done with &#x1F54A; by
+	  <a href="https://github.com/sittingbull" target="_blank">{Fil|Lapin}ou</a>
 	</div>
-	<!-- / copyrights -->
+	<div class="copyrights col col-lg-6">
+	  &copy; Copyrights <strong>Machine Zero</strong>. All Rights Reserved
+	</div>
+      </div>
+    </div>
 
-	<!-- JavaScript Libraries -->
-	<script src="lib/jquery/jquery.min.js"></script>
-	<script src="lib/bootstrap/js/bootstrap.min.js"></script>
-	<script src="lib/php-mail-form/validate.js"></script>
-	<script src="lib/unveil-effects/unveil-effects.js"></script>
-
-	<!-- Template Main Javascript File -->
-	<script src="js/main.js"></script>
-	<script src="cljs-out/dev-main.js" type="text/javascript"></script>
-</body>
+    <script src="lib/jquery/jquery.min.js"></script>
+    <script src="lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="lib/php-mail-form/validate.js"></script>
+    <script src="lib/unveil-effects/unveil-effects.js"></script>
+    <script src="cljs-out/dev-main.js" type="text/javascript"></script>
+  </body>
 </html>

@@ -56,13 +56,19 @@
    :pic-url "img/tree-explorator.gif"
    :technology "Monte-Carlo Tree Search"
    :endpoint (local-endpoint "tree-explorator")
-   :short-description "TreeExplorator imagines lots of sequences of moves, then goes in the direction that worked best in its head."
+   :short-description "TreeExplorator imagines lots of sequences of
+   moves, then goes in the direction that worked best in its head."
    :long-description
    [:div
-    [:p "TreeExplorator works by creating an \"exploration tree\", thus the name. It tries every direction and see if it gains score or loses; then goes 1 step further (e.g. left, then up) and sees how it goes. And then further, using a statistical formula to assess the result of each simulation and determine what to try next. This is why its core technology is called Monte-Carlo Tree Search (monte-carlo refers to randomness introduced in choosing the directions to try)."]
-    [:p "Monte-Carlo Tree Search in this context is a branch of Reinforcement Learning technologies, which is itself a branch of Machine Learning (itself a branch of Artificial Intelligence Reasearch)."]
-    [:h3 "About the stats"]
-    [:p [:b "Speed:"] " Quite fast on average"]]
+    [:p "TreeExplorator decides which direction is best to move next by creating an \"exploration tree\", thus the name. "]
+    [:p "It imagines walking a path of a few steps (e.g. up, left, up, right, right...) and assesses if it gains score or loses during this 'simulation'.  Then it tries another path, then another, using a statistical formula to assess the result of each simulation and determine what to try next. Its core technology is called Monte-Carlo Tree Search (monte-carlo refers to randomness introduced in choosing the directions to try)."]
+    [:p "Monte-Carlo Tree Search (MCTS) in this context is a branch of Reinforcement Learning technologies, which is itself a branch of Machine Learning (itself a branch of Artificial Intelligence Reasearch :))."]
+    [:h4 "About the stats"]
+    [:p [:b "Speed:"] " Quite fast on average. The speed is actually adaptable since you can tell it how many simulations to perform before deciding a move. This one can perform ~50 000 simulations per second (of 20 directions each, so about a million moves) on a normal PC. "]
+    [:p [:b "Sophistication: "] "MCTS is an interesting idea, simple in its expression, but with subtle details to perform efficient exploration."]
+    [:p [:b "Ease of use: "] "MCTS is generally quite easy to use: relatively simple code, training phase not required,  and not a lot of settings. It can become hard to use in some situations, e.g. if mixed with other technologies"]
+    [:p [:b "Learning power: "] "It has a very moderate learning power. It does not need to be explicitly told e.g. not to walk on walls, or that it needs to eat fruit--it will figure this out on its own. But that's it, it won't be able to learn to handle more complex situations."]
+    [:p [:b "Adaptability: "] "This kind of AI program is restricted to action-reaction problems: agents evolving in an environment. It can't be used for instance on image recognition tasks or medical analysis."]]
    :stats {:learning-power 1
            :speed 4
            :sophistication 3
@@ -125,15 +131,15 @@
     [:p "Deep Learning algorithms, sometimes also called neural networks, rely on small learning units called neurons, initially inspired by biological neurons (e.g. those in the human brain) although they differ in various respects."]
     [:p " A lot of neurons are connected together in successive layers, and every time the algorithm is used it changes a little how much each neuron is connected to the other, which makes the program 'learn'. "]
     [:p "This kind of algorithm has a lot of potential learning power, but requires a lot of setup and training to work well. In particular, the architecture of the layers, and the mechanisms of the updates require a lot of thinking to get the best results."]
-    [:h3 "Max level: 2"]
+    [:h4 "Max level: 2"]
     [:p "The M00 player is the result of using a standard neural network with not much effort in the architecture or setup."]
     [:p "It is an example of algorithm with a moderately high learning power (because neural networks intrisically have this capability) but a low sophistication (because it has just been used directly without much thought). As such it will learn by itself simple things: avoid walking into walls, eat a fruit when there's one next to it, avoid cheese."]
     [:p "However, it cannot learn complex behaviours. Therefore, the max level it can reach is 2 (when ennemies appear)."]
-    [:h3 "About its other stats"]
+    [:h4 "About the other stats"]
     [:ul
-     [:li "It's moderately slow: neural networks notoriously require a lot of computing power to run--but this one is not very complex so it can still go fast enough for the game."]
-     [:li "It's very adaptable: it can be used on any problem and will learn simple things (but if the task is too complex, it will not be able to do well)."]
-     [:li "It's relatively easy to use, since you 'just' have to plug it to the input of the task and to the possible actions it can perform--although the 'just' still requires a little work."]]]
+     [:li [:b "It's moderately slow: "] "neural networks notoriously require a lot of computing power to run--but this one is not very complex so it can still go fast enough for the game."]
+     [:li [:b "It's very adaptable: "] "it can be used on any problem and will learn simple things (but if the task is too complex, it will not be able to do well)."]
+     [:li [:b "It's relatively easy to use,"] " since you 'just' have to plug it to the input of the task and to the possible actions it can perform--although the 'just' still requires a little work."]]]
    :stats {:learning-power 3
            :speed 2
            :sophistication 1
