@@ -9,9 +9,10 @@
     --cta-very-light: #d9cab310;
     
 }
-
-body {
+html {
     background-color: var(--white);
+}
+body {
     color: var(--black);
     font-family: 'Lato', sans-serif;
     background: url(../img/rabbit-wallp.png) repeat;
@@ -71,6 +72,11 @@ a:hover {
 
 .btn-secondary:focus, btn-secondary:not(:disabled):not(.disabled):active:focus {
     box-shadow: 0 0 0 0.2rem var(--links-very-light);
+}
+
+.panel-bordered {
+    border: 5px solid var(--black);
+    margin-bottom: 1em;
 }
 
 .claby-panel-title {
