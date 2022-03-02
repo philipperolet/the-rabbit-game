@@ -449,7 +449,8 @@
   (animate-intro-screen)
   (reset! params (parse-params))
   (init ux)
-  (render [claby] (gdom/getElement "app"))
+  (render [claby] (gdom/getElement "app")
+          #(add-enemies-style ux (get-in levels [(aiw/current-level @world) :enemies])))
   (setup-leaderboard ux)
   (when-let [color-idx (:color @params)]
     (.append (jq "body") (str "<style>" (available-colors color-idx) "</style>"))))
