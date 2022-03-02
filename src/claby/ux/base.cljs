@@ -88,6 +88,11 @@
   [json-str]
   (js->clj (.parse js/JSON json-str) :keywordize-keys true))
 
+(def api-url
+  (if (= "localhost" (.-hostname (.-location js/window)))
+    "http://localhost:8080"
+    "https://api.game.machine-zero.com"))
+
 (defn post-next-request!
   "Request next move given world. Callback expects exactly one param,
   the request body parsed via read-string."
@@ -95,7 +100,7 @@
    (go (let [thin-world
              (update @world ::aiw/next-levels #(repeat (count %) :hidden))
              response
-             (<! (http/post (str "http://localhost:8080/" (:player @params "random"))
+             (<! (http/post (str api-url "/" (:player @params "random"))
                             {:with-credentials? false
                              :headers {"Access-Control-Allow-Origin" "*"}
                              :json-params (to-json-str thin-world)}))]
