@@ -170,8 +170,8 @@
    :pic-url "img/dumbot.png"
    :technology "Rule-based"
    :short-description "DumBot executes exact rules to collect fruits
-   and avoid cheese. It is very efficient, but it cannot adapt: when
-   enemies show up it becomes useless."
+   and avoid cheese. Very efficient, but cannot adapt: becomes useless when
+   enemies show up."
    :long-description [:p "Megablah"]
    :stats {:learning-power -1
            :speed 5
@@ -186,9 +186,9 @@
    :name "SuperDumBot"
    :pic-url "img/superdumbot.png"
    :technology "Rule-based"
-   :short-description "SuperDumBot is DumBot with added code to
-   avoid ennemies. It easily clears levels with enemies, but again becomes
-   useless on higher levels."
+   :short-description "SuperDumBot is DumBot plus specific code to
+   avoid ennemies. Clears levels with enemies, but becomes
+   useless again on higher levels."
    :long-description [:p "Megablah"]
    :stats {:learning-power -1
            :speed 5
