@@ -99,7 +99,7 @@
 
 .player-card table tr.max-level-row td:last-child {
     font-weight: 900;
-    color: darkred;
+    color: var(--maxlev-color);
     font-size: 1.5em;
 }
 .player-card table td:first-child {
@@ -121,7 +121,7 @@
 }
 
 .player-card .stat-row td.statbar .none {
-    color: darkred;
+    color: var(--maxlev-color);
 }
 
 /* Player selection modal */

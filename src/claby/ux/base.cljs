@@ -393,6 +393,55 @@
            (.fadeOut 100) (.fadeIn 100)))))
   ([] (animate-intro-screen 2)))
 
+(def available-colors
+  [":root {
+    --black: #7d5a50;
+    --light-grey: #7d5a5020;
+    --white: #fff;
+    --links-color: #e5b299;
+    --links-light: #e5b29980;
+    --links-very-light: #e5b29920;
+    --cta-color: #fcdec0;
+    --cta-light: #fcdec080;
+    --cta-very-light: #fcdec020;
+    --maxlev-color: #b4846c;
+}"
+":root {
+    --black: #303841;
+    --light-grey: #30384120;
+    --white: #eeeeee;
+    --links-color: #00adb5;
+    --links-light: #00adb580;
+    --links-very-light: #00adb520;
+    --cta-color: #ff5722;
+    --cta-light: #ff572280;
+    --cta-very-light: #ff572220;
+    --maxlev-color: darkblue;
+}"
+":root {
+    --black: #2D4059;
+    --light-grey: #F07b3f;
+    --white: #fff;
+    --links-color: #e45455;
+    --links-light: #e4545580;
+    --links-very-light: #e4545520;
+    --cta-color: #ffd460;
+    --cta-light: #ffd46080;
+    --cta-very-light: #ffd46020;
+    --maxlev-color: #f07b3f;
+}"
+":root {
+    --black: #212121;
+    --light-grey: #21212120;
+    --white: #f6f6f6;
+    --links-color: #6d9886;
+    --links-light: #6d988680;
+    --links-very-light: #6d988610;
+    --cta-color: #d9cab3;
+    --cta-light: #d9cab380;
+    --cta-very-light: #d9cab310;
+    --maxlev-color: darkred;
+}"])
 (defn run-game
   "Runs the Lapyrinthe game with the specified UX. There must be an 'app' element in the html page."
   [ux]
@@ -401,7 +450,9 @@
   (reset! params (parse-params))
   (init ux)
   (render [claby] (gdom/getElement "app"))
-  (setup-leaderboard ux))
+  (setup-leaderboard ux)
+  (when-let [color-idx (:color @params)]
+    (.append (jq "body") (str "<style>" (available-colors color-idx) "</style>"))))
 
 ;; specify reload hook with ^;after-load metadata
 (defn ^:after-load on-reload []
@@ -410,3 +461,4 @@
   ;; your application
   ;; (swap! app-state update-in [:__figwheel_counter] inc)
   )
+
