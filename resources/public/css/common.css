@@ -54,6 +54,7 @@ body {
     color: var(--black);
     font-family: 'Lato', sans-serif;
     background: url(../img/rabbit-wallp.png) repeat;
+    font-size: 0.9rem;
 }
 
 a {
@@ -118,8 +119,10 @@ a:hover {
     box-shadow: 0 0 0 0.2rem var(--links-very-light);
 }
 
+
+/* Side panels */
 .panel-bordered {
-    border: 5px solid var(--black);
+    border: 3px solid var(--black);
     margin-bottom: 1em;
 }
 
@@ -127,16 +130,27 @@ a:hover {
     font-size: 1.1em;
     font-weight: 900;
     color: var(--black);
-    background-color: lightgray;
+    background-color: var(--light-grey);
 }
 
+
+/* Modals*/
+.modal-content {
+    max-height: 100%;
+}
 .modal-dialog {
     width: 45em;
     max-width: 45em;
+    height: 90%;
 }
 .modal-title {
     width: 100%;
 }
+
+.modal-footer button {
+    margin: 0 0.5em 0;
+}
+
 /** Legacy - To be deleted **/
 #lapy-arrows {
     position: fixed;

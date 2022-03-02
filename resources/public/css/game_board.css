@@ -2,6 +2,7 @@
 /* Playing area */
 #game-board {
     height: calc(21px * 25);
+    border-width: 5px;
 }
 
 #game-board td {

@@ -237,5 +237,5 @@ h2.subtitle span, #intro-screen .is-title {
 #lapyrinthe .controls-content {
     position: absolute;
     font-size: 0.8em;
-    bottom: 1em;
+    bottom: -4em;
 }

@@ -9,7 +9,7 @@
 /** Player card  & learn more **/
 .player-card {
     min-width: 19em;
-    min-height: 30.5em;
+    min-height: 32em;
     background-color: var(--white);
     text-align: left;
     position: relative;
@@ -18,13 +18,13 @@
 .learn-more {
     text-align: left;
 }
-#learn-more-modals .modal-dialog, #stat-modals .modal-dialog
+/*#learn-more-modals .modal-dialog, #stat-modals .modal-dialog
 {
     height: 90%;
 }
 #learn-more-modals .modal-content, #stat-modals .modal-content {
     height: 100%;
-}
+}*/
 
 #learn-more-modals .modal-body, #stat-modals .modal-body {
     overflow-y: auto;
@@ -139,17 +139,21 @@
 }
 
 .player-selection .player-card {
-    font-size: 0.8em;
+    font-size: 0.7em;
     outline: 2px var(--black) solid;
 }
 
 .player-selection.player-selected .player-card:hover,
 .player-selection .player-card:hover {
-    outline: medium var(--link-color) solid;
+    outline: medium var(--cta-color) solid;
 }
 
-.player-selection.player-selected .player-card {
-    outline: medium var(--cta-color) solid;
+.player-selection.player-selected .player-card,
+.player-selection.player-selected:hover .player-card {
+    outline: medium var(--links-color) solid;
+}
+.player-selection.player-selected .player-card .name {
+    background-color: var(--links-color);
 }
 .player-selection.player-selected .player-card .img {
     background-color: var(--cta-very-light);
