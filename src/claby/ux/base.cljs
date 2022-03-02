@@ -304,8 +304,9 @@
     [:button.btn.btn-primary {:data-toggle "modal"
                               :data-target "#player-selection-modal"
                               :on-click (fn []
-                                          (toggle-game-execution false)
-                                          (.focus (jq "#game-board")))}
+                                          
+                                          (toggle-game-execution false))
+                              :on-focus #(.blur (.-activeElement js/document))}
      "Try another player"]
     [:button.btn.btn-secondary {:on-click (partial load-local "?player=human")} "Back to human"]]})
 
