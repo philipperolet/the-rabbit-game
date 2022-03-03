@@ -9,8 +9,13 @@
 
 (defn player-type [player] (if (= player "human") "human" "ai"))
 
-(defn load-local [query]
-  (js/window.open (str "http://localhost:9500" (or query "")) "_self"))
+(defn reload-with-query-string
+  "Reloads the same page with a different `query-string` (must include
+  the initial `?`)"
+  [query-string]
+  (js/window.open (str (.-origin (.-location js/window))
+                       (.-pathname (.-location js/window))
+                       (or query-string "")) "_self"))
 
 (defn modal
   ([id title contents]

@@ -23,7 +23,7 @@
    [claby.ux.player :as cpl]
    [claby.ux.help-texts :refer [stat-description-modals learn-more-modals]]
    [claby.ux.game-info :as cgi]
-   [claby.utils :refer [jq player-type load-local se]]
+   [claby.utils :refer [jq player-type reload-with-query-string se]]
    [cljs.reader :refer [read-string]]
    [clojure.core.async :refer [<!] :refer-macros [go]]))
 
@@ -278,7 +278,7 @@
   (let [current-level (aiw/current-level @world)
         on-player-selection
         (fn [selected-id]
-          (load-local (str "?player=" (name selected-id) "&cheatlev=" current-level)))]
+          (reload-with-query-string (str "?player=" (name selected-id) "&cheatlev=" current-level)))]
     (cpl/player-selection-modal @selected-player-cursor
                                 selected-player-cursor
                                 on-player-selection)))
@@ -302,7 +302,7 @@
 (def player-stripe-message
   {:human
    [:span (se 0x1F9D1) "A human is playing" (se 0x1F9D1)
-    [:button.btn.btn-primary {:on-click (partial load-local (str "?player=tree-explorator"))}
+    [:button.btn.btn-primary {:on-click (partial reload-with-query-string (str "?player=tree-explorator"))}
      "See a machine play"]]
    :ai
    [:span (se 0x1F916) "An AI is playing" (se 0x1F916)
@@ -313,7 +313,7 @@
                                           (toggle-game-execution false))
                               :on-focus #(.blur (.-activeElement js/document))}
      "Try another player"]
-    [:button.btn.btn-secondary {:on-click (partial load-local "?player=human")} "Back to human"]]})
+    [:button.btn.btn-secondary {:on-click (partial reload-with-query-string "?player=human")} "Back to human"]]})
 
 (defn- header [player]
   [:div#header.row
