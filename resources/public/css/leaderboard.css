@@ -1,7 +1,6 @@
 .leaderboard {
     width: 100%;
     padding: 1em;
-    background-color: var(--white);
 }
 
 .leaderboard tr {

@@ -131,8 +131,7 @@
       (ux/prepare-game this))
 
     (start-level [this]
-      ;; Choose element to fade and callback depending on
-      ;; whether the surprise ? has already been clicked and hidden or not
+      ;; Choose element to fade and callback
       (let [[elt-to-fade callback fade-time]
             (cond
               (.is (jq "#intro-screen") ":visible")
@@ -174,8 +173,6 @@
               :nextlevel between-levels
               :won #(final-animation 0)
               nil)]
-        #_(set! (.-onended (sounds transition-type)) on-sound-end-callback)
-        
         (when @fx-on (.play (sounds transition-type)))
         (.setTimeout js/window
                      (fn []

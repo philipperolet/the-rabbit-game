@@ -6,6 +6,6 @@
     padding: 0.2em;
 }
 .controls-content {
-    background-color: var(--white);
+    background-color: var(--transp-white);
     border: thin var(--black) solid;
 }
