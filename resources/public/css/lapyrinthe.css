@@ -209,6 +209,20 @@ h2.subtitle span, #intro-screen .is-title {
     border-radius: 100%;
 }
 
+.game-nextlevel img {
+    margin-top: 5%;
+}
+.game-nextlevel .panel-bordered {
+    width: 40%;
+    margin-left: 30%;
+    margin-top:1em;
+    font-size: 1.1em;
+}
+
+.game-nexlevel #next-level-info {
+    margin-top: 0.5em;
+}
+
 .game-won p {
     font-family: "Courier New";
     font-weight: 900;
@@ -233,9 +247,10 @@ h2.subtitle span, #intro-screen .is-title {
     color: var(--black);
 }
 
-
-#lapyrinthe .controls-content {
+#lapyrinthe #game-board + .controls-content {
+    background-color: var(--transp-white);
+    border: thin var(--black) solid;
     position: absolute;
     font-size: 0.8em;
-    bottom: -4em;
+    bottom: -2.7em;
 }

@@ -1,8 +1,68 @@
 (ns claby.ux.game-info
-  (:require [claby.utils :refer [modal player-type]]))
+  (:require [claby.utils :refer [modal player-type se jq]]))
 
 ;; Controls explanation modal
 
+(def color-schemes
+  {:base
+   {:scheme-name "Original"
+    :scheme-value
+    ":root {
+    --black: #212121;
+    --light-grey: #21212120;
+    --white: #f6f6f6;
+    --links-color: #6d9886;
+    --links-light: #6d988680;
+    --links-very-light: #6d988610;
+    --cta-color: #d9cab3;
+    --cta-light: #d9cab380;
+    --cta-very-light: #d9cab310;
+    --maxlev-color: darkred;}"}
+   :fall
+   {:scheme-name "Fall"
+    :scheme-value
+    ":root {
+    --black: #7d5a50;
+    --light-grey: #7d5a5020;
+    --white: #fff;
+    --links-color: #e5b299;
+    --links-light: #e5b29980;
+    --links-very-light: #e5b29920;
+    --cta-color: #fcdec0;
+    --cta-light: #fcdec080;
+    --cta-very-light: #fcdec020;
+    --maxlev-color: #b4846c;}"}
+   :red-blue
+   {:scheme-name "Red-blue"
+    :scheme-value
+    ":root {
+    --black: #303841;
+    --light-grey: #30384120;
+    --white: #eeeeee;
+    --links-color: #00adb5;
+    --links-light: #00adb580;
+    --links-very-light: #00adb520;
+    --cta-color: #ff5722;
+    --cta-light: #ff572280;
+    --cta-very-light: #ff572220;
+    --maxlev-color: darkblue;}"}
+   :hot
+   {:scheme-name "Hot"
+    :scheme-value 
+    ":root {
+    --black: #2D4059;
+    --light-grey: #F07b3f;
+    --white: #fff;
+    --links-color: #e45455;
+    --links-light: #e4545580;
+    --links-very-light: #e4545520;
+    --cta-color: #ffd460;
+    --cta-light: #ffd46080;
+    --cta-very-light: #ffd46020;
+    --maxlev-color: #f07b3f;}"}})
+
+;; Controls info modal
+;;;;
 (def controls-content
   {:human
    [:div.controls-content
@@ -24,17 +84,82 @@
          "Controls - Human Play"
          (:human controls-content)))
 
-(defn game-info [player]
+
+;; Game options
+;;;;;
+(def music-symbol 0x1f3bc)
+(def sounds-symbol 0x1f50A)
+(def colors-symbol 0x1f3a8)
+(defn- color-option [[color-id {:keys [scheme-name _]}]]
+  [:option {:key (str "color-id-" (name color-id))
+            :value color-id}
+   scheme-name])
+
+(defn setup-game-colors [color-id]
+  (.append (jq "body") (str "<style>" (:scheme-value (color-schemes (keyword color-id))) "</style>")))
+
+(defn game-options [app-state]
+  [:form.col-6
+   [:div.custom-control.custom-switch
+    [:input#music-option.custom-control-input
+     {:type "checkbox"
+      :checked (-> @app-state :options :music)
+      :on-change #(swap! app-state assoc-in [:options :music] (.. % -target -checked))}]
+    [:label.custom-control-label {:for "music-option"} (se music-symbol) "Music"]]
+   [:div.custom-control.custom-switch
+    [:input#sounds-option.custom-control-input
+     {:type "checkbox"
+      :checked (-> @app-state :options :sounds)
+      :on-change #(swap! app-state assoc-in [:options :sounds] (.. % -target -checked))}]
+    [:label.custom-control-label {:for "sounds-option"} (se sounds-symbol) "Sounds"]]
+   [:div
+    [:select#colors-options.form-control.form-control-sm
+     {:on-change (fn [e]
+                   (swap! app-state assoc-in [:options :color-scheme-id] (.. e -target -value))
+                   (setup-game-colors (.. e -target -value)))
+      :value (-> @app-state :options :color-scheme-id)}
+     (map color-option color-schemes)]
+    [:span.color-label (se colors-symbol) "Colors"]]])
+
+;; Speed & level change
+;;;;;;
+(defn speed-level-modal [app-state]
+  (modal "speed-level-modal"
+         "Change speed / level"
+         [:div "TBD"]))
+
+;; Level info
+;;;;
+
+(defn level-info-content [level-nb {:as level-data :keys [message level-info]}]
+  [:div.level-info
+   [:h2 (str "Level " level-nb ": " (:en message))]
+   level-info])
+
+(defn level-info-modal [level-nb level-data]
+  (modal "level-info-modal"
+         "About this level"
+         (level-info-content level-nb level-data)))
+
+;; Component
+;;;;;
+(defn game-info [player app-state level-nb level-data]
   (let [controls-modal-id (str "#" (player-type player) "-controls-modal")]
     [:div.panel-bordered
      (ai-controls-modal)
      (human-controls-modal)
-     [:div.claby-panel-title "Game info"]
-     [:div.game-info
-      [:div [:a.info {:data-toggle "modal" :data-target controls-modal-id} "Controls"]]
-      [:div [:a.info
+     (speed-level-modal app-state)
+     (level-info-modal level-nb level-data)
+     [:div.claby-panel-title "Options & infos"]
+     [:div.game-info.row
+      (game-options app-state)
+      [:div.links.col-6
+       [:a.info {:data-toggle "modal" :data-target "none"} "Change Speed / Level"]
+       [:a.info {:data-toggle "modal" :data-target controls-modal-id} "Controls"]
+       [:a.info {:data-toggle "modal" :data-target "#level-info-modal"} "About this level"]
+       [:a.info-inline
              {:href "https://github.com/sittingbull/mzero-game"
               :target "_blank"}
-             "About the Game / Source code"]]
-      [:div [:a.info
-             {:href "mailto:pr@machine-zero.com" :target "_blank"} "Contact"]]]]))
+        "Source code"] " & "
+       [:a.info-inline
+        {:href "mailto:pr@machine-zero.com" :target "_blank"} "Contact"]]]]))

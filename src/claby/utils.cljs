@@ -17,6 +17,17 @@
                        (.-pathname (.-location js/window))
                        (or query-string "")) "_self"))
 
+
+(defn to-json-str
+  "Convert to JSON string with namespaced keywords"
+  [data]
+  (.stringify js/JSON (clj->js data :keyword-fn #(subs (str %) 1))))
+
+(defn from-json-str
+  "Opposite of to-json-str"
+  [json-str]
+  (js->clj (.parse js/JSON json-str) :keywordize-keys true))
+
 (defn modal
   ([id title contents]
    [:div.modal.fade

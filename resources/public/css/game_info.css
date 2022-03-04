@@ -1,3 +1,26 @@
+.game-info {
+    text-align: left;
+}
+.game-info form > * {
+    margin-left: 1em;
+}
+.game-info #colors-options {
+    display: inline;
+    width: 2em;
+    margin-right: 0.5em;
+    height: 2em;
+    vertical-align: middle;    
+}
+
+.game-info .links {
+    border-left: 1px solid var(--black);
+}
+
+.game-info a.info {
+    display: block;
+}
+
+/* Controls */
 .controls-content img {
     height: 2em;
     padding-right: 0.8em;
@@ -6,6 +29,18 @@
     padding: 0.2em;
 }
 .controls-content {
-    background-color: var(--transp-white);
-    border: thin var(--black) solid;
+}
+
+/* Level info */
+.level-info h2 {
+    font-size: 1.2em;
+    color: var(--cta-color);
+    font-weight: 900;
+}
+.level-info p {
+    text-align: left;
+    margin-bottom: 0.8em;
+}
+.level-info p b {
+    margin-right: 0.5em;
 }

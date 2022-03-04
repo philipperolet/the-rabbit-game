@@ -14,80 +14,36 @@
    [reagent.dom :refer [render]]
    [mzero.game.state :as gs]
    [mzero.ai.game-runner :as gr]
-   [mzero.game.generation :as gg]
    [mzero.ai.world :as aiw]
    [mzero.ai.player :as aip]
    [cljs-http.client :as http]
    [claby.ux.leaderboard :as cll]
    [claby.ux.game-board :as cgb]
    [claby.ux.player :as cpl]
+   [claby.ux.levels :refer [levels]]
    [claby.ux.help-texts :refer [stat-description-modals learn-more-modals]]
    [claby.ux.game-info :as cgi]
-   [claby.utils :refer [jq player-type reload-with-query-string se]]
+   [claby.utils :refer [jq player-type reload-with-query-string se to-json-str]]
    [cljs.reader :refer [read-string]]
+   [alandipert.storage-atom :refer [local-storage]]
    [clojure.core.async :refer [<!] :refer-macros [go]]))
 
 (defonce language (atom "en"))
 
+(defonce app-state
+  (local-storage (atom
+                  {:options {:sounds true
+                             :music false
+                             :color-scheme-id "base"}
+                   :player-selection-modal-choice nil})
+                 :app-state))
+
 (defonce params (atom {}))
 
-(defonce game-state (atom {}))
-(def selected-player-cursor (reagent/cursor game-state [:selected-player]))
-
-(defonce levels
-  [{:message
-    {:en "Little rabbit must eat all the strawberries"
-     :fr "Lapinette enceinte doit manger un maximum de fraises"}
-    ::gg/density-map {:fruit 3
-                      :cheese 0}}
-   {:message {:fr "Attention au fromage non-pasteurisé !"
-              :en "Beware unpasteurized cheese!"}
-    ::gg/density-map {:fruit 3
-                      :cheese 3}
-    :message-color "darkgoldenrod"}
-   {:message {:en "Avoid alcoholic drinks"
-              :fr "Evite les apéros alcoolisés"}
-    ::gg/density-map {:fruit 5
-                      :cheese 3}
-    :message-color "darkblue"
-    :enemies [:drink :drink]}
-   {:message {:en "Mice run loose in the house!"
-              :fr "Les souris ont infesté la maison!"}
-    ::gg/density-map {:fruit 5
-                      :cheese 3}
-    :message-color "darkmagenta"
-    :enemies [:drink :mouse :mouse]}
-   {:message {:en "Scary covid is here"
-              :fr "Le covid ça fait peur!"}
-    ::gg/density-map {:fruit 5
-                      :cheese 3}
-    :message-color "darkcyan"
-    :enemies [:virus :virus]}
-   {:message {:en "All right, let's raise the stakes."
-              :fr "Allez on arrête de déconner."}
-    ::gg/density-map {:fruit 5
-                      :cheese 5}
-    :message-color "darkgreen"
-    :enemies [:drink :drink :virus :virus :mouse :mouse]}
-   #_{:message {:en "Fake level"
-              :fr "Fake level"}
-    ::gg/density-map {:fruit 2
-                      :cheese 0}
-    :message-color "darkgreen"
-      :enemies []}])
+(def player-selection-modal-choice
+  (reagent/cursor app-state [:player-selection-modal-choice]))
 
 (defonce world (atom {}))
-
-(defn- to-json-str
-  "Convert to JSON string with namespaced keywords"
-  [data]
-  (.stringify js/JSON (clj->js data :keyword-fn #(subs (str %) 1))))
-
-(defn- from-json-str
-  "Opposite of to-json-str"
-  [json-str]
-  (js->clj (.parse js/JSON json-str) :keywordize-keys true))
-
 (def api-url
   (if (= "localhost" (.-hostname (.-location js/window)))
     "http://localhost:8080"
@@ -274,13 +230,13 @@
       (.then (load-game-board ux))
       (.then #(start-level ux))))
 
-(defn player-selection-modal [selected-player-cursor]
+(defn player-selection-modal [player-selection-modal-choice]
   (let [current-level (aiw/current-level @world)
         on-player-selection
         (fn [selected-id]
           (reload-with-query-string (str "?player=" (name selected-id) "&cheatlev=" current-level)))]
-    (cpl/player-selection-modal @selected-player-cursor
-                                selected-player-cursor
+    (cpl/player-selection-modal @player-selection-modal-choice
+                                player-selection-modal-choice
                                 on-player-selection)))
 
 (defn page-loaded-from-inside?
@@ -295,7 +251,7 @@
 
 (defn- load-modals []
   [:div#all-modals
-   (player-selection-modal selected-player-cursor)
+   (player-selection-modal player-selection-modal-choice)
    (stat-description-modals)
    (learn-more-modals)])
 
@@ -325,8 +281,10 @@
    [:div.col-lg-3]])
 
 (defn- rabbit-game-computer []
-  (let [title
-        (get-in levels [(aiw/current-level @world) :message (keyword @language)])]
+  (let [level-nb (aiw/current-level @world)
+        level-data (levels level-nb)
+        title
+        (get-in levels [level-nb :message (keyword @language)])]
     [:div
      (load-modals)
      (header (:player @params))
@@ -339,7 +297,7 @@
        (cgb/game-board @world title)
        (cgi/controls-content (keyword (player-type (:player @params))))]
       [:div.col.col-lg-3
-       [cgi/game-info (:player @params)]
+       [cgi/game-info (:player @params) app-state level-nb level-data]
        [cll/leaderboard "player"]]]]))
 
 (defn- rabbit-game-mobile []
@@ -393,67 +351,23 @@
            (.fadeOut 100) (.fadeIn 100)))))
   ([] (animate-intro-screen 2)))
 
-(def available-colors
-  [":root {
-    --black: #7d5a50;
-    --light-grey: #7d5a5020;
-    --white: #fff;
-    --links-color: #e5b299;
-    --links-light: #e5b29980;
-    --links-very-light: #e5b29920;
-    --cta-color: #fcdec0;
-    --cta-light: #fcdec080;
-    --cta-very-light: #fcdec020;
-    --maxlev-color: #b4846c;
-}"
-":root {
-    --black: #303841;
-    --light-grey: #30384120;
-    --white: #eeeeee;
-    --links-color: #00adb5;
-    --links-light: #00adb580;
-    --links-very-light: #00adb520;
-    --cta-color: #ff5722;
-    --cta-light: #ff572280;
-    --cta-very-light: #ff572220;
-    --maxlev-color: darkblue;
-}"
-":root {
-    --black: #2D4059;
-    --light-grey: #F07b3f;
-    --white: #fff;
-    --links-color: #e45455;
-    --links-light: #e4545580;
-    --links-very-light: #e4545520;
-    --cta-color: #ffd460;
-    --cta-light: #ffd46080;
-    --cta-very-light: #ffd46020;
-    --maxlev-color: #f07b3f;
-}"
-":root {
-    --black: #212121;
-    --light-grey: #21212120;
-    --white: #f6f6f6;
-    --links-color: #6d9886;
-    --links-light: #6d988680;
-    --links-very-light: #6d988610;
-    --cta-color: #d9cab3;
-    --cta-light: #d9cab380;
-    --cta-very-light: #d9cab310;
-    --maxlev-color: darkred;
-}"])
+(defn level-info-component []
+  (let [level-nb (aiw/current-level @world)]
+    [cgi/level-info-content level-nb (levels level-nb)]))
 (defn run-game
-  "Runs the Lapyrinthe game with the specified UX. There must be an 'app' element in the html page."
+  "Runs the Lapyrinthe game with the specified UX. There must be an
+  'app' element in the html page."
   [ux]
   {:pre [(gdom/getElement "app")]}
+  
   (animate-intro-screen)
   (reset! params (parse-params))
   (init ux)
   (render [claby] (gdom/getElement "app")
           #(add-enemies-style ux (get-in levels [(aiw/current-level @world) :enemies])))
+  (render [level-info-component] (gdom/getElement "next-level-info"))
   (setup-leaderboard ux)
-  (when-let [color-idx (:color @params)]
-    (.append (jq "body") (str "<style>" (available-colors color-idx) "</style>"))))
+  (cgi/setup-game-colors (-> @app-state :options :color-scheme-id)))
 
 ;; specify reload hook with ^;after-load metadata
 (defn ^:after-load on-reload []

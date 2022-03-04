@@ -7,7 +7,9 @@
    [reagent.dom.server :refer [render-to-static-markup]]
    [mzero.game.state :as gs]
    [claby.ux.base :as ux]
-   [mzero.ai.world :as aiw]))
+   [claby.ux.levels :refer [levels]]
+   [mzero.ai.world :as aiw]
+   [reagent.core :as reagent]))
 
 (defonce jq (js* "$"))
 (defonce gameMusic (js/Audio. "neverever.mp3"))
@@ -17,8 +19,8 @@
    :won (js/Audio. "won.mp3")
    :nextlevel (js/Audio. "nextlevel.wav")})
 
-(defonce music-on (atom false))
-(defonce fx-on (atom true))
+(defonce music-on (reagent/cursor ux/app-state [:options :music]))
+(defonce fx-on (reagent/cursor ux/app-state [:options :sounds]))
 
 (set! (.-loop gameMusic) true)
 
@@ -29,9 +31,9 @@
               (.removeClass (jq "h2.subtitle") "initial"))))
 
 (defonce start-level-data
-  {:initial ["#intro-screen" #(.fadeOut (jq "#intro-screen h1") 2000) 30000]
+  {:initial ["#intro-screen" #(.fadeOut (jq "#intro-screen h1") 2000) 25000]
    :game-over [".game-over" nil]
-   :nextlevel [".game-nextlevel" next-level-callback 4000]})
+   :nextlevel [".game-nextlevel" next-level-callback 10000]})
 
 (defn final-animation [i]
   (cond
@@ -81,7 +83,7 @@
 (defn between-levels []
   (.css (jq "h2.subtitle") (clj->js {:top "" :font-size "" :opacity 1}))
   (.addClass (jq "h2.subtitle") "initial")
-  (.css (jq "h2.subtitle span") "color" (get-in ux/levels [(aiw/current-level @ux/world) :message-color])))
+  (.css (jq "h2.subtitle span") "color" (get-in levels [(aiw/current-level @ux/world) :message-color])))
 
 (defn- fx-toggle []
   (if @fx-on
@@ -126,6 +128,11 @@
                                    (-> old ::gs/game-state ::gs/score)))
                      (.load scoreSound)
                      (when @fx-on (.play scoreSound)))))
+      (add-watch ux/app-state :music-toggling
+                 (fn [_ _ _ {:keys [options]}]
+                   (if (:music options)
+                     (.play gameMusic)
+                     (.pause gameMusic))))
       (setup-button-events)
       (setup-transitions this)
       (ux/prepare-game this))

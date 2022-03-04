@@ -19,7 +19,8 @@
                  [reagent "0.10.0"]
                  [compojure "1.6.2"]
                  [ring/ring-json "0.5.1"]
-                 [mzero-game "0.3.2"]]
+                 [mzero-game "0.3.2"]
+                 [alandipert/storage-atom "2.0.1"]]
 
   :jvm-opts ["-Xss1g"
              "-Dclojure.tools.logging.factory=clojure.tools.logging.impl/jul-factory"]
