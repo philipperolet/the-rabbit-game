@@ -176,6 +176,9 @@
   (let [controls-modal-id (str "#" (player-type player) "-controls-modal")]
     [:div.links.col-6
      [:a.info
+      {:data-toggle "modal" :data-target "#modal-about-game"}
+      "What should I do?"]
+     [:a.info
       {:data-toggle "modal" :data-target "#speed-level-modal"}
       "Change Speed / Level"]
      [:a.info

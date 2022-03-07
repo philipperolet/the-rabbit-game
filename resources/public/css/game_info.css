@@ -3,6 +3,7 @@
 }
 .game-info form > * {
     margin-left: 1em;
+    margin-top: 0.2em;
 }
 .game-info #colors-options {
     display: inline;

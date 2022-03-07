@@ -27,10 +27,6 @@
     overflow-y: auto;
 }
 
-#learn-more-modals .modal-body h4, #stat-modals .modal-body h4 {
-    font-weight: bolder;
-    font-size: 1.1em;
-}
 #learn-more-modals .modal-body h4 span.title , #stat-modals .modal-body h4 span.title {
     text-decoration: underline;
 }

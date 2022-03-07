@@ -1,5 +1,5 @@
 (ns claby.ux.help-texts
-  (:require [claby.utils :refer [modal]]
+  (:require [claby.utils :refer [modal se]]
             [claby.ux.ais :refer [ais]]))
 
 (def max-level
@@ -65,6 +65,53 @@
     [:p "AIs that have a very high adaptability (in the sense described here) AND a high learning-power and sophistication are quite rare. Truly general-purpose AIs do not exist yet."]
     [:p "But some algorithms, notably those relying on deep learning, have a degree of \"transfer learning\" ability : trained on a task, they perform not so bad on a different but similar one (e.g. learned to recognize animals, can quickly be adapted to recognize plants)."]]})
 
+(def about-game
+  [:div
+   [:h3 "What should I do with this game?"]
+   [:p "First, you can play it a little to see what it does, check out
+   the various levels."]
+   [:p "Then, you can let artificial intelligences play, watch how
+    they do and where they fail. You can read about the stats of each
+    of them, and what makes them good or bad."]
+   [:p "Additionnally, if you're a hacker, you can try to code an
+    algorithm to go to the highest possible level. If it clears the
+    last level, you can win *a lot* of internet points (really awful
+    lot)."]
+   [:h3 "What is the game really about? why was it made?"]
+   [:h4 (se 128048) "Cute for humans, tough for AIs"]
+   [:p "It's cute for humans in the sense that it's not hard to
+   understand. It's more of a kid's game, adults will understand the
+   various levels easily (which does not mean that they'll be able to
+   get a good score). "]
+   [:p "What is interesting is to see what's hard or easy for
+   different kind of machines. It's tough for AIs because contrary to
+   us they don't easily understand and adapt to new rules, and the
+   game has new rules at each levels."]
+   [:h4 (se 128161) "Demystifying Artificial Intelligence"]
+   [:p "Artificial intelligence can mean a lot of different
+   things. Sometimes it just means a regular program that does
+   something humans used to do. Sometimes it means a program that is
+   resilient to errors. Sometimes it means a program that learns on
+   its own how to perform certain tasks. Sometimes it's just used to
+   trigger various emotions in news headlines without bearing in
+   reality. "]
+   [:p "The rabbit game helps seeing what various AIs are and how they work in a concrete way."]
+   [:h4 (se 128300)"AI reasearch: finding challenges simple to express but hard to solve"]
+   [:p "An issue in AI research IMHO is the fact that \"intelligence\"
+   is not well defined--therefore it is harder to reason about it and
+   to find new ways for machines to be more intelligent."]
+   [:p "Being able to express various traits of intelligence as game
+   levels in this simple setting would help thinking about new
+   algorithms. "]
+   [:p "To be fair, the first levels are actually easy even for
+   AIs. But the last levels aim at being hard for them. Even though
+   very powerful AIs developped recently in research labs would
+   probably clear them without trouble, such AIs are very complex and
+   require a lot of setup, tuning and computing power. "]
+   [:p "The underlying goal is to explore the idea that if a task is
+   simple to us, there may exists algorithms that can also handle it
+   easily and that we can try to discover."]])
+
 (def stat-descriptions
   {:learning-power learning-power
    :speed speed
@@ -91,7 +138,10 @@
                     (stat-content stat-description))])]
     [:div#stat-modals
      (map create-modal stat-descriptions)
-     (modal "modal-max-level" "Max level" max-level)]))
+     (modal "modal-max-level" "Max level" max-level)
+     (modal "modal-about-game"
+            "What should I do with this game? What is it about?"
+            about-game)]))
 
 (def learn-more-modal-id
   (memoize

@@ -116,6 +116,14 @@ a:hover {
 .modal-footer button {
     margin: 0 0.5em 0;
 }
+.modal-body h3 {
+    text-decoration: underline;
+    font-size: 1.25em;
+}
+.modal-body h4 {
+    font-weight: bolder;
+    font-size: 1.1em;
+}
 
 /** Legacy - To be deleted **/
 #lapy-arrows {
