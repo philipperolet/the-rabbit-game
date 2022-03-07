@@ -17,22 +17,24 @@
 .learn-more {
     text-align: left;
 }
-/*#learn-more-modals .modal-dialog, #stat-modals .modal-dialog
-{
-    height: 90%;
+
+#learn-more-modals .modal, #stat-modals .modal {
+    background-color: #0008;
+    overflow-y: auto;
 }
-#learn-more-modals .modal-content, #stat-modals .modal-content {
-    height: 100%;
-}*/
 
 #learn-more-modals .modal-body, #stat-modals .modal-body {
     overflow-y: auto;
 }
+
 #learn-more-modals .modal-body h4, #stat-modals .modal-body h4 {
-    font-style: italic;
     font-weight: bolder;
     font-size: 1.1em;
 }
+#learn-more-modals .modal-body h4 span.title , #stat-modals .modal-body h4 span.title {
+    text-decoration: underline;
+}
+#learn-more-modals .modal-body i, #stat-modals .modal-body i,
 #learn-more-modals .modal-body b, #stat-modals .modal-body b {
     padding: 0 0.2em 0;
 }
