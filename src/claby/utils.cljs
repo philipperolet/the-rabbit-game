@@ -32,7 +32,7 @@
   ([id title contents]
    [:div.modal.fade
     {:id id
-     :tabindex -1
+     :tabIndex -1
      :role "dialog"
      :aria-labelledby (str id "title")
      :aria-hidden "true"}

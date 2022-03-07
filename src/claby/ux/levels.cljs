@@ -59,9 +59,9 @@
       "It is harder to model different kinds of enemies, so it's a
    little bit harder for machines (except for the fast ones, who
    won't care at all)"]
-     [:p ["The difficulty is still pretty standard to handle,
+     [:p "The difficulty is still pretty standard to handle,
    though. Things will start getting tough for machines the level
-   after."]]]}
+   after."]]}
    #_{:message {:en "All right, let's raise the stakes."
               :fr "Allez on arrête de déconner."}
     ::gg/density-map {:fruit 5

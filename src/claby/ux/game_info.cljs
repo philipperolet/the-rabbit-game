@@ -1,5 +1,6 @@
 (ns claby.ux.game-info
-  (:require [claby.utils :refer [modal player-type se jq]]))
+  (:require [claby.utils :refer [modal player-type se jq]]
+            [claby.ux.levels :refer [levels]]))
 
 ;; Controls explanation modal
 
@@ -128,15 +129,30 @@
   [{:adverb "Slow" :tick-value 150}
    {:adverb "Medium" :tick-value 75}
    {:adverb "Fast" :tick-value 50}
-   {:adverb "Furious!" :tick-value 150}])
+   {:adverb "Furious!" :tick-value 25}])
+
+(defn- speed-level-footer [app-state speed-choice level-choice]
+  [:div
+   [:button.btn.btn-secondary {:type "button" :data-dismiss "modal"} "Cancel"]
+   [:button.btn.btn-primary
+    {:type "button"
+     :on-click (fn []
+                 (swap! app-state assoc-in [:options :speed] speed-choice)
+                 (swap! app-state assoc-in [:options :level] level-choice)
+                 (.reload (.-location js/window)))}
+    "Go!"]])
 
 (defn speed-level-modal [app-state]
-  (let [speed (-> @app-state :options :speed)
+  (let [speed (-> @app-state :speed-choice)
         speed-change-fn
-        #(swap! app-state assoc-in [:options :speed] (.. % -target -value))
-        level (-> @app-state :options :level)
+        #(swap! app-state assoc :speed-choice (.. % -target -value))
+        level (-> @app-state :level-choice)
         level-change-fn
-        #(swap! app-state assoc-in [:options :level] (.. % -target -value))]
+        #(swap! app-state assoc :level-choice (.. % -target -value))
+        level-option
+        (fn [index {:as level-data :keys [message]}]
+          [:option {:key (str "level-nb-" index) :value index}
+           (str "Level " index ": " (:en message))])]
     (modal "speed-level-modal"
            "Change speed / level"
            [:form
@@ -152,8 +168,9 @@
              [:div.col-lg-10
               [:select.custom-select
                {:value level
-                :on-change level-change-fn}]]
-             [:div.col-lg-3 ()]]])))
+                :on-change level-change-fn}
+               (map-indexed level-option levels)]]]]
+           (speed-level-footer app-state speed level))))
 
 ;; Level info
 ;;;;

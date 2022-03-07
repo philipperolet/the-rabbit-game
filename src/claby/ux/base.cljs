@@ -2,8 +2,6 @@
   "Main UX components to run the Claby game.
 
   UX can be tweaked via query params:
-  - cheatlev=X starts directly in level X
-  - tick=X sets the 'speed' of enemies, actually their frequency defaulting to 130
   - player=human allows for human control of the player rather than ai"
   (:require
    [goog.dom :as gdom]
@@ -38,6 +36,8 @@
                              :speed 1
                              :level 0}
                    :player-selection-modal-choice nil
+                   :speed-choice 1
+                   :level-choice 0
                    :initial-controls-shown {:human false :ai false}})
                  :app-state))
 
@@ -139,7 +139,8 @@
   "Start/pause game"
   ([run?]
    (if run?
-     (let [tick-interval (int (get @params :tick "65"))]
+     (let [tick-interval
+           (:tick-value (cgi/speeds (-> @app-state :options :speed)))]
        (reset! game-execution-interval-id
                (.setInterval js/window game-step! tick-interval)))
      (do
@@ -192,8 +193,8 @@
 
 (def current-level-game-state (atom {}))
 (defn- load-game-board [ux]
-  (let [remaining-levels ;; cheatlev option to skip levels
-        (drop (int (get @params :cheatlev "0")) levels)
+  (let [remaining-levels
+        (drop (int (-> @app-state :options :level)) levels)
         world-already-initialized? (seq @world)
         load-callback
         (fn [world_]
@@ -237,7 +238,8 @@
   (let [current-level (aiw/current-level @world)
         on-player-selection
         (fn [selected-id]
-          (reload-with-query-string (str "?player=" (name selected-id) "&cheatlev=" current-level)))]
+          (swap! app-state assoc-in [:options :level] current-level)
+          (reload-with-query-string (str "?player=" (name selected-id))))]
     (cpl/player-selection-modal @player-selection-modal-choice
                                 player-selection-modal-choice
                                 on-player-selection)))
@@ -371,6 +373,7 @@
     (-> (jq ".modal")
         (.on "show.bs.modal" pause-game)
         (.on "hidden.bs.modal" resume-game))))
+
 (defn run-game
   "Runs the Lapyrinthe game with the specified UX. There must be an
   'app' element in the html page."
@@ -379,7 +382,7 @@
   (animate-intro-screen)
   (reset! params (parse-params))
   (init ux)
-  (render [claby] (gdom/getElement "app") game-render-callback)
+  (render [claby] (gdom/getElement "app") (partial game-render-callback ux))
   (render [level-info-component] (gdom/getElement "next-level-info"))
   (setup-leaderboard ux)
   (cgi/setup-game-colors (-> @app-state :options :color-scheme-id)))
