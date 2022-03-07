@@ -269,8 +269,7 @@
                               :data-target "#player-selection-modal"
                               :on-click (fn []
                                           
-                                          (toggle-game-execution false))
-                              :on-focus #(.blur (.-activeElement js/document))}
+                                          (toggle-game-execution false))}
      "Try another player"]
     [:button.btn.btn-secondary {:on-click (partial reload-with-query-string "?player=human")} "Back to human"]]})
 
@@ -358,7 +357,20 @@
   (let [level-nb (aiw/current-level @world)]
     [cgi/level-info-content level-nb (levels level-nb)]))
 
-
+(defn game-render-callback [ux]
+  (add-enemies-style ux (get-in levels [(aiw/current-level @world) :enemies]))
+  (.focus (jq "button, select, input") #(.blur (.-activeElement js/document)))
+  (let [pause-game
+        (fn []
+          (toggle-game-execution false)
+          (.removeEventListener js/window "keydown" user-keypress))
+        resume-game
+        (fn []
+          (.addEventListener js/window "keydown" user-keypress)
+          (toggle-game-execution (= (:player @params) "human")))]
+    (-> (jq ".modal")
+        (.on "show.bs.modal" pause-game)
+        (.on "hidden.bs.modal" resume-game))))
 (defn run-game
   "Runs the Lapyrinthe game with the specified UX. There must be an
   'app' element in the html page."
@@ -367,8 +379,7 @@
   (animate-intro-screen)
   (reset! params (parse-params))
   (init ux)
-  (render [claby] (gdom/getElement "app")
-          #(add-enemies-style ux (get-in levels [(aiw/current-level @world) :enemies])))
+  (render [claby] (gdom/getElement "app") game-render-callback)
   (render [level-info-component] (gdom/getElement "next-level-info"))
   (setup-leaderboard ux)
   (cgi/setup-game-colors (-> @app-state :options :color-scheme-id)))

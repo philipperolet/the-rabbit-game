@@ -175,6 +175,7 @@
                                 update ::gs/game-state
                                 assoc ::gs/status :active)
                          (when callback (callback))
+                         (.focus (jq "#game-board"))
                          (ux/toggle-game-execution (= "human" (:player @ux/params)))))
               (.fadeOut (jq elt-to-fade) 1000))
             timeout-id
