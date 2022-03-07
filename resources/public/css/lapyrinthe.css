@@ -252,5 +252,9 @@ h2.subtitle span, #intro-screen .is-title {
     border: thin var(--black) solid;
     position: absolute;
     font-size: 0.8em;
-    bottom: -2.7em;
+    bottom: -1.2em;
+    padding: 0.2em;
+}
+#lapyrinthe #game-board + .controls-content div {
+    display: inline;
 }

@@ -69,9 +69,9 @@
     [:div [:img {:src "img/arrows.png"}] "Use arrow keys to move (note: you can also use S/E/D/F keys )"]]
    :ai
    [:div.controls-content
-         [:div [:img {:src "img/spacebar.png"}] "Press spacebar to
-         start/pause/resume game for the AI player."]
-         [:div [:img {:src "img/n.png"}] "When paused, press N key to
+         [:div [:img {:src "img/spacebar.png"}] "Press Spacebar to
+         start/resume game for the AI player."]
+         [:div [:img {:src "img/n.png"}] "When paused, press N to
          see the AI move step by step"]]})
 
 (defn ai-controls-modal []
