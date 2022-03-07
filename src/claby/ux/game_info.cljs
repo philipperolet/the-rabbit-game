@@ -123,10 +123,37 @@
 
 ;; Speed & level change
 ;;;;;;
+
+(def speeds
+  [{:adverb "Slow" :tick-value 150}
+   {:adverb "Medium" :tick-value 75}
+   {:adverb "Fast" :tick-value 50}
+   {:adverb "Furious!" :tick-value 150}])
+
 (defn speed-level-modal [app-state]
-  (modal "speed-level-modal"
-         "Change speed / level"
-         [:div "TBD"]))
+  (let [speed (-> @app-state :options :speed)
+        speed-change-fn
+        #(swap! app-state assoc-in [:options :speed] (.. % -target -value))
+        level (-> @app-state :options :level)
+        level-change-fn
+        #(swap! app-state assoc-in [:options :level] (.. % -target -value))]
+    (modal "speed-level-modal"
+           "Change speed / level"
+           [:form
+            [:div.form-group.row
+             [:div.col-lg-2 "Change speed"]
+             [:div.col-lg-6
+              [:input.form-control-range
+               {:type "range" :min 0 :max 3 :value speed
+                :on-change speed-change-fn}]]
+             [:div.col-lg-3 (:adverb (speeds speed))]]
+            [:div.form-group.row
+             [:div.col-lg-2 "Change level"]
+             [:div.col-lg-10
+              [:select.custom-select
+               {:value level
+                :on-change level-change-fn}]]
+             [:div.col-lg-3 ()]]])))
 
 ;; Level info
 ;;;;
@@ -134,32 +161,45 @@
 (defn level-info-content [level-nb {:as level-data :keys [message level-info]}]
   [:div.level-info
    [:h2 (str "Level " level-nb ": " (:en message))]
-   level-info])
+   level-info
+   [:div.subtext "Each level introduces a new element, often easy for
+   humans to grasp, but tougher for AIs"]])
 
 (defn level-info-modal [level-nb level-data]
   (modal "level-info-modal"
          "About this level"
          (level-info-content level-nb level-data)))
 
+;; Links section
+;;;;;
+(defn links-section [player]
+  (let [controls-modal-id (str "#" (player-type player) "-controls-modal")]
+    [:div.links.col-6
+     [:a.info
+      {:data-toggle "modal" :data-target "#speed-level-modal"}
+      "Change Speed / Level"]
+     [:a.info
+      {:data-toggle "modal" :data-target controls-modal-id}
+      "Controls"]
+     [:a.info
+      {:data-toggle "modal" :data-target "#level-info-modal"}
+      "About this level"]
+     #_[:a.info-inline
+        {:href "https://github.com/sittingbull/mzero-game"
+         :target "_blank"}
+        "Github"] #_" - "
+     #_[:a.info-inline
+        {:href "mailto:pr@machine-zero.com" :target "_blank"} "Contact"]]))
+
 ;; Component
 ;;;;;
 (defn game-info [player app-state level-nb level-data]
-  (let [controls-modal-id (str "#" (player-type player) "-controls-modal")]
-    [:div.panel-bordered
-     (ai-controls-modal)
-     (human-controls-modal)
-     (speed-level-modal app-state)
-     (level-info-modal level-nb level-data)
-     [:div.claby-panel-title "Options & infos"]
-     [:div.game-info.row
-      (game-options app-state)
-      [:div.links.col-6
-       [:a.info {:data-toggle "modal" :data-target "none"} "Change Speed / Level"]
-       [:a.info {:data-toggle "modal" :data-target controls-modal-id} "Controls"]
-       [:a.info {:data-toggle "modal" :data-target "#level-info-modal"} "About this level"]
-       [:a.info-inline
-             {:href "https://github.com/sittingbull/mzero-game"
-              :target "_blank"}
-        "Source code"] " & "
-       [:a.info-inline
-        {:href "mailto:pr@machine-zero.com" :target "_blank"} "Contact"]]]]))
+  [:div.panel-bordered
+   (ai-controls-modal)
+   (human-controls-modal)
+   (speed-level-modal app-state)
+   (level-info-modal level-nb level-data)
+   [:div.claby-panel-title "Options & infos"]
+   [:div.game-info.row
+    (game-options app-state)
+    (links-section player)]])
