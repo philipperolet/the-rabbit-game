@@ -35,7 +35,7 @@ a:hover {
 /* Buttons */
 .btn {
     border-width: 3px;
-    border-color: #0000;
+    border-color: #fff0;
     font-weight:900;
 }
 
@@ -138,4 +138,8 @@ a:hover {
 
 #lapy-arrows button img.off {
     opacity: 0.5;
+}
+
+span.emoji {
+    padding-right: 0.2em;
 }
