@@ -32,9 +32,9 @@
               (.removeClass (jq "h2.subtitle") "initial"))))
 
 (defonce start-level-data
-  {:initial ["#intro-screen" #(.fadeOut (jq "#intro-screen h1") 2000) 25000]
+  {:initial ["#intro-screen" #(.fadeOut (jq "#intro-screen h1") 2000) 30000]
    :game-over [".game-over" nil]
-   :nextlevel [".game-nextlevel" next-level-callback 10000]})
+   :nextlevel [".game-nextlevel" next-level-callback 20000]})
 
 (defn final-animation [i]
   (cond
@@ -127,7 +127,7 @@
         animate-controls
         (fn []
           (.addClass controls-elt "controls-initial-show")
-          (js/setTimeout #(.removeClass controls-elt "controls-initial-show") 4000))]
+          (js/setTimeout #(.removeClass controls-elt "controls-initial-show") 5000))]
     (when (not controls-shown?)
       (animate-controls)
       (swap! ux/app-state assoc-in [:initial-controls-shown player-type] true))))
