@@ -32,8 +32,8 @@
     [:a {:data-toggle "modal"
          :data-target "#modal-max-level"}
      "Max level"]]
-   [:td {:colspan (dec stat-col-nb)}]
-   [:td {:colspan 2} (se (+ 9311 max-level))]])
+   [:td {:colSpan (dec stat-col-nb)}]
+   [:td {:colSpan 2} (se (+ 9311 max-level))]])
 
 (defn player-card
   [{:as player-data
@@ -57,7 +57,7 @@
        :data-target (str "#" (learn-more-modal-id id))}
       "Learn more about me!"]]]
    [:table.stats
-    [:thead [:tr [:td {:colspan 8} "Stats"]]]
+    [:thead [:tr [:td {:colSpan 8} "Stats"]]]
     [:tbody
      (map stat-row stats)
      (max-level-row max-level)]]])

@@ -8,9 +8,9 @@
 (defn- title-row [score title level]
   [:tfoot
    [:tr.title-row
-    [:td {:colspan 5} (str "Score: " score)]
-    [:td {:colspan (- game-size 10)} title]
-    [:td {:colspan 5} (str "Level: " level)]]])
+    [:td {:colSpan 5} (str "Score: " score)]
+    [:td {:colSpan (- game-size 10)} title]
+    [:td {:colSpan 5} (str "Level: " level)]]])
 
 (defn game-board [world title]
   (let [score (.toFixed (or (-> world ::gs/game-state ::gs/score) 0) 0)
