@@ -324,21 +324,21 @@
   (when-let [el (gdom/getElement "app")]             
     (render [claby] el)))
 
+(defn- restart-level [ux]
+  (swap! current-level-game-state assoc ::gs/score 0.0)
+  (swap! world assoc ::aiw/game-step (-> @world ::aiw/current-level-start-step))
+  (prepare-game ux))
+
 (defn- setup-leaderboard [ux]
   (cll/get-high-scores! 15)
   (let [get-score
         (fn []
           {:score (-> @world ::gs/game-state ::gs/score)
            :player-type (player-type (:player @params))})
-        revive-action
-        (fn []
-          (swap! current-level-game-state assoc ::gs/score 0.0)
-          (swap! world assoc ::aiw/game-step (-> @world ::aiw/current-level-start-step))
-          (prepare-game ux))
         new-action #(-> (.-location js/window) (.reload))]
-    (render [cll/submit-score-form get-score revive-action new-action :won]
+    (render [cll/submit-score-form get-score #(restart-level ux) new-action :won]
             (gdom/getElement "svform-win"))
-    (render [cll/submit-score-form get-score revive-action new-action :over]
+    (render [cll/submit-score-form get-score #(restart-level ux) new-action :over]
             (gdom/getElement "svform-lose"))))
 
 (defn- animate-intro-screen
@@ -355,13 +355,17 @@
            (.fadeOut 100) (.fadeIn 100)))))
   ([] (animate-intro-screen 2)))
 
+(defn- animate-intro-screen-if-needed []
+  ;; only show intro when user arrives from elsewhere
+  (if (page-loaded-from-inside?) 
+    (.hide (jq "#intro-screen"))
+    (animate-intro-screen)))
+
 (defn level-info-component []
   (let [level-nb (aiw/current-level @world)]
     [cgi/level-info-content level-nb (levels level-nb)]))
 
-(defn game-render-callback [ux]
-  (add-enemies-style ux (get-in levels [(aiw/current-level @world) :enemies]))
-  (.focus (jq "button, select, input") #(.blur (.-activeElement js/document)))
+(defn- pause-game-on-modals []
   (let [pause-game
         (fn []
           (toggle-game-execution false)
@@ -374,12 +378,18 @@
         (.on "show.bs.modal" pause-game)
         (.on "hidden.bs.modal" resume-game))))
 
+(defn game-render-callback [ux]
+  (add-enemies-style ux (get-in levels [(aiw/current-level @world) :enemies]))
+  (pause-game-on-modals)
+  ;; inputs & buttons should not get focus, otherwise spacebar activates them
+  (.focus (jq "button, select, input") #(.blur (.-activeElement js/document))))
+
 (defn run-game
   "Runs the Lapyrinthe game with the specified UX. There must be an
   'app' element in the html page."
   [ux]
   {:pre [(gdom/getElement "app")]}
-  (animate-intro-screen)
+  (animate-intro-screen-if-needed)
   (reset! params (parse-params))
   (init ux)
   (render [claby] (gdom/getElement "app") (partial game-render-callback ux))

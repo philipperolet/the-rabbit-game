@@ -154,16 +154,14 @@
 
     (start-level [this]
       ;; Choose element to fade and callback
-      (let [[elt-to-fade callback fade-time]
+      (let [starting-type
             (cond
-              (.is (jq "#intro-screen") ":visible")
-              (start-level-data :initial)
-
-              (.is (jq ".game-over") ":visible")
-              (start-level-data :game-over)
-              
-              :else
-              (start-level-data :nextlevel))
+              (.is (jq "#intro-screen") ":visible") :initial
+              (.is (jq ".game-over") ":visible") :game-over
+              (.is (jq ".game-next-level") ":visible") :next-level
+              :else :other)
+            [elt-to-fade callback fade-time]
+            (start-level-data starting-type)
             start-level-callback
             (fn []
               (when @music-on (-> (.play gameMusic)))
