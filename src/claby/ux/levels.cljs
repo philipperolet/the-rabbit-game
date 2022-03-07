@@ -9,7 +9,7 @@
                       :cheese 0}
     :level-info [:div [:p "This is the first level. Just eat the fruits :)"]]}
    {:message {:fr "Attention au fromage non-pasteurisé !"
-              :en "Beware unpasteurized cheese!"}
+              :en "Unpasteurized cheese is dangerous for rabbits!"}
     ::gg/density-map {:fruit 3
                       :cheese 3}
     :message-color "darkgoldenrod"
@@ -43,22 +43,26 @@
     [:div
      [:p [:b "What's new? "] "Enemies go faster."]
      [:p [:b "How hard is it for Machines?"]
-      "In this case adapting is simpler for machines
+      "In this case, adapting is simpler for machines
       than for humans. Faster enemies will make the game harder for
       us than for AIs."]]}
-   {:message {:en "Scary covid is here"
-              :fr "Le covid ça fait peur!"}
+   {:message {:en "Covid shows up!"
+              :fr "Le covid déboule!"}
     ::gg/density-map {:fruit 5
                       :cheese 3}
     :message-color "darkcyan"
-    :enemies [:virus :virus]
+    :enemies [:drink :mouse :virus :virus]
     :level-info
     [:div
-     [:p [:b "What's new? "] "Multiple enemies of varying speed"]
+     [:p [:b "What's new? "] "Multiple enemies with different speeds."]
      [:p [:b "How hard is it for Machines?"]
-      "TBD"]
-     [:p "The enemy behaves simply so the game is still not very hard for machines yet."]]}
-   {:message {:en "All right, let's raise the stakes."
+      "It is harder to model different kinds of enemies, so it's a
+   little bit harder for machines (except for the fast ones, who
+   won't care at all)"]
+     [:p ["The difficulty is still pretty standard to handle,
+   though. Things will start getting tough for machines the level
+   after."]]]}
+   #_{:message {:en "All right, let's raise the stakes."
               :fr "Allez on arrête de déconner."}
     ::gg/density-map {:fruit 5
                       :cheese 5}
