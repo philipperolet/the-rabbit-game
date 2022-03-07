@@ -32,6 +32,28 @@
 .controls-content {
 }
 
+#lapyrinthe #game-board + .controls-content {
+    background-color: var(--transp-white);
+    border: thin var(--black) solid;
+    position: absolute;
+    font-size: 0.8em;
+    bottom: -1.2em;
+    padding: 0.2em;
+    transition: all ease-out 0.5s;
+}
+
+#lapyrinthe #game-board + .controls-content div {
+    display: inline;
+}
+
+#lapyrinthe #game-board + .controls-content.controls-initial-show {
+    font-size: 2em;
+    bottom: 3em;
+}
+#lapyrinthe #game-board + .controls-content.controls-initial-show div {
+    display: block;
+}
+
 /* Level info */
 .level-info h2 {
     font-size: 1.2em;

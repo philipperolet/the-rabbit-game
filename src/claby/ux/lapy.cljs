@@ -8,6 +8,7 @@
    [mzero.game.state :as gs]
    [claby.ux.base :as ux]
    [claby.ux.levels :refer [levels]]
+   [claby.utils :refer [player-type]]
    [mzero.ai.world :as aiw]
    [reagent.core :as reagent]))
 
@@ -117,6 +118,20 @@
   (.click (jq "#lapy-arrows #fx-btn") fx-toggle)
   (.click (jq "#lapy-arrows #music-btn") music-toggle))
 
+(defn- animate-controls-if-needed []
+  (let [player-type (player-type (:player @ux/params))
+        controls-shown?
+        (get-in @ux/app-state [:initial-controls-shown player-type])
+        controls-elt
+        (jq "#lapyrinthe #game-board + .controls-content")
+        animate-controls
+        (fn []
+          (.addClass controls-elt "controls-initial-show")
+          (js/setTimeout #(.removeClass controls-elt "controls-initial-show") 4000))]
+    (when (not controls-shown?)
+      (animate-controls)
+      (swap! ux/app-state assoc-in [:initial-controls-shown player-type] true))))
+
 (defonce lapy-ux
   (reify ux/ClapyUX
     
@@ -155,6 +170,7 @@
               (.hide (jq "#loading"))
               (.fadeTo (jq "#app") 1000 1
                        (fn []
+                         (animate-controls-if-needed)
                          (swap! ux/world
                                 update ::gs/game-state
                                 assoc ::gs/status :active)

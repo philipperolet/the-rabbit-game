@@ -37,7 +37,8 @@
                              :color-scheme-id "base"
                              :speed 1
                              :level 0}
-                   :player-selection-modal-choice nil})
+                   :player-selection-modal-choice nil
+                   :initial-controls-shown {:human false :ai false}})
                  :app-state))
 
 (defonce params (atom {}))
@@ -343,8 +344,8 @@
   ([div-nb]
    (if (< div-nb 6)
      (-> (jq (str "#intro-screen .intro-col > div:nth-child(" div-nb ")"))
-         (.fadeIn 1500)
-         (.delay 2000)
+         (.fadeIn 2000)
+         (.delay 1500)
          (.queue #(animate-intro-screen (inc div-nb))))
      (when (.is (jq "#loading .btn") ":visible")
        (-> (jq "#loading .btn")
@@ -356,12 +357,13 @@
 (defn level-info-component []
   (let [level-nb (aiw/current-level @world)]
     [cgi/level-info-content level-nb (levels level-nb)]))
+
+
 (defn run-game
   "Runs the Lapyrinthe game with the specified UX. There must be an
   'app' element in the html page."
   [ux]
   {:pre [(gdom/getElement "app")]}
-  
   (animate-intro-screen)
   (reset! params (parse-params))
   (init ux)
