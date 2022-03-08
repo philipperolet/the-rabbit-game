@@ -53,7 +53,8 @@
           "tree-explorator" "tree-exploration"
           "simulator" "simulator"
           "random" "random"
-          "m00" "tree-exploration")]
+          "m00" "tree-exploration"
+          "dumbot" "dumbot")]
     (swap! player-atom update-player req {:player-type player-type :player-opts {}})
     (reset! player-type-atom player-type))
   (let [{:as world :keys [::aiw/game-step]} (parse-world req)]

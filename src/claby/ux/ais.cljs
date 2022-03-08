@@ -177,8 +177,7 @@
            :sophistication 1
            :ease-of-use 6
            :adaptability -1}
-   :max-level 2
-   :disabled? true})
+   :max-level 2})
 
 (def super-dumbot
   {:id "superdumbot"
