@@ -61,9 +61,17 @@
     [:p [:b "Sophistication: "] "MCTS is an interesting idea, simple in its expression, but with subtle details to perform efficient exploration."]
     [:p [:b "Ease of use: "] "MCTS is generally quite easy to use: relatively simple code, training phase not required,  and not a lot of settings. It can become hard to use in some situations, e.g. if mixed with other technologies"]
     [:p [:b "Learning power: "] "It has a very moderate learning power. It does not need to be explicitly told e.g. not to walk on walls, or that it needs to eat fruit--it will figure this out on its own. But that's it, it won't be able to learn to handle more complex situations."]
-    [:p [:b "Adaptability: "] "This kind of AI program is restricted to action-reaction problems: agents evolving in an environment. It can't be used for instance on image recognition tasks or medical analysis."]
+    [:p [:b "Adaptability: "] "This kind of AI program is restricted
+    to action-reaction problems: agents evolving in an environment. It
+    can't be used for instance on image recognition tasks or medical
+    analysis."]
     (level-subtitle 3)
-    [:p "TBD"]]
+    [:p "At level 3, relatively fast enemies appear, simulating
+    without understanding enemies is not enough, it is necessary to
+    predict where enemies will move. Note: at level 2, enemies are
+    slow enough that it looks like they do not move to
+    TreeExplorator--although sometimes it can make a little mistake
+    and get caught."]]
    :stats {:learning-power 1
            :speed 4
            :sophistication 3
@@ -108,7 +116,9 @@
     it's very, very autonomous and adaptable. When the task completely
     changes, it can learn and adapt with no outside help."]
     (level-subtitle 9)
-    [:p "Since it's the smartest algorithm around, it can go up to the last level, 9 (and when the time comes, over 9000)."]]
+    [:p "Since it's the smartest algorithm around, it can go up to the
+    last level, 9 (and when the time comes, over 9000)--on slower
+    speeds only though. At high speeds it gets overwhelmed."]]
    :stats {:learning-power 8
            :speed -1
            :sophistication 8
@@ -171,7 +181,29 @@
    :short-description "DumBot executes exact rules to collect fruits
    and avoid cheese. Very efficient, but cannot adapt: becomes useless when
    enemies show up."
-   :long-description [:p "I'll be available soon."]
+   :long-description
+   [:div
+    thinking-subtitle
+    [:p "Dumbot goes straight to the closest fruit that does not has a
+    cheese on its path. It can only do that, but does it very well."]
+    [:p "The programmer gave it precise rules and it can only follow them."]
+    stats-subtitle
+    [:p [:b "Speed:"] "Very fast since it doesn't think and only executes."]
+    [:p [:b "Sophistication: "] "There is a little math in computing
+    the closest fruit (since there are walls), but the algorithm is
+    still pretty simple."]
+    [:p [:b "Ease of use: "] "Very easy to use: small coding time, no training, no setup."]
+    [:p [:b "Learning power: "] "No learning power. It cannot learn
+    anything. This is the first downside of rule-based algorithms
+    tailor-made to their problems."]
+    [:p [:b "Adaptability: "] "Not adaptable. This is the second downside of a tailor-made algoritm."]
+    (level-subtitle 2)
+    [:p "Dumbot cannot handle enemies at all. At level 2, it will
+    start failing because it will walk on them if they are on a path
+    between itself and the fruit it wants. But since those are very
+    slow enemies, if by chance they are not directly on its
+    trajectory, they won't be able to catch it."]
+    [:p "Starting from level 3, enemies are faster and it will fail more often."]]
    :stats {:learning-power -1
            :speed 5
            :sophistication 1
@@ -185,16 +217,28 @@
    :pic-url "img/superdumbot.png"
    :technology "Rule-based"
    :short-description "SuperDumBot is DumBot plus specific code to
-   avoid ennemies. Clears levels with enemies, but becomes
+   avoid ennemies. So it clears levels with enemies, but becomes
    useless again on higher levels."
-   :long-description [:p "I'll be available soon."]
+   :long-description
+   [:div
+    thinking-subtitle
+    [:p "Using Dumbot code, the programmer gave an additional rule to
+    see enemies and move in the opposite direction when they come
+    close."]
+    stats-subtitle
+    [:p "The stats are basically the same as Dumbot, although
+    marginally more sophisticated"]
+    (level-subtitle 4)
+    [:p "It can clear all levels with enemies most of the time, since
+    it has a rule made specifically for that. Sometimes enemies will
+    manage to get it into a corner though; it cannot handle this kind
+    of complex situations. And it cannot do anything on higher levels."]]
    :stats {:learning-power -1
            :speed 5
            :sophistication 2
-           :ease-of-use 5
+           :ease-of-use 6
            :adaptability -1}
-   :max-level 4
-   :disabled? true})
+   :max-level 4})
 
 (def brainy
   {:id "brainy"
