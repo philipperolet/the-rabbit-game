@@ -196,16 +196,21 @@ h2.subtitle span, #intro-screen .is-title {
     z-index: 10;
 }
 
-.game-over { background-color: var(--black); }
+.game-over {
+    background-color: var(--black);
+    color: var(--white);
+}
 .game-won, .game-nextlevel { background-color: var(--white); }
 
 .game-over img, .game-won img, .game-nextlevel img {
     position: relative;
-    margin-top: 10%;
     width: 33%;
     left: 33%;
     display: block;
     border-radius: 100%;
+}
+.game-over img, .game-nextlevel img {
+    margin-top: 10%;
 }
 
 .game-nextlevel img {
