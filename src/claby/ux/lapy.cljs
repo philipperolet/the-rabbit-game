@@ -158,7 +158,7 @@
             (cond
               (.is (jq "#intro-screen") ":visible") :initial
               (.is (jq ".game-over") ":visible") :game-over
-              (.is (jq ".game-next-level") ":visible") :next-level
+              (.is (jq ".game-nextlevel") ":visible") :nextlevel
               :else :other)
             [elt-to-fade callback fade-time]
             (start-level-data starting-type)
