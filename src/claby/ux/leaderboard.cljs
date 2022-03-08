@@ -117,7 +117,8 @@
 
 (def score-data (r/atom {:name ""}))
 (defn submit-score! [score callback]
-  (let [score (assoc score :timestamp (c/currTimeMillis))]
+  (let [score (assoc score :timestamp (c/currTimeMillis)
+                     :valid "true")]
     (write-high-score! score callback)))
 
 (defn submit-score-form [get-score revive-action new-action game-status]
