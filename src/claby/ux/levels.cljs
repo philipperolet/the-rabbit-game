@@ -24,7 +24,7 @@
     ::gg/density-map {:fruit 5
                       :cheese 3}
     :message-color "darkblue"
-    :enemies [:drink :drink]
+    :enemies [:drink :drink :drink :drink]
     :level-info
     [:div
      [:p [:b "What's new? "] "This level introduces enemies."]
@@ -38,7 +38,7 @@
     ::gg/density-map {:fruit 5
                       :cheese 3}
     :message-color "darkmagenta"
-    :enemies [:drink :mouse :mouse]
+    :enemies [:mouse :mouse :mouse :mouse]
     :level-info
     [:div
      [:p [:b "What's new? "] "Enemies go faster."]

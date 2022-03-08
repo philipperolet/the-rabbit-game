@@ -4,8 +4,12 @@
 
 (def max-level
   [:div
-   [:p "The maximum level of the rabbit game that this AI can be expected to reach."]
-   [:p "Starting from this level, the AI will struggle and most likely fail. Rarely, the AI can get lucky and clear the level--or unlucky, and fail even before reaching it."]])
+   [:p "The maximum level that this player can reach most of the time (at the slowest speed setting)"]
+   [:p "At this level, the AI will start struggling and fail more
+   often (but it may still sometimes manage to clear it). After this
+   level, it will almost always fail."]
+   [:p "The level is given for the slowest speed setting. At higher
+   speeds, slow players may fail earlier."]])
 
 (def speed
   {:title "Speed"

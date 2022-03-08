@@ -126,10 +126,10 @@
 ;;;;;;
 
 (def speeds
-  [{:adverb "Slow" :tick-value 150}
-   {:adverb "Medium" :tick-value 75}
-   {:adverb "Fast" :tick-value 50}
-   {:adverb "Furious!" :tick-value 25}])
+  [{:adverb "Slow" :tick-value 300}
+   {:adverb "Medium" :tick-value 150}
+   {:adverb "Fast" :tick-value 75}
+   {:adverb "Furious!" :tick-value 40}])
 
 (defn- speed-level-footer [app-state speed-choice level-choice]
   [:div
