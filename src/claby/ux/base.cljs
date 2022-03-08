@@ -335,7 +335,10 @@
         (fn []
           {:score (-> @world ::gs/game-state ::gs/score)
            :player-type (player-type (:player @params))})
-        new-action #(-> (.-location js/window) (.reload))]
+        new-action
+        (fn []
+          (swap! app-state assoc-in [:options :level] 0)
+          (-> (.-location js/window) (.reload)))]
     (render [cll/submit-score-form get-score #(restart-level ux) new-action :won]
             (gdom/getElement "svform-win"))
     (render [cll/submit-score-form get-score #(restart-level ux) new-action :over]
