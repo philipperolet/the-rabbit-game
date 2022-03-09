@@ -287,6 +287,7 @@
 
 (defn- rabbit-game-computer []
   (let [level-nb (aiw/current-level @world)
+        speed-name (:adverb (cgi/speeds (-> @app-state :options :speed)))
         level-data (levels level-nb)
         title
         (get-in levels [level-nb :message (keyword @language)])]
@@ -299,7 +300,7 @@
          (cpl/current-player (:player @params)))]
       [:div.col.col-lg-6.d-flex.justify-content-center
        [:h2.subtitle [:span title]]
-       (cgb/game-board @world title)
+       (cgb/game-board @world title speed-name)
        (cgi/controls-content (keyword (player-type (:player @params))))]
       [:div.col.col-lg-3
        [cgi/game-info (:player @params) app-state level-nb level-data]
@@ -386,7 +387,8 @@
   (add-enemies-style ux (get-in levels [(aiw/current-level @world) :enemies]))
   (pause-game-on-modals)
   ;; inputs & buttons should not get focus, otherwise spacebar activates them
-  (.focus (jq "button, select, input") #(.blur (.-activeElement js/document))))
+  (.focus (jq "button, select, input") #(.blur (.-activeElement js/document)))
+  #_(swap! app-state assoc :speed-choice (-> @app-state :options :speed)))
 
 (defn run-game
   "Runs the Lapyrinthe game with the specified UX. There must be an
