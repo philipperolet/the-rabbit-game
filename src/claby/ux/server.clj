@@ -59,7 +59,9 @@
     (swap! player-atom update-player req {:player-type player-type :player-opts {}})
     (reset! player-type-atom player-type))
   (let [{:as world :keys [::aiw/game-step]} (parse-world req)]
-    (swap! missteps + (dec (- game-step @last-step)))
+    (when (< game-step @last-step)
+      (reset! missteps 0))
+    (swap! missteps + (dec (max 0 (- game-step @last-step))))
     (reset! last-step game-step)
     (when (zero? (mod (::aiw/game-step world) 25))
       (log/info (aiw/data->string world))
