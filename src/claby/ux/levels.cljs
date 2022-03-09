@@ -62,6 +62,23 @@
      [:p "The difficulty is still pretty standard to handle,
    though. Things will start getting tough for machines the level
    after."]]}
+   {:message {:en "Foggy day"
+              :fr "Un jour de brouillard"}
+    ::gg/density-map {:fruit 5
+                      :cheese 3}
+    :message-color "darkcyan"
+    :enemies [:drink :mouse]
+    :rules [:fog-of-war]
+    :level-info
+    [:div
+     [:p [:b "What's new? "] "Multiple enemies with different speeds."]
+     [:p [:b "How hard is it for Machines?"]
+      "It is harder to model different kinds of enemies, so it's a
+   little bit harder for machines (except for the fast ones, who
+   won't care at all)"]
+     [:p "The difficulty is still pretty standard to handle,
+   though. Things will start getting tough for machines the level
+   after."]]}
    #_{:message {:en "All right, let's raise the stakes."
               :fr "Allez on arrête de déconner."}
     ::gg/density-map {:fruit 5

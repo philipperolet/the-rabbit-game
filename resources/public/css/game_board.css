@@ -28,6 +28,10 @@
 #game-board td.player {
     background-image: url("../img/rabbit3.png");
 }
+#game-board td.hidden {
+    background-image: unset !important;
+    background-color: lightgrey !important; 
+}
 
 /* Title row */
 #game-board .title-row {
