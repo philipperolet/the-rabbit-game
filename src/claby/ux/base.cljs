@@ -60,7 +60,8 @@
              (-> @world
                  cgb/fog-world
                  (update ::aiw/next-levels #(repeat (count %) :hidden))
-                 (assoc ::aiw/levels-data []))
+                 (assoc ::aiw/levels-data [])
+                 (assoc-in [::gs/game-state :momentum-rule] nil))
              response
              (<! (http/post (str api-url "/" (:player @params "random"))
                             {:with-credentials? false

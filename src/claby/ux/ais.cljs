@@ -54,7 +54,13 @@
    [:div
     thinking-subtitle
     [:p "TreeExplorator decides which direction is best to move next by creating an \"exploration tree\", thus the name. "]
-    [:p "It imagines walking a path of a few steps (e.g. up, left, up, right, right...) and assesses if it gains score or loses during this 'simulation'.  Then it tries another path, then another, using a statistical formula to assess the result of each simulation and determine what to try next. Its core technology is called Monte-Carlo Tree Search (monte-carlo refers to randomness introduced in choosing the directions to try)."]
+    [:p "It imagines walking a path of a few steps (e.g. up, left, up,
+    right, right...) and assesses if it gains score or loses during
+    this 'simulation'.  Then it tries another path, then another,
+    using a statistical formula to assess the result of each
+    simulation and determine what to try next. Its core technology is
+    called Monte-Carlo Tree Search (monte-carlo refers to randomness
+    introduced in choosing the directions to try)."]
     [:p "Monte-Carlo Tree Search (MCTS) in this context is a branch of Reinforcement Learning technologies, which is itself a branch of Machine Learning (itself a branch of Artificial Intelligence Reasearch :))."]
     stats-subtitle
     [:p [:b "Speed:"] " Quite fast on average. The speed is actually adaptable since you can tell it how many simulations to perform before deciding a move. This one can perform ~50 000 simulations per second (of 20 directions each, so about a million moves) on a normal PC. "]

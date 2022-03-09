@@ -71,14 +71,42 @@
     :rules [:fog-of-war]
     :level-info
     [:div
-     [:p [:b "What's new? "] "Multiple enemies with different speeds."]
+     [:p [:b "What's new? "] "Some stuff is hidden."]
      [:p [:b "How hard is it for Machines?"]
-      "It is harder to model different kinds of enemies, so it's a
-   little bit harder for machines (except for the fast ones, who
-   won't care at all)"]
-     [:p "The difficulty is still pretty standard to handle,
-   though. Things will start getting tough for machines the level
-   after."]]}
+      "The real difficulties start now. Since some stuff is unknown,
+      it is hard to program rules about what to do so rule-based
+      machines will not handle this well. Simple learning
+      machines will also struggle as soon as no strawberry is in sight anymore."]
+     [:p ""]]}
+   {:message {:en "Upside down"
+              :fr "A l'envers"}
+    ::gg/density-map {:fruit 5
+                      :cheese 3}
+    :message-color "darkcyan"
+    :enemies [:drink :mouse]
+    :rules [:controls-switch]
+    :level-info
+    [:div
+     [:p [:b "What's new? "] "Controls change"]
+     [:p [:b "How hard is it for Machines?"]
+      "Any machine with little to no learning ability will fail
+      instantly here. Even relatively sophisticated AIs will struggle."]]}
+   {:message {:en "Success needs momentum"
+              :fr "L'élan de la réussite"}
+    ::gg/density-map {:fruit 5
+                      :cheese 3}
+    :message-color "darkcyan"
+    :enemies [:drink :mouse]
+    :rules [:momentum-rule]
+    :level-info
+    [:div
+     [:p [:b "What's new? "] "A new weird rule appears."]
+     [:p [:b "How hard is it for Machines?"]
+      "The rule is not basic, so simple learning machines won't be able to
+      find it out. More advanced ones will manage though. As usual,
+      rule-based machines will fail unless somebody wrote in them the
+      exact code for the rule."]
+     [:p ""]]}
    #_{:message {:en "All right, let's raise the stakes."
               :fr "Allez on arrête de déconner."}
     ::gg/density-map {:fruit 5
