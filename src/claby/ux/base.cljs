@@ -338,7 +338,7 @@
   (let [get-score
         (fn []
           {:score (-> @world ::gs/game-state ::gs/score)
-           :player-type (player-type (:player @params))})
+           :player-type (:player @params)})
         new-action
         (fn []
           (swap! app-state assoc-in [:options :level] 0)
