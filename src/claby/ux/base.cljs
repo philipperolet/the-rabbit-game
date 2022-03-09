@@ -57,7 +57,8 @@
   the request body parsed via read-string."
   ([callback]
    (go (let [thin-world
-             (-> @world 
+             (-> @world
+                 cgb/fog-world
                  (update ::aiw/next-levels #(repeat (count %) :hidden))
                  (assoc ::aiw/levels-data []))
              response
