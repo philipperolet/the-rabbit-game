@@ -167,7 +167,7 @@ h2.subtitle span, #intro-screen .is-title {
 
 #loading {
     text-align: center;
-    bottom: 20px;
+    bottom: 10px;
     width: 100%;
 }
 
@@ -214,7 +214,7 @@ h2.subtitle span, #intro-screen .is-title {
 }
 
 .game-nextlevel img {
-    margin-top: 5%;
+    margin-top: 1%;
 }
 .game-nextlevel .panel-bordered {
     width: 50%;
