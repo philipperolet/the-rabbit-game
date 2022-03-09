@@ -272,10 +272,7 @@
    :ai
    [:span (se 0x1F916) "An AI is playing" (se 0x1F916)
     [:button.btn.btn-primary {:data-toggle "modal"
-                              :data-target "#player-selection-modal"
-                              :on-click (fn []
-                                          
-                                          (toggle-game-execution false))}
+                              :data-target "#player-selection-modal"}
      "Try another player"]
     [:button.btn.btn-secondary {:on-click (partial reload-with-query-string "?player=human")} "Back to human"]]})
 

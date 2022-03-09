@@ -174,11 +174,11 @@
                                 assoc ::gs/status :active)
                          (when callback (callback))
                          (.focus (jq "#game-board"))
-                         (ux/toggle-game-execution (= "human" (:player @ux/params)))))
+                         (when (= "human" (:player @ux/params))
+                           (ux/toggle-game-execution true))))
               (.fadeOut (jq elt-to-fade) 1000))
             timeout-id
             (js/setTimeout start-level-callback fade-time)]
-
         ;; music and fading to begin level, and game activity
         (ux/loading-finished #(do (js/clearTimeout timeout-id) (start-level-callback)))))
     
