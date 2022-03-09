@@ -105,8 +105,21 @@
       "The rule is not basic, so simple learning machines won't be able to
       find it out. More advanced ones will manage though. As usual,
       rule-based machines will fail unless somebody wrote in them the
-      exact code for the rule."]
-     [:p ""]]}
+      exact code for the rule."]]}
+   {:message {:en "The hard one"
+              :fr "Le difficile"}
+    ::gg/density-map {:fruit 5
+                      :cheese 3}
+    :message-color "darkcyan"
+    :enemies [:drink :mouse :virus]
+    :rules [:momentum-rule :controls-switch :fog-of-war]
+    :level-info
+    [:div
+     [:p [:b "What's new? "] "Nothing new, but everything at once"]
+     [:p [:b "How hard is it for Machines?"]
+      "It's hard because they need to master really well each of the
+   various peculiarities (enemies, rule changes, fog, control
+   changes). But honestly, this one is not that easy for humans too."]]}
    #_{:message {:en "All right, let's raise the stakes."
               :fr "Allez on arrête de déconner."}
     ::gg/density-map {:fruit 5
