@@ -57,7 +57,9 @@
   the request body parsed via read-string."
   ([callback]
    (go (let [thin-world
-             (update @world ::aiw/next-levels #(repeat (count %) :hidden))
+             (-> @world 
+                 (update ::aiw/next-levels #(repeat (count %) :hidden))
+                 (assoc ::aiw/levels-data []))
              response
              (<! (http/post (str api-url "/" (:player @params "random"))
                             {:with-credentials? false
