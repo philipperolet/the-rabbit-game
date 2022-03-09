@@ -2,7 +2,6 @@
     text-align: left;
 }
 .game-info form > * {
-    margin-left: 1em;
     margin-top: 0.2em;
 }
 .game-info #colors-options {
@@ -13,8 +12,9 @@
     vertical-align: middle;    
 }
 
-.game-info .links {
-    border-left: 1px solid var(--black);
+.game-info > div:first-child {
+    border-right: 1px solid var(--black);
+    padding-left: 1.5em;
 }
 
 .game-info a.info {

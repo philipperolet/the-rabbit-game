@@ -43,4 +43,5 @@
 #game-board .title-row td:nth-child(2) {
     border-left: thin var(--black) solid;
     border-right: thin var(--black) solid;
+    font-weight: 900;
 }

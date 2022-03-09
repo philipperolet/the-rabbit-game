@@ -221,5 +221,5 @@
    (level-info-modal level-nb level-data)
    [:div.claby-panel-title "Options & infos"]
    [:div.game-info.row
-    (game-options app-state)
-    (links-section player)]])
+    (links-section player)
+    (game-options app-state)]])
