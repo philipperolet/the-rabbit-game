@@ -131,18 +131,20 @@
    {:adverb "Fast" :tick-value 75}
    {:adverb "Furious!" :tick-value 40}])
 
-(defn- speed-level-footer [app-state speed-choice level-choice]
+(defn- speed-level-footer [app-state speed-choice level-choice level-nb]
   [:div
    [:button.btn.btn-secondary {:type "button" :data-dismiss "modal"} "Cancel"]
    [:button.btn.btn-primary
     {:type "button"
      :on-click (fn []
                  (swap! app-state assoc-in [:options :speed] speed-choice)
-                 (swap! app-state assoc-in [:options :level] level-choice)
-                 (.reload (.-location js/window)))}
+                 (when (not= level-nb level-choice)
+                   (swap! app-state assoc-in [:options :level] level-choice)
+                   (.reload (.-location js/window)))
+                 (.modal (jq "#speed-level-modal") "hide"))}
     "Go!"]])
 
-(defn speed-level-modal [app-state]
+(defn speed-level-modal [app-state level-nb]
   (let [speed (-> @app-state :speed-choice)
         speed-change-fn
         #(swap! app-state assoc :speed-choice (.. % -target -value))
@@ -170,7 +172,7 @@
                {:value level
                 :on-change level-change-fn}
                (map-indexed level-option levels)]]]]
-           (speed-level-footer app-state speed level))))
+           (speed-level-footer app-state speed level level-nb))))
 
 ;; Level info
 ;;;;
@@ -189,14 +191,15 @@
 
 ;; Links section
 ;;;;;
-(defn links-section [player]
+(defn links-section [player level-nb app-state]
   (let [controls-modal-id (str "#" (player-type player) "-controls-modal")]
     [:div.links.col-6
      [:a.info
       {:data-toggle "modal" :data-target "#modal-about-game"}
       "What should I do?"]
      [:a.info
-      {:data-toggle "modal" :data-target "#speed-level-modal"}
+      {:data-toggle "modal" :data-target "#speed-level-modal"
+       :on-click #(swap! app-state assoc :level-choice level-nb)}
       "Change Speed / Level"]
      [:a.info
       {:data-toggle "modal" :data-target controls-modal-id}
@@ -217,9 +220,9 @@
   [:div.panel-bordered
    (ai-controls-modal)
    (human-controls-modal)
-   (speed-level-modal app-state)
+   (speed-level-modal app-state level-nb)
    (level-info-modal level-nb level-data)
    [:div.claby-panel-title "Options & infos"]
    [:div.game-info.row
-    (links-section player)
+    (links-section player level-nb app-state)
     (game-options app-state)]])
