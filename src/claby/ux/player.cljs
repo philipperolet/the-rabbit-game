@@ -29,11 +29,11 @@
 (defn- max-level-row [max-level]
   [:tr.max-level-row
    [:td
-    [:a {:data-toggle "modal"
-         :data-target "#modal-max-level"}
+    [:a.info {:data-toggle "modal"
+              :data-target "#modal-max-level"}
      "Max level"]]
-   [:td {:colSpan (dec stat-col-nb)}]
-   [:td {:colSpan 2} (se (+ 9311 max-level))]])
+   [:td {:colSpan (dec stat-col-nb)} (se (+ 9311 max-level))]
+   [:td {:colSpan 2}]])
 
 (defn player-card
   [{:as player-data

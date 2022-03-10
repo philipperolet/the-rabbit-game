@@ -67,9 +67,9 @@
 }
 .learn-more .technology span,
 .player-card .technology span {
-    color: var(--links-color);
     text-decoration: none;
     font-style: italic;
+    font-weight: bolder;
     padding-left: 0.5em;
 }
 
@@ -91,10 +91,10 @@
 .player-card table tr.max-level-row {
     background-color: var(--cta-light);
     border-top: thin var(--black) solid;
-    font-weight: 600;
+    font-weight: 900;
 }
 
-.player-card table tr.max-level-row td:last-child {
+.player-card table tr.max-level-row td:nth-child(2) {
     font-weight: 900;
     color: var(--maxlev-color);
     font-size: 1.5em;
