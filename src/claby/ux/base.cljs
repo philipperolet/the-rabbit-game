@@ -85,6 +85,19 @@
 ;;; Game progression
 ;;;;;;
 
+(defn animate-wall-if-player-bumps [movement]
+  (let [{{:keys [::gs/player-position ::gb/game-board]} ::gs/game-state} @world
+        next-position
+        (and movement (ge/move-position player-position movement (count game-board)))
+        player-bumps? (= :wall (get-in game-board next-position))]
+    (when player-bumps?
+      (-> (jq (str "#game-board tbody tr:nth-child(" (inc (first next-position))
+                   ") td:nth-child(" (inc (second next-position)) ")"))
+          (.addClass "wallbump")
+          (.delay 20)
+          (.queue
+           #(this-as this (-> (jq this) (.removeClass "wallbump") .dequeue)))))))
+
 (def next-movement-atom (atom nil))
 (defrecord ShallowUXPlayer []
   aip/Player
@@ -92,6 +105,7 @@
   (update-player [this _]
     (let [next-movement @next-movement-atom]
       (reset! next-movement-atom nil)
+      (animate-wall-if-player-bumps next-movement)
       (assoc this :next-movement next-movement))))
 
 (def player ;; Shallow player to wrap moves sent by human or AI
@@ -134,25 +148,10 @@
          (.css (jq "td.player") "opacity" 1.0)
          (reset! next-movement-atom movement))))))
 
-(defn animate-wall-if-player-bumps []
-  (let [{{:keys [::gs/player-position ::gb/game-board]} ::gs/game-state} @world
-        movement (:next-movement @player)
-        next-position
-        (and movement (ge/move-position player-position movement (count game-board)))
-        player-bumps? (= :wall (get-in game-board next-position))]
-    (when player-bumps?
-      (-> (jq (str "#game-board tbody tr:nth-child(" (inc (first next-position))
-                   ") td:nth-child(" (inc (second next-position)) ")"))
-          (.addClass "wallbump")
-          (.delay 20)
-          (.queue
-           #(this-as this (-> (jq this) (.removeClass "wallbump") .dequeue)))))))
-
 (def game-runner (gr/->MonoThreadRunner world player {:number-of-steps 1}))
 (defn game-step! []
   (when (aiw/active? @world)
     (when (not= "human" (-> @params :player)) (move-ai-player!))
-    (animate-wall-if-player-bumps)
     (gr/run-game game-runner)))
 
 (def game-execution-interval-id (atom nil))
