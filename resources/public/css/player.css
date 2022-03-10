@@ -142,15 +142,17 @@
 
 .player-selection.player-selected .player-card:hover,
 .player-selection .player-card:hover {
-    outline: medium var(--cta-color) solid;
+    outline: 2px var(--links-color) solid;
+    background-color: var(--links-very-light);
 }
 
 .player-selection.player-selected .player-card,
 .player-selection.player-selected:hover .player-card {
-    outline: medium var(--links-color) solid;
+    outline: medium var(--cta-color) solid;
+    background-color: var(--cta-very-light);
 }
 .player-selection.player-selected .player-card .name {
-    background-color: var(--links-color);
+    background-color: var(--cta-color);
 }
 .player-selection.player-selected .player-card .img {
     background-color: var(--cta-very-light);
