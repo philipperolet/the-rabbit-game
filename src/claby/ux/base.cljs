@@ -175,7 +175,10 @@
   [e]
   (cond
     (= (.-key e) " ") (toggle-game-execution)
-    (and (some #{(.-key e)} ["n" "N"]) (not @game-execution-interval-id)) (game-step!)))
+    (some #{(.-key e)} ["n" "N"])
+    (if @game-execution-interval-id
+      (toggle-game-execution false)
+      (game-step!))))
 
 (defn user-keypress [e]
   (if (= (:player @params) "human")
