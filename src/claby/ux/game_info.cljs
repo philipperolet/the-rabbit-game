@@ -100,7 +100,7 @@
   (.append (jq "body") (str "<style>" (:scheme-value (color-schemes (keyword color-id))) "</style>")))
 
 (defn game-options [app-state]
-  [:form.col-6
+  [:form.col-5
    [:div.custom-control.custom-switch
     [:input#music-option.custom-control-input
      {:type "checkbox"
@@ -193,7 +193,7 @@
 ;;;;;
 (defn links-section [player level-nb app-state]
   (let [controls-modal-id (str "#" (player-type player) "-controls-modal")]
-    [:div.links.col-6
+    [:div.links.col-7
      [:a.info
       {:data-toggle "modal" :data-target "#modal-about-game"}
       "What should I do?"]
@@ -223,6 +223,6 @@
    (speed-level-modal app-state level-nb)
    (level-info-modal level-nb level-data)
    [:div.claby-panel-title "Options & infos"]
-   [:div.game-info.row
+   [:div.game-info.row.no-gutters
     (links-section player level-nb app-state)
     (game-options app-state)]])
