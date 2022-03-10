@@ -73,7 +73,7 @@
          [:div [:img {:src "img/spacebar.png"}] "Press Spacebar to
          start/resume game for the AI player."]
          [:div [:img {:src "img/n.png"}] "When paused, press N to
-         see the AI move step by step"]]})
+         move the AI step by step"]]})
 
 (defn ai-controls-modal []
   (modal "ai-controls-modal"

@@ -4,7 +4,7 @@
 (def local-endpoint
   (memoize (fn [edp] (str "https://localhost:8080/" edp))))
 
-(def thinking-subtitle [:h4 (se 0x1f9e0) [:span.title "How it thinks"]])
+(def thinking-subtitle [:h4 (se 0x129300) [:span.title "How it thinks"]])
 (def stats-subtitle [:h4 (se 0x1f4f6) [:span.title "About the stats"]])
 (defn level-subtitle [level-nb]
   [:h4 (se 0x1f50b) [:span.title (str "Max level: " level-nb)]])

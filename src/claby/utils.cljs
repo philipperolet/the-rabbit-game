@@ -7,6 +7,8 @@
   [:span.emoji {:data (str code)
                 :dangerouslySetInnerHTML {:__html (str "&#" code ";")}}])
 
+(def human-emoji (se 128102))
+
 (defn player-type [player] (if (= player "human") "human" "ai"))
 
 (defn reload-with-query-string

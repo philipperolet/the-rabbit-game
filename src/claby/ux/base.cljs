@@ -23,7 +23,7 @@
    [claby.ux.levels :refer [levels]]
    [claby.ux.help-texts :refer [stat-description-modals learn-more-modals]]
    [claby.ux.game-info :as cgi]
-   [claby.utils :refer [jq player-type reload-with-query-string se to-json-str]]
+   [claby.utils :refer [jq player-type reload-with-query-string se to-json-str human-emoji]]
    [cljs.reader :refer [read-string]]
    [alandipert.storage-atom :refer [local-storage]]
    [clojure.core.async :refer [<!] :refer-macros [go]]))
@@ -281,9 +281,10 @@
    (stat-description-modals)
    (learn-more-modals)])
 
+
 (def player-stripe-message
   {:human
-   [:span (se 0x1F9D1) "A human is playing" (se 0x1F9D1)
+   [:span human-emoji "A human is playing" human-emoji
     [:button.btn.btn-primary {:on-click (partial reload-with-query-string (str "?player=tree-explorator"))}
      "See a machine play"]]
    :ai
