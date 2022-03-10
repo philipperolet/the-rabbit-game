@@ -6,7 +6,7 @@
 
 (def color-schemes
   {:base
-   {:scheme-name "Original"
+   {:scheme-name "Golden Green"
     :scheme-value
     ":root {
     --black: #212121;
@@ -34,7 +34,7 @@
     --cta-very-light: #fcdec020;
     --maxlev-color: #b4846c;}"}
    :red-blue
-   {:scheme-name "Red-blue"
+   {:scheme-name "Red and Blue"
     :scheme-value
     ":root {
     --black: #303841;
