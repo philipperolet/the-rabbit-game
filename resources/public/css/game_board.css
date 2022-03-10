@@ -1,15 +1,15 @@
 
 /* Playing area */
 #game-board {
-    height: calc(21px * 25);
+    height: calc(var(--cell-size) * 25);
     border-width: 5px;
 }
 
 #game-board td {
-    width: 21px;
-    height: 21px;
+    width: var(--cell-size);
+    height: var(--cell-size);
     padding: 0;
-    background-size: 21px;
+    background-size: calc(var(--cell-size) + 1px);
     background-repeat: no-repeat;
 }
 

@@ -16,13 +16,39 @@ html {
     background-color: var(--white);
     min-width: 1200px;
     min-height: 660px;
+    height: 100%;
 }
+
+
 body {
     color: var(--black);
     font-family: 'Lato', sans-serif;
     background: url(../img/rabbit-wallp.png) repeat;
-    font-size: 0.9rem;
+    height: 100%;
 }
+@media screen and (max-width: 1400px) {
+    body {
+	font-size: 0.9rem;
+    }
+    :root {
+	--cell-size: 21px;
+    }
+}
+@media screen and (min-width: 1400px) {
+    #lapyrinthe {
+	margin-left: 5%;
+	margin-right: 5%;
+    }
+    :root {
+	--cell-size: 23px;
+    }
+}
+@media screen and (min-width: 1600px) {
+    #lapyrinthe {
+	margin-left: 10%;
+	margin-right: 10%;
+    }
+}    
 
 a {
     cursor: pointer;
