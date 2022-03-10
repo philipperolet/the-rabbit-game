@@ -33,6 +33,10 @@
     background-color: lightgrey !important; 
 }
 
+#game-board td.wallbump {
+    background-image: unset !important;
+    background-color: yellow !important;
+}
 /* Title row */
 #game-board .title-row {
     border-top: thin var(--black) solid;

@@ -11,6 +11,8 @@
    [reagent.core :as reagent :refer [atom]]
    [reagent.dom :refer [render]]
    [mzero.game.state :as gs]
+   [mzero.game.events :as ge]
+   [mzero.game.board :as gb]
    [mzero.ai.game-runner :as gr]
    [mzero.ai.world :as aiw]
    [mzero.ai.player :as aip]
@@ -132,10 +134,25 @@
          (.css (jq "td.player") "opacity" 1.0)
          (reset! next-movement-atom movement))))))
 
+(defn animate-wall-if-player-bumps []
+  (let [{{:keys [::gs/player-position ::gb/game-board]} ::gs/game-state} @world
+        movement (:next-movement @player)
+        next-position
+        (and movement (ge/move-position player-position movement (count game-board)))
+        player-bumps? (= :wall (get-in game-board next-position))]
+    (when player-bumps?
+      (-> (jq (str "#game-board tbody tr:nth-child(" (inc (first next-position))
+                   ") td:nth-child(" (inc (second next-position)) ")"))
+          (.addClass "wallbump")
+          (.delay 20)
+          (.queue
+           #(this-as this (-> (jq this) (.removeClass "wallbump") .dequeue)))))))
+
 (def game-runner (gr/->MonoThreadRunner world player {:number-of-steps 1}))
 (defn game-step! []
   (when (aiw/active? @world)
     (when (not= "human" (-> @params :player)) (move-ai-player!))
+    (animate-wall-if-player-bumps)
     (gr/run-game game-runner)))
 
 (def game-execution-interval-id (atom nil))
