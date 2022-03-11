@@ -20,6 +20,7 @@
    [claby.ux.leaderboard :as cll]
    [claby.ux.game-board :as cgb]
    [claby.ux.player :as cpl]
+   [claby.ux.ais :refer [ais]]
    [claby.ux.levels :refer [levels]]
    [claby.ux.help-texts :refer [stat-description-modals learn-more-modals]]
    [claby.ux.game-info :as cgi]
@@ -284,16 +285,27 @@
    (learn-more-modals)])
 
 
+(def try-other-player-btn
+  [:button.btn.btn-primary {:data-toggle "modal"
+                              :data-target "#player-selection-modal"}
+   "Try another player"])
 (def player-stripe-message
   {:human
    [:span human-emoji "A human is playing" human-emoji
-    [:button.btn.btn-primary {:on-click (partial reload-with-query-string (str "?player=tree-explorator"))}
-     "See a machine play"]]
+    (if (-> @app-state :initial-controls-shown :ai)
+      try-other-player-btn
+      [:button.btn.btn-primary
+       {:on-click
+        (fn []
+          (let [random-ai
+                (->> (remove :disabled? ais)
+                     (remove #(= (:id %) "human"))
+                     rand-nth)]
+            (reload-with-query-string (str "?player=" (:id random-ai)))))}
+       "See a machine play"])]
    :ai
    [:span (se 0x1F916) "An AI is playing" (se 0x1F916)
-    [:button.btn.btn-primary {:data-toggle "modal"
-                              :data-target "#player-selection-modal"}
-     "Try another player"]
+    try-other-player-btn
     [:button.btn.btn-secondary {:on-click (partial reload-with-query-string "?player=human")} "Back to human"]]})
 
 (defn- header [player]

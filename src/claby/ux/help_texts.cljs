@@ -13,7 +13,7 @@
 
 (def speed
   {:title "Speed"
-   :descr "How fast the machine is able to act."
+   :descr [:p.headline (se 127939) "How fast the machine is able to act."]
    :in-game "The game updates about 25 times per second in its fastest
    mode. Slower AIs, even if smart, may get caught by ennemies at that
    speed--they will only perform well in slower modes."
@@ -30,50 +30,107 @@
   {:title "Sophistication"
    :descr
    [:div
-    [:p "How sophisticated the program is."]
-    [:h3 "Details"]
-    [:p "Basically, if you had to explain how the program works to average high schoolers, the lowest stat value means they get it at the first sentence. The highest stat value (Max) means they stare cluelessly at you whatever you say, thinking \"WTH is this weirdo talking about\" (even assuming you don't suck at explaining)."]
-    [:p "Usually, more sophisticated algorithms can handle more complex situations--although it's quite common and unfortunate that people create very complex code to tackle very simple tasks (on the other hand, geniuses that manage to write simple algorithms that solve hard problems are extremely rare)."]
-    [:p "Note that this is related to, but different from intelligence: an algorithm can be very sophisticated but unable to learn new situations. Conversely, an algorithm can have a moderate learning ability--so no need to explain the task exactly--but a low sophistication: if the task becomes too complex it can't manage."]]
+    [:p.headline (se 0x2699) "How elaborate the program's code is"]
+    [:p "Basically, if you had to explain how the program works to
+    average high schoolers, the lowest sophistication means they get
+    it at the first sentence. The highest sophistication means they
+    keep staring cluelessly at you, thinking \"WTH is this weirdo
+    talking about\" (even assuming you don't suck at explaining)."]
+    [:p "Usually, more sophisticated algorithms can handle more
+    complex situations--although it's quite common and unfortunate
+    that people create very complex code to tackle very simple
+    tasks (on the other hand, geniuses that manage to write simple
+    algorithms that solve hard problems are extremely rare)."]
+    [:p "Note that this is related to, but different from learning
+    power or adaptability: an algorithm can be very sophisticated but
+    unable to learn or adapt to situations. Conversely, an algorithm
+    can have a moderate learning ability--so no need to code every
+    little detail of the task exactly--but a low sophistication: if
+    the task becomes too complex it can't manage."]]
    :in-game "More sophisticated programs can reach higher levels."
-   :real-life "It is actually often better to use the simplest algorithm that can manage the task, when possible. However, a lot of tasks cannot be handled by too simple algorithms."})
+   :real-life "It is actually often better to use the simplest
+   algorithm that can manage the task, when possible. However, a lot
+   of tasks cannot be handled by too simple algorithms."})
 
 (def ease-of-use
   {:title "Ease of use"
-   :descr "How easy it is to setup the algorithm: are there a lot of settings to adjust for it to perform properly? Does it require long training on many examples? is there a lot of code (if so it will be likely to have bugs, and expert programmers will be required to maintain it)?"
-   :in-game "The stat is informative since the players have already been coded, set up and trained. Its effects cannot be seen directly in the game. It is here to show how much effort each player required to be made and maintained."
-   :real-life "If you decide to use an AI to do a given task for you, be sure to know how complex the algorithm is, if it requires tuning (if so, you need an expert) and how many time it needs to train, especially if you're in a hurry or don't have access to a lot of training examples."})
+   :descr
+   [:div
+    [:p.headline (se 0x1f527) "How easy it is to use the algorithm (as you may have guessed :))"]
+    [:p "If you were to try and use the algorithm for your own
+   purposes: are there a lot of settings to adjust for it to perform
+   properly? Does it require long training on many examples? is there
+   a lot of code (if so it will be likely to have bugs, and expert
+   programmers will be required to maintain it)?"]]
+   :in-game "The stat is informative since the players have already
+   been coded, set up and trained. Its effects cannot be seen directly
+   in the game. It is here to show how much effort each player
+   required to be made and maintained."
+   :real-life "If you decide to use an AI to do a given task for you,
+   be sure to know how complex the algorithm is, if it requires
+   tuning (if so, you need an expert) and how many time it needs to
+   train, especially if you're in a hurry or don't have access to a
+   lot of training examples."})
 
 (def learning-power
   {:title "Learning Power"
    :descr
    [:div
-    [:p "Learning and reasoning ability of the player."]
-    [:p "Players with no learning power cannot handle any situation they have not been directly programmed for--e.g. if they have not been told to never walk into a wall, they will regularly walk into walls and won't change their behaviour."]
-    [:p "Players with low learning power can change a little to improve on the most basic cases (e.g. stop walking into walls.)"]
-    [:p "A medium / high learning power allows a machine to learn, with a lot of exemples, behaviours that increase its performance in various situations."]
-    [:p "The most powerful learning machines learn generalizable knowledge--concepts understood from previous situations that they reuse in future situations even if those don't look similar at first--and learn to perform abstract reasoning, e.g. devise a strategy. Machines that can display even a tiny bit of these behaviours are very rare, and researchers struggle to create them."]]
-   :in-game "It determines the player's ability to handle new events and rules unknown to the player, that occur as levels increases."
+    [:p.headline (se 0x1f4d6) "Learning and reasoning ability"]
+    [:p "Players with no learning power cannot handle any situation
+    they have not been directly programmed for--e.g. if they have not
+    been told to never walk into a wall, they will regularly walk into
+    walls and won't change their behaviour."]
+    [:p "Players with low learning power can change a little to
+    improve on the most basic cases (e.g. stop walking into walls.)"]
+    [:p "A medium / high learning power allows a machine to learn,
+    with a lot of exemples, behaviours that increase its performance
+    in various situations."]]
+   :in-game "A high learning power means the player can learn on its
+   own the new rules of a level, without the programmer having to
+   write new code for it--provided the player is trained long enough
+   on the level."
    :real-life
    [:div
-    [:p "Not much learning power is needed when the task at hand is clear enough (e.g. vacuuming the floor of a tidy room)."]
-    [:p "However, in many cases, the task seems clear to humans but is unclear to machines--e.g. identifying objects in a video, understanding speech, etc. For those, a higher learning ability is required."]
-    [:p " Luckily, sometimes a task that is unclear to humans is clear to machines (e.g. doing your taxes)."]]})
+    [:p "Not much learning power is needed when the task at hand is
+    clear enough (e.g. vacuuming the floor of a tidy room)."]
+    [:p "However, in many cases, the task seems clear to humans but is
+    unclear to machines--e.g. identifying objects in a video,
+    understanding speech, etc. For those, a higher learning ability is
+    required."]
+    [:p " Luckily, sometimes a task that is unclear to humans is clear
+    to machines (e.g. doing your taxes)."]]})
 
 (def adaptability
   {:title "Adaptability"
    :descr
    [:div
-    [:p "How easily the algorithm can be used for other tasks than the one it was created for / trained on."]
-    [:p " In other words, how little the algorithm relies on expert knowledge that a programmer gave it, or on setup / settings that are specific to the task. For instance, if the programmer spent lots of time understanding the task, then made the algorithm tailor-made to the problem, it will not be easily adapted to any other task."]]
+    [:p.headline (se 0x1f98e) "How easily the algorithm can be used for other tasks than the
+    one it was created for"]
+    [:p " In other words, how little the algorithm relies on expert
+    knowledge that a programmer gave it, or on setup / settings that
+    are specific to the task. For instance, if the programmer spent
+    lots of time understanding the task, then made the algorithm
+    tailor-made to the problem, it will not be easily adapted to any
+    other task."]]
    :in-game
    [:div
-    [:p "Players with a low adaptability are less likely to perform well on levels where weird stuff appears"]
-    [:p "Opposedly, players with high adaptability could be expected to manage on uncommon levels, with little to no change to their code--provided their learning ability and/or sophistication is high enough to manage the complexity"]]
+    [:p "Players with a low adaptability are less likely to perform
+    well on higher levels, where weird stuff appears"]
+    [:p "Opposedly, players with high adaptability could be expected
+    to manage on uncommon levels, with little to no change to their
+    code--provided their learning ability and/or sophistication is
+    high enough to manage the complexity"]]
    :real-life
    [:div
-    [:p "AIs that have a very high adaptability (in the sense described here) AND a high learning-power and sophistication are quite rare. Truly general-purpose AIs do not exist yet."]
-    [:p "But some algorithms, notably those relying on deep learning, have a degree of \"transfer learning\" ability : trained on a task, they perform not so bad on a different but similar one (e.g. learned to recognize animals, can quickly be adapted to recognize plants)."]]})
+    [:p "AIs that have a very high adaptability (in the sense
+    described here) AND a high learning-power and sophistication are
+    quite rare. Truly general-purpose AIs do not exist yet."]
+    [:p "But some algorithms, notably those relying on deep learning,
+    have a degree of \"transfer learning\" ability : trained on a
+    task, they perform not so bad on a different but similar
+    one (e.g. learned to recognize animals, can quickly be adapted to
+    recognize plants)."]]})
 
 (def about-game
   [:div

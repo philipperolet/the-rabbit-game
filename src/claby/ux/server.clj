@@ -10,6 +10,7 @@
             [compojure.route :as route]
             [mzero.ai.main :as aim]
             [mzero.ai.player :as aip]
+            [mzero.ai.players.m00 :as m00]
             [ring.middleware.json :refer [wrap-json-body]]
             [clojure.string :as cstr]
             [clojure.tools.logging :as log]
@@ -53,10 +54,10 @@
           "tree-explorator" "tree-exploration"
           "simulator" "simulator"
           "random" "random"
-          "m00" "tree-exploration"
+          "m00" "m00"
           "dumbot" "dumbot"
           "superdumbot" "superdumbot")]
-    (swap! player-atom update-player req {:player-type player-type :player-opts {}})
+    (swap! player-atom update-player req {:player-type player-type :player-opts {:layer-dims [128 128]}})
     (reset! player-type-atom player-type))
   (let [{:as world :keys [::aiw/game-step]} (parse-world req)]
     (when (< game-step @last-step)

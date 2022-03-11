@@ -51,6 +51,7 @@
 #lapyrinthe #game-board + .controls-content.controls-initial-show {
     font-size: 2em;
     bottom: 3em;
+    width: 100%;
 }
 #lapyrinthe #game-board + .controls-content.controls-initial-show div {
     display: block;

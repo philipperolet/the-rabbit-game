@@ -4,10 +4,13 @@
 (def local-endpoint
   (memoize (fn [edp] (str "https://localhost:8080/" edp))))
 
-(def thinking-subtitle [:h4 (se 0x129300) [:span.title "How it thinks"]])
+(def thinking-subtitle [:h4 (se 129300) [:span.title "How it thinks"]])
 (def stats-subtitle [:h4 (se 0x1f4f6) [:span.title "About the stats"]])
 (defn level-subtitle [level-nb]
   [:h4 (se 0x1f50b) [:span.title (str "Max level: " level-nb)]])
+
+(defn more-subtitle [title]
+  [:h4 (se 0x1f4da) [:span.title (str "More about " title)]])
 
 (def random
   {:id "random"
@@ -22,17 +25,18 @@
     [:p "It doesn't think at all. It just moves randomly."]
     stats-subtitle
     [:p "Since it doesn't think, some of its stats are excellent:"]
-    [:p [:b"Fastest"] ", because a machine can pick millions of random
+    [:p [:b"Fastest"] ", because a machine can pick billions of random
     directions per second if needed"]
     [:p [:b "Easiest to use"] ", no setup or training required, very simple code"]
     [:p [:b "Completely adaptable"] ", since you can use it for any
     kind of problem or task, it will just do things at random--and
-    sometimes it will even be the best thing to do, e.g. playing
+    sometimes it will even be the best thing to do, e.g. if it plays
     Rock/Paper/Scissors. "]
-    [:p [:i "BUT "] "it has absolutely no learning power or sophtistication. So it won't go very far."]
+    [:p [:i "BUT "] "it has absolutely no learning power or
+    sophtistication. It's clueless!"]
     (level-subtitle 1)
     [:p "Since it moves at random, it will eventually eat all the
-    fruits in the initial level. It can even do so very fast since
+    fruits in the initial level. It could even do so very fast since
     it's the fastest. But when cheeses arrive, it will randomly stumble
     on a cheese and lose very quickly."]]
    :stats {:learning-power -1
@@ -159,18 +163,18 @@
    :long-description
    [:div
     thinking-subtitle
-    [:p "Deep Learning algorithms, sometimes also called neural
-    networks, rely on small learning units called neurons, initially
-    inspired by biological neurons (e.g. those in the human brain)
-    although they differ in various respects."]
-    [:p " A lot of neurons are connected together in successive
-    layers, and every time the algorithm is used it changes a little
-    how much each neuron is connected to the other, which makes the
-    program 'learn'. "]
-    [:p "This kind of algorithm has a lot of potential learning power,
-    but requires a lot of setup and training to work well. In
-    particular, the architecture of the layers, and the mechanisms of
-    the updates require a lot of thinking to get the best results."]
+    [:p "M00 has a real learning capability based on a technology
+    called Neural Networks (more recently known as deep learning). It
+    was not given any info about how the game works, it was just given
+    access to the controls (up/down/right/left), the board and the
+    score."]
+    [:p "Then it was trained by playing a lot of games. At first it
+    had an erratic behaviour, then it learned a few tricks to manage
+    the first levels."]
+    [:p "You can see that the behaviour is still erratic
+    sometimes (path to fruit not straight, bumps into walls):
+    similarly to humans, and contrary to machines that are coded with
+    the exact behaviour to follow, it learns imperfectly."]
     stats-subtitle
     [:ul
      [:li [:b "It's moderately slow: "] "neural networks notoriously
@@ -190,10 +194,25 @@
     power (because neural networks intrisically have this capability)
     but a low sophistication (because it has just been used directly
     without much thought). As such it will learn by itself simple
-    things: avoid walking into walls, eat a fruit when there's one
-    next to it, avoid cheese."]
-    [:p "However, it cannot learn complex behaviours. Therefore, the
-    max level it can reach is 2 (when ennemies appear)."]]
+    things: eat a strawberry when there's one close, avoid cheese,..."]
+    [:p "However, it cannot learn even moderately complex behaviours,
+    such as finding fruits that are not near itself--this is why it
+    may sometimes struggle when it's far from remaining
+    fruits. Avoiding moving elements (enemies) is also a behaviour
+    above its learning abilities, so the max level it can reach is 2"]
+    (more-subtitle "Neural Networks")
+        [:p "Deep Learning algorithms, sometimes also called neural
+    networks, rely on small learning units called neurons, initially
+    inspired by biological neurons (e.g. those in the human brain)
+    although they differ in various respects."]
+    [:p " A lot of neurons are connected together in successive
+    layers, and every time the algorithm is used it changes a little
+    how much each neuron is connected to the other, which makes the
+    program 'learn'. "]
+    [:p "This kind of algorithm has a lot of potential learning power,
+    but requires a lot of setup and training to work well. In
+    particular, the architecture of the layers, and the mechanisms of
+    the updates require a lot of thinking to get the best results."]]
    :stats {:learning-power 3
            :speed 3
            :sophistication 1

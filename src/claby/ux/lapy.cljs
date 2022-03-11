@@ -121,7 +121,7 @@
 (defn- animate-controls-if-needed []
   (let [player-type (player-type (:player @ux/params))
         controls-shown?
-        (get-in @ux/app-state [:initial-controls-shown player-type])
+        (get-in @ux/app-state [:initial-controls-shown (keyword player-type)])
         controls-elt
         (jq "#lapyrinthe #game-board + .controls-content")
         animate-controls
@@ -130,7 +130,7 @@
           (js/setTimeout #(.removeClass controls-elt "controls-initial-show") 5000))]
     (when (not controls-shown?)
       (animate-controls)
-      (swap! ux/app-state assoc-in [:initial-controls-shown player-type] true))))
+      (swap! ux/app-state assoc-in [:initial-controls-shown (keyword player-type)] true))))
 
 (defonce lapy-ux
   (reify ux/ClapyUX

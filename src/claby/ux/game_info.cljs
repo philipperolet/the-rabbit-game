@@ -72,7 +72,7 @@
 (def controls-content
   {:human
    [:div.controls-content
-    [:div [:img {:src "img/arrows.png"}] "Use arrow keys to move (note: you can also use S/E/D/F keys )"]]
+    [:div [:img {:src "img/arrows.png"}] "Use arrow keys to move (or S/E/D/F keys)"]]
    :ai
    [:div.controls-content
          [:div [:img {:src "img/spacebar.png"}] "Press Spacebar to
