@@ -71,17 +71,23 @@
 
 (def about-game
   [:div
-   [:h3 "What should I do with this game?"]
-   [:p "First, you can play it a little to see what it does, check out
-   the various levels."]
+   [:h3 "What should I do in this game?"]
+   [:p "The goal of this game is to demystify artificial intelligence
+   a little, by watching how machines play the game. But first, you
+   can play it a little yourself to see how it works, get a good score
+   and try all the various levels."]
    [:p "Then, you can let artificial intelligences play. Check out the
-    8 different artificial players, each has its own style with its
-    strong and weak points. You can read about the stats of each
-    of them to learn what makes them good or bad."]
+    8 different artificial players; each has its own style determined
+    by its stats--its strong and weak points (click on a stat to see
+    what it means)."]
+   [:p "Have different AIs play on various levels, each of which
+   introduces a new complexity. See which ones get far, which one
+   fail, and why they behave like this (click on \"Learn more about me\" to
+   understand an AI's behaviour)"]
    [:p "Additionnally, if you're a hacker, you can try to code an
     algorithm to go to the highest possible level. If it clears the
-    last level, you can win *a lot* of internet points (really awful
-    lot)."]
+    last level, which is quite hard, you can win *a lot* of internet
+    points (really awful lot)."]
    [:h3 "What is the game really about? why was it made?"]
    [:h4 (se 128161) "Demystifying Artificial Intelligence"]
    [:p "Artificial intelligence can mean a lot of different
@@ -94,6 +100,10 @@
    [:p "The rabbit game helps seeing what various AIs are and how they
    work in a concrete way. It shows how each way of making intelligent
    machines has benefits and drawbacks."]
+   [:p "It helps realize that AI is not a homogenous topic but that it
+   refers to a lot of diverse technologies with each their
+   tradeoffs, and that in fact, they are all still quite dumb
+   compared to us--yet :)."]
    [:h4 (se 128048) "Cute for humans, tough for AIs"]
    [:p "It's cute for humans in the sense that it's not hard to
    understand. It's more of a kid's game, adults will understand the
