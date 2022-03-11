@@ -34,7 +34,7 @@
   (local-storage (atom
                   {:options {:sounds true
                              :music false
-                             :color-scheme-id "base"
+                             :color-scheme-id "red-blue"
                              :speed 1
                              :level 0}
                    :player-selection-modal-choice nil

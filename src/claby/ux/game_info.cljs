@@ -62,6 +62,7 @@
     --cta-very-light: #ffd46020;
     --maxlev-color: #f07b3f;}"}})
 
+
 ;; Controls info modal
 ;;;;
 (def controls-content
