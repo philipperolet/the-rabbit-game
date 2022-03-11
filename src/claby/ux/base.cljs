@@ -391,14 +391,16 @@
     [cgi/level-info-content level-nb (levels level-nb)]))
 
 (defn- pause-game-on-modals []
-  (let [pause-game
+  (let [no-more-modals? #(= 0 (.size (jq ".modal:visible")))
+        pause-game
         (fn []
           (toggle-game-execution false)
           (.removeEventListener js/window "keydown" user-keypress))
         resume-game
         (fn []
-          (.addEventListener js/window "keydown" user-keypress)
-          (toggle-game-execution (= (:player @params) "human")))]
+          (when (no-more-modals?)
+            (.addEventListener js/window "keydown" user-keypress)
+            (toggle-game-execution (= (:player @params) "human"))))]
     (-> (jq ".modal")
         (.on "show.bs.modal" pause-game)
         (.on "hidden.bs.modal" resume-game))))
