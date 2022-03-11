@@ -145,7 +145,9 @@
                  (swap! app-state assoc-in [:options :speed] speed-choice)
                  (when (not= level-nb level-choice)
                    (swap! app-state assoc-in [:options :level] level-choice)
-                   (.reload (.-location js/window)))
+                   ;; needs a timeout before reload for the swap to
+                   ;; make its way into localstorage
+                   (.setTimeout js/window #(.reload (.-location js/window)) 50))
                  (.modal (jq "#speed-level-modal") "hide"))}
     "Go!"]])
 
