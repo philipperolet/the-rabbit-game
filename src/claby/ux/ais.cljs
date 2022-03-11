@@ -57,18 +57,17 @@
    :long-description
    [:div
     thinking-subtitle
-    [:p "TreeExplorator decides which direction is best to move next by creating an \"exploration tree\", thus the name. "]
+    [:p "TreeExplorator decides which direction is best to move next
+    by creating an \"exploration tree\", thus the name. "]
     [:p "It imagines walking a path of a few steps (e.g. up, left, up,
-    right, right...) and assesses if it gains score or loses during
-    this 'simulation'.  Then it tries another path, then another,
-    using a statistical formula to assess the result of each
-    simulation and determine what to try next. Its core technology is
-    called Monte-Carlo Tree Search (monte-carlo refers to randomness
-    introduced in choosing the directions to try)."]
-    [:p "Monte-Carlo Tree Search (MCTS) in this context is a branch of
-    Reinforcement Learning technologies, which is itself a branch of
-    Machine Learning (itself a branch of Artificial Intelligence
-    Reasearch :))."]
+    right, right...) and sees whether its score goes up or whether it loses during
+    this 'simulation'."]
+    [:p "Then it tries another path, then another, using a statistical
+    formula to assess the result of each simulation and determine what
+    to try next."]
+    [:p "Its core technology is called Monte-Carlo Tree
+    Search (monte-carlo refers to randomness introduced in choosing
+    the directions to try)."]
     stats-subtitle
     [:p [:b "Speed:"] " Quite fast on average. The speed is actually
     adaptable since you can tell it how many simulations to perform
@@ -91,19 +90,24 @@
     to action-reaction problems: agents evolving in an environment. It
     can't be used for instance on image recognition tasks or medical
     analysis."]
-    (level-subtitle 3)
+    (level-subtitle 2)
     [:p "At level 3, relatively fast enemies appear, simulating
     without understanding enemies is not enough, it is necessary to
     predict where enemies will move. Note: at level 2, enemies are
     slow enough that it looks like they do not move to
     TreeExplorator--although sometimes it can make a little mistake
-    and get caught."]]
+    and get caught."
+     (more-subtitle "Monte-Carlo Tree Search")
+     [:p "Monte-Carlo Tree Search (MCTS) in this context is a branch
+    of Reinforcement Learning technologies, which is itself a branch
+    of Machine Learning (itself a branch of Artificial Intelligence
+    Reasearch :))."]]]
    :stats {:learning-power 1
            :speed 3
            :sophistication 3
            :ease-of-use 4
            :adaptability 2}
-   :max-level 3})
+   :max-level 2})
 
 (def simulator
   {:id "simulator"
@@ -142,9 +146,10 @@
     it's very, very autonomous and adaptable. When the task completely
     changes, it can learn and adapt with no outside help."]
     (level-subtitle 9)
-    [:p "Since it's the smartest algorithm around, it can go up to the
-    last level, 9 (and when the time comes, over 9000)--on slower
-    speeds only though. At high speeds it gets overwhelmed."]]
+    [:p "Since it's the smartest algorithm around, its best versions
+    can go farther than the last level and reach non-existant level
+    9! (and when the time comes it can go over 9000). On slower speeds
+    only though. At high speeds it gets overwhelmed."]]
    :stats {:learning-power 8
            :speed -1
            :sophistication 8
@@ -234,7 +239,7 @@
            :sophistication 4
            :ease-of-use 2
            :adaptability 3}
-   :max-level 5
+   :max-level 6
    :disabled? true})
 
 (def dumbot
@@ -292,7 +297,7 @@
     stats-subtitle
     [:p "The stats are basically the same as Dumbot, although
     marginally more sophisticated"]
-    (level-subtitle 4)
+    (level-subtitle 5)
     [:p "It can clear all levels with enemies most of the time, since
     it has a rule made specifically for that. Sometimes enemies will
     manage to get it into a corner though; it cannot handle this kind
@@ -302,7 +307,7 @@
            :sophistication 2
            :ease-of-use 6
            :adaptability -1}
-   :max-level 4})
+   :max-level 5})
 
 (def brainy
   {:id "brainy"
@@ -311,15 +316,15 @@
    :technology "Quantum Convolutional Encoders"
    :short-description "Brainy uses the most recent machine learning
    algorithms. It's smart and able to reach the higher levels. But
-   it's slower and hard to setup."
+   it's slower and hard to setup. It cannot finish the game though."
    :long-description [:p "I'll be available soon."]
    :stats {:learning-power 5
            :speed 0
            :sophistication 5
            :ease-of-use 1
            :adaptability 5}
-   :max-level 6
+   :max-level 7
    :disabled? true})
 
-(def ais [tree-explorator m00 random
-         human simulator sweet-mind dumbot super-dumbot brainy])
+(def ais [m00 dumbot tree-explorator
+         human random super-dumbot sweet-mind brainy])

@@ -4,11 +4,12 @@
 
 (def max-level
   [:div
-   [:p "The maximum level that this player can reach most of the time (at the slowest speed setting)"]
+   [:p "The maximum level that this player can reach without
+   trouble (most of the time)"]
    [:p "At this level, the AI will start struggling and fail more
    often (but it may still sometimes manage to clear it). After this
    level, it will almost always fail."]
-   [:p "The level is given for the slowest speed setting. At higher
+   [:p (se 9888)"The level is given for the slowest speed setting. At higher
    speeds, slow players may fail earlier."]])
 
 (def speed

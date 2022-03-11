@@ -57,7 +57,10 @@
           "m00" "m00"
           "dumbot" "dumbot"
           "superdumbot" "superdumbot")]
-    (swap! player-atom update-player req {:player-type player-type :player-opts {:layer-dims [128 128]}})
+    (swap! player-atom update-player req {:player-type player-type :player-opts
+                                          (if (= player-type "m00")
+                                            {:layer-dims [128 128]}
+                                            {})})
     (reset! player-type-atom player-type))
   (let [{:as world :keys [::aiw/game-step]} (parse-world req)]
     (when (< game-step @last-step)
