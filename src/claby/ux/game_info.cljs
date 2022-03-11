@@ -12,6 +12,7 @@
     --black: #212121;
     --light-grey: #21212120;
     --white: #f6f6f6;
+    --transp-white: #f6f6f6ee;    
     --links-color: #6d9886;
     --links-light: #6d988680;
     --links-very-light: #6d988620;
@@ -26,6 +27,7 @@
     --black: #7d5a50;
     --light-grey: #7d5a5020;
     --white: #fff;
+    --transp-white: #ffffffee;    
     --links-color: #e5b299;
     --links-light: #e5b29980;
     --links-very-light: #e5b29920;
@@ -40,6 +42,7 @@
     --black: #303841;
     --light-grey: #30384120;
     --white: #eeeeee;
+    --transp-white: #eeeeeeee;    
     --links-color: #00adb5;
     --links-light: #00adb580;
     --links-very-light: #00adb520;
@@ -54,6 +57,7 @@
     --black: #2D4059;
     --light-grey: #F07b3f;
     --white: #fff;
+    --transp-white: #ffffffee;
     --links-color: #e45455;
     --links-light: #e4545580;
     --links-very-light: #e4545520;
@@ -61,7 +65,6 @@
     --cta-light: #ffd46080;
     --cta-very-light: #ffd46020;
     --maxlev-color: #f07b3f;}"}})
-
 
 ;; Controls info modal
 ;;;;
