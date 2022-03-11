@@ -1,3 +1,6 @@
+#stat-modals .modal {
+    z-index: 1051;
+}
 #stat-modals .modal-body {
     text-align: left;
     font-size: 1.1em;

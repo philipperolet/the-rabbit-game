@@ -1,6 +1,7 @@
 (ns claby.ux.game-info
   (:require [claby.utils :refer [modal player-type se jq]]
-            [claby.ux.levels :refer [levels]]))
+            [claby.ux.levels :refer [levels]]
+            [claby.ux.help-texts :refer [stat-modal-id]]))
 
 ;; Controls explanation modal
 
@@ -163,19 +164,25 @@
            "Change speed / level"
            [:form
             [:div.form-group.row
-             [:div.col-lg-2 "Change speed"]
+             [:div.col-lg-3 "Change speed"]
              [:div.col-lg-6
               [:input.form-control-range
                {:type "range" :min 0 :max 3 :value speed
-                :on-change speed-change-fn}]]
+                :on-change speed-change-fn}]
+              [:span "Affects how fast enemies move. "
+               [:a.info
+                {:data-toggle "modal"
+                 :data-target (str "#" (stat-modal-id "speed"))}
+                "Also impacts AIs"]]]
              [:div.col-lg-3 (:adverb (speeds speed))]]
             [:div.form-group.row
-             [:div.col-lg-2 "Change level"]
-             [:div.col-lg-10
+             [:div.col-lg-3 "Change level"]
+             [:div.col-lg-9
               [:select.custom-select
                {:value level
                 :on-change level-change-fn}
-               (map-indexed level-option levels)]]]]
+               (map-indexed level-option levels)]
+              [:span "Changing level will reset the score."]]]]
            (speed-level-footer app-state speed level level-nb))))
 
 ;; Level info

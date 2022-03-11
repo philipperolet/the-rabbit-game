@@ -14,11 +14,17 @@
 (def speed
   {:title "Speed"
    :descr "How fast the machine is able to act."
-   :in-game "The game updates about 50 times per second in its fastest mode. Slower AIs, even if smart, may get caught by ennemies at that speed--they will only perform well in slower modes."
+   :in-game "The game updates about 25 times per second in its fastest
+   mode. Slower AIs, even if smart, may get caught by ennemies at that
+   speed--they will only perform well in slower modes."
    :real-life
    [:div
-    [:p "For \"slow\" applications, such as playing chess or go, it's ok to have a smart but slow AI. For realtime stuff such as live video analysis, compromises must be made to make the AI responsive enough."]
-    [:p "Of course, it is also possible to increase speed by increasing the computing power--but it will cost some money."]]})
+    [:p "For \"slow\" applications, such as playing chess or go, it's
+    ok to have a smart but slow AI. For realtime stuff such as live
+    video analysis, compromises must be made to make the AI responsive
+    enough."]
+    [:p "Of course, it is also possible to increase speed by
+    increasing the computing power--but it will cost some money."]]})
 
 (def sophistication
   {:title "Sophistication"

@@ -86,4 +86,8 @@
 #speed-level-modal .modal-body .row div:nth-child(2) {
     padding-top: 0.3em;
 }
+#speed-level-modal .modal-body .form-group.row span {
+    font-size: 0.9em;
+    font-style: italic;
+}
     
