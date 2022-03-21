@@ -297,17 +297,22 @@
     stats-subtitle
     [:p "The stats are basically the same as Dumbot, although
     marginally more sophisticated"]
-    (level-subtitle 5)
-    [:p "It can clear all levels with enemies most of the time, since
-    it has a rule made specifically for that. Sometimes enemies will
-    manage to get it into a corner though; it cannot handle this kind
-    of complex situations. And it cannot do anything on higher levels."]]
+    (level-subtitle 4)
+    [:p "It can clear almost all levels with enemies, since it has a
+    rule made specifically for fleeing enemies. At level 4, there are many
+    enemies, including fast ones, so they will sometimes corner
+    Superdumbot in a way that it cannot flee anymore."]
+    [:p "Indeed, since Superdumbot is a rule-based machine, the rules
+    cannot account for every situation and it cannot learn how to flee
+    'intelligently'. In some occasions, the enemies (which aren't smart
+    either) won't be able to corner it and it will reach level 5"]
+    [:p "However, on levels 5 and higher, it cannot handle the new rules."]]
    :stats {:learning-power -1
            :speed 5
            :sophistication 2
            :ease-of-use 6
            :adaptability -1}
-   :max-level 5})
+   :max-level 4})
 
 (def brainy
   {:id "brainy"

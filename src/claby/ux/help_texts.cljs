@@ -9,15 +9,17 @@
    [:p "At this level, the AI will start struggling and fail more
    often (but it may still sometimes manage to clear it). After this
    level, it will almost always fail."]
-   [:p (se 9888)"The level is given for the slowest speed setting. At higher
-   speeds, slow players may fail earlier."]])
+   [:p (se 9888)"The max level assumes the slowest speed setting. When
+   playing at higher speeds, slow players may fail at earlier levels
+   than their max level, notably because they can't keep up with
+   enemies."]])
 
 (def speed
   {:title "Speed"
    :descr [:p.headline (se 127939) "How fast the machine is able to act."]
    :in-game "The game updates about 25 times per second in its fastest
-   mode. Slower AIs, even if smart, may get caught by ennemies at that
-   speed--they will only perform well in slower modes."
+   mode. Slow AIs, even if they are smart, won't keep up and will get
+   caught by enemies at that speed."
    :real-life
    [:div
     [:p "For \"slow\" applications, such as playing chess or go, it's

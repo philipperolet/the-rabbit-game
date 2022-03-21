@@ -299,7 +299,7 @@
         (fn []
           (let [random-ai
                 (->> (remove :disabled? ais)
-                     (remove #(= (:id %) "human"))
+                     (remove #(or (= (:id %) "human") (= (:id %) "random")))
                      rand-nth)]
             (reload-with-query-string (str "?player=" (:id random-ai)))))}
        "See a machine play"])]
@@ -422,4 +422,3 @@
   ;; your application
   ;; (swap! app-state update-in [:__figwheel_counter] inc)
   )
-
