@@ -378,26 +378,6 @@
     (render [cll/submit-score-form get-score #(restart-level ux) new-action :over]
             (gdom/getElement "svform-lose"))))
 
-(defn- animate-intro-screen
-  ([div-nb]
-   (if (< div-nb 6)
-     (-> (jq (str "#intro-screen .intro-col > div:nth-child(" div-nb ")"))
-         (.fadeIn 2000)
-         (.delay 1500)
-         (.queue #(animate-intro-screen (inc div-nb))))
-     (when (.is (jq "#loading .btn") ":visible")
-       (-> (jq "#loading .btn")
-           (.fadeOut 100) (.fadeIn 100)
-           (.fadeOut 100) (.fadeIn 100)
-           (.fadeOut 100) (.fadeIn 100)))))
-  ([] (animate-intro-screen 2)))
-
-(defn- animate-intro-screen-if-needed []
-  ;; only show intro when user arrives from elsewhere
-  (if (page-loaded-from-inside?) 
-    (.hide (jq "#intro-screen"))
-    (animate-intro-screen)))
-
 (defn level-info-component []
   (let [level-nb (aiw/current-level @world)]
     [cgi/level-info-content level-nb (levels level-nb)]))
@@ -421,15 +401,13 @@
   (add-enemies-style ux (get-in levels [(aiw/current-level @world) :enemies]))
   (pause-game-on-modals)
   ;; inputs & buttons should not get focus, otherwise spacebar activates them
-  (.focus (jq "button, select, input") #(.blur (.-activeElement js/document)))
-  #_(swap! app-state assoc :speed-choice (-> @app-state :options :speed)))
+  (.focus (jq "button, select, input") #(.blur (.-activeElement js/document))))
 
 (defn run-game
   "Runs the Lapyrinthe game with the specified UX. There must be an
   'app' element in the html page."
   [ux]
   {:pre [(gdom/getElement "app")]}
-  (animate-intro-screen-if-needed)
   (reset! params (parse-params))
   (init ux)
   (render [claby] (gdom/getElement "app") (partial game-render-callback ux))

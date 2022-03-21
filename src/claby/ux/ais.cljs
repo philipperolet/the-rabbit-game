@@ -96,12 +96,12 @@
     predict where enemies will move. Note: at level 2, enemies are
     slow enough that it looks like they do not move to
     TreeExplorator--although sometimes it can make a little mistake
-    and get caught."
-     (more-subtitle "Monte-Carlo Tree Search")
-     [:p "Monte-Carlo Tree Search (MCTS) in this context is a branch
+    and get caught."]
+    (more-subtitle "Monte-Carlo Tree Search")
+    [:p "Monte-Carlo Tree Search (MCTS) in this context is a branch
     of Reinforcement Learning technologies, which is itself a branch
     of Machine Learning (itself a branch of Artificial Intelligence
-    Reasearch :))."]]]
+    Reasearch :))."]]
    :stats {:learning-power 1
            :speed 3
            :sophistication 3

@@ -88,8 +88,37 @@
 	</div>
       </div>
     </div>
-
+    
     <script src="lib/jquery/jquery.min.js"></script>
+    <script>
+      // Initial animation
+      function fullDomain (hrefStr) {
+	  if (hrefStr == "") return "";
+	  return (hrefStr.split("/")[2]);
+      }
+      function isPageLoadedFromInside () {
+	  return ( fullDomain(window.location.href) ==
+		   fullDomain(document.referrer));
+      }
+
+      function animateIntroScreen (divNb) {
+	  if ( divNb < 6 ) {
+	      $("#intro-screen .intro-col > div:nth-child(" + divNb + ")")
+		  .fadeIn(2500).delay(1000)
+		  .queue(function () { animateIntroScreen(++divNb); });
+	  } else if ($("#loading .btn").is(":visible")) {
+	      $("#loading .btn")
+		  .fadeOut(100).fadeIn(100)
+		  .fadeOut(100).fadeIn(100)
+		  .fadeOut(100).fadeIn(100)
+	  }
+      }
+      if (!isPageLoadedFromInside()) {
+	  animateIntroScreen(2);
+      } else {
+	  $("#intro-screen").hide();
+      }
+    </script>
     <script src="lib/bootstrap/js/bootstrap.min.js"></script>
     <script src="lib/php-mail-form/validate.js"></script>
     <script src="lib/unveil-effects/unveil-effects.js"></script>
