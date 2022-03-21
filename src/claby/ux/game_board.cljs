@@ -2,9 +2,8 @@
   "Game board reagent component"
   (:require [mzero.game.state :as gs]
             [mzero.ai.world :as aiw]
-            [mzero.ai.game-runner :as gr]))
-
-(defonce game-size 24)
+            [mzero.ai.game-runner :as gr]
+            [claby.commons :refer [game-size]]))
 
 (defn- title-row [score title level speed]
   [:tfoot

@@ -19,6 +19,7 @@
    [cljs-http.client :as http]
    [claby.ux.leaderboard :as cll]
    [claby.ux.game-board :as cgb]
+   [claby.commons :refer [game-size]]
    [claby.ux.player :as cpl]
    [claby.ux.ais :refer [ais]]
    [claby.ux.levels :refer [levels]]
@@ -232,7 +233,7 @@
           (load-callback (aiw/update-to-next-level @world)))
         generate-game
         #(load-callback
-          (-> (aiw/multilevel-world cgb/game-size nil remaining-levels)
+          (-> (aiw/multilevel-world game-size nil remaining-levels)
               (assoc ::aiw/levels-data levels)))]
     (if world-already-initialized?
       next-level

@@ -18,11 +18,13 @@
             [mzero.ai.world :as aiw]
             [mzero.game
              [state :as gs]
-             [board :as gb]]))
+             [board :as gb]]
+            [claby.commons :refer [game-size]]))
 
+(def valid-player-types
+  ["tree-exploration" "simulator" "random" "m00" "dumbot" "superdumbot"])
 (def server-args (atom nil))
-(def player-atom (atom nil))
-(def player-type-atom (atom nil))
+(def players (atom nil))
 
 (defn- parse-world [move-request]
   (letfn [(decode-game-state [gs]
@@ -34,15 +36,6 @@
               decode-game-state))]
     (json/read-str (:body move-request) :key-fn keyword :value-fn decode-world)))
 
-(defn- update-player
-  [player move-request {:as player-args :keys [player-type player-opts]}]
-  (let [world (parse-world move-request)
-        player
-        (if (not= @player-type-atom player-type)
-          (aip/load-player player-type player-opts world)
-          player)]
-    (aip/update-player player world)))
-
 (def last-step (atom 0))
 (def missteps (atom 0))
 
@@ -52,29 +45,23 @@
   (let [player-type
         (case player
           "tree-explorator" "tree-exploration"
-          "simulator" "simulator"
-          "random" "random"
-          "m00" "m00"
-          "dumbot" "dumbot"
-          "superdumbot" "superdumbot")]
-    (swap! player-atom update-player req {:player-type player-type :player-opts
-                                          (if (= player-type "m00")
-                                            {:layer-dims [128 128]}
-                                            {})})
-    (reset! player-type-atom player-type))
-  (let [{:as world :keys [::aiw/game-step]} (parse-world req)]
+          player)
+        {:as world :keys [::aiw/game-step]} (parse-world req)
+        updated-player
+        (aip/update-player (@players player-type) world)]
+    (assert (some #{player-type} valid-player-types))
     (when (< game-step @last-step)
       (reset! missteps 0))
     (swap! missteps + (dec (max 0 (- game-step @last-step))))
     (reset! last-step game-step)
-    (when (zero? (mod (::aiw/game-step world) 25))
+    (when (zero? (mod (::aiw/game-step world) 100))
       (log/info (aiw/data->string world))
-      (log/info (str "Move: " (:next-movement @player-atom)))
-      (log/info (str "Missteps: " @missteps))))
-  {:status  200
-   :headers {"Content-Type" "text/plain"
-             "Access-Control-Allow-Origin" "*"}
-   :body (str (:next-movement @player-atom))})
+      (log/info (str "Move: " (:next-movement updated-player)))
+      (log/info (str "Missteps: " @missteps)))
+    {:status  200
+     :headers {"Content-Type" "text/plain"
+               "Access-Control-Allow-Origin" "*"}
+     :body (str (:next-movement updated-player))}))
 
 (def options-response
   {:status  200
@@ -105,11 +92,21 @@
   (let [arg-string (cstr/join " " args)]
     (reset! server-args (aim/parse-run-args arg-string))))
 
+(defn- pre-init-players []
+  (let [init-world (aiw/world game-size (rand-int 0xFFFF))
+        player-opts #(if (= % "m00") {:layer-dims [128 128]} {})]
+    (zipmap valid-player-types
+              (map #(aip/load-player % (player-opts %) init-world)
+                   valid-player-types))))
+
+(defn- pre-init-players! []
+  (reset! players (pre-init-players)))
 
 (defn serve
   "Start the server."
   [& args]
   (let [port 8080]
     (validate-args! args)
-    (server/run-server #'app-routes {:port port})
-    (println (str "Running webserver at http:/127.0.0.1:" port "/"))))
+    (server/run-server #'app-routes {:port port :thread 16})
+    (pre-init-players!)
+    (println (str "Running webserver at http://127.0.0.1:" port "/"))))
