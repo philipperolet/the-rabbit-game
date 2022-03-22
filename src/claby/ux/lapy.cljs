@@ -86,19 +86,6 @@
   (.addClass (jq "h2.subtitle") "initial")
   (.css (jq "h2.subtitle span") "color" (get-in levels [(aiw/current-level @ux/world) :message-color])))
 
-(defn- fx-toggle []
-  (if @fx-on
-    (.addClass (jq "#lapy-arrows #fx-btn img") "off")
-    (.removeClass (jq "#lapy-arrows #fx-btn img") "off"))
-  (swap! fx-on not))
-
-(defn- music-toggle []
-  (if @music-on
-    (do (.addClass (jq "#lapy-arrows #music-btn img") "off") (.pause gameMusic))
-    (do (.removeClass (jq "#lapy-arrows #music-btn img") "off") (.play gameMusic)))
-  (swap! music-on not))
-
-
 (defn- setup-transitions
   [ux]
   (letfn [(transition-type [new]
@@ -112,11 +99,6 @@
                        (and (not (transition-type old)) (transition-type new))]
               (ux/animate-transition ux transition-type)))]
     (add-watch ux/world :game-transitions game-transition-watcher)))
-
-(defn- setup-button-events
-  []
-  (.click (jq "#lapy-arrows #fx-btn") fx-toggle)
-  (.click (jq "#lapy-arrows #music-btn") music-toggle))
 
 (defn- animate-controls-if-needed []
   (let [player-type (player-type (:player @ux/params))
@@ -148,7 +130,6 @@
                    (if (:music options)
                      (.play gameMusic)
                      (.pause gameMusic))))
-      (setup-button-events)
       (setup-transitions this)
       (ux/prepare-game this))
 

@@ -152,29 +152,6 @@ a:hover {
     font-size: 1.1em;
 }
 
-/** Legacy - To be deleted **/
-#lapy-arrows {
-    position: fixed;
-    padding: 1em;
-    top: 5em;
-    display: none;
-}
-#lapy-arrows > img {
-    height: 70px;
-}
-#lapy-arrows button {
-    margin: 1em;
-    display: block;
-    border: 1px solid var(--black);
-}
-#lapy-arrows button img {
-    height: 45px;
-}
-
-#lapy-arrows button img.off {
-    opacity: 0.5;
-}
-
 span.emoji {
     padding-right: 0.2em;
 }
