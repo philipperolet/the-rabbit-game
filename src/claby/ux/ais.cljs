@@ -159,7 +159,7 @@
 
 (def m00
   {:id "m00"
-   :name "Emzerozero"
+   :name "M00"
    :pic-url "img/m00.png"
    :technology "Deep learning (basic)"
    :short-description "Standard neural network plugged on one end to the
@@ -233,9 +233,53 @@
    :short-description "Inspired from DeepMind's DQN algorithm, mixing
    Deep Learning and Q networks. Mid-level AI that can learn a few
    things on its own."
-   :long-description [:p "I'll be available soon."]
+   :long-description
+   [:div
+    thinking-subtitle
+    [:p "Like other deep learning programs, SweetMind needs to be
+    trained on a few games (meaning a few million games) before
+    performing well."]
+    [:p "It makes uses of relatively recent advances in AI. The DQN
+    algorithm, on which it is based, was first devised by DeepMind in
+    2015 to learn to win at simple atari games (and it worked very well)."]
+    [:p "The algorithm is based on a big neural network that learns to
+    predict a value for each possible move in any given situation on
+    the board. It choses the move with maximal value, then uses
+    reinforcement learning principles to update the network after
+    receiving feedback from the game (such as a score increase, or
+    death)."]
+    stats-subtitle
+    [:ul
+     [:li [:b "Powerful learner: "] "The adequate combination of two
+     learning paradigms (neural networks and reinforcement) made it
+     able to learn somewhat complex rules without direct supervision"]
+     [:li [:b "A bit slow: "] "Neural networks notoriously
+     require a lot of computing power."]
+     [:li [:b "Quite sophisticated"] "as explained above"]
+     [:li [:b "Not very easy to use"] "It requires some training and
+     tuning to work properly. The algorithm being somewhat complex, it
+     requires an expert to fix / adapt if it doesn't work well or has
+     bugs. It may sometimes be hard to understand or explain clearly
+     its behaviour."]
+     [:li [:b "Relatively adaptable: "] "The technology itself is
+     mostly suited for situations with an agent acting and constantly
+     receiving rewards and penalties (e.g. games). It can be adapted
+     to other cases but with some effort."]]
+    (level-subtitle 6)
+    [:p "Its sophisticated learning algorithm allows it to understand
+    not only simple concepts (eat fruit, avoid enemies) but also
+    moderately complex ones."]
+    [:p "For instance, while Superdumbot fails with too many fast
+    enemies in level 4 (because its rules 'flee enemies' and 'go to
+    the closest fruit' sometimes contradict), SweetMind can deal with
+    them. It doesn't blindly follow a rule, so it can try a fruit that
+    isn't close if enemies are blocking the way."]
+    [:p "Also, it can learn to deal with momentum in level 5. However,
+    with level 6 a lot of unknown appears (the fog). This is something
+    that most algorithms even with good learning power struggle
+    with."]]
    :stats {:learning-power 4
-           :speed 1
+           :speed 2
            :sophistication 4
            :ease-of-use 2
            :adaptability 3}
@@ -319,12 +363,19 @@
    :name "Brainy"
    :pic-url "img/brainy.png"
    :technology "Quantum Convolutional Encoders"
-   :short-description "Brainy uses the most recent machine learning
-   algorithms. It's smart and able to reach the higher levels. But
-   it's slower and hard to setup. It cannot finish the game though."
-   :long-description [:p "I'll be available soon."]
+   :short-description "Brainy uses bleeding-edge machine learning
+   tech. It's smart and can reach high levels (although it cannot
+   finish the game). But it's slower and hard to setup."
+   :long-description
+   [:div 
+    [:p "I'll be available soon. In the meantime, don't look up
+   'Quantum Convolutional Encoders'."]
+    [:p (se 0x2753) "Did you know that current AI algorithms may look
+   smart, but really aren't? Well, a Quantum Convolutional Encoder
+   pushes this concept to the extreme: it sounds very smart, but it
+   actually doesn't exist :)"]]
    :stats {:learning-power 5
-           :speed 0
+           :speed 1
            :sophistication 5
            :ease-of-use 1
            :adaptability 5}
