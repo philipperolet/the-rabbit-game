@@ -318,7 +318,7 @@
     [:span (player-stripe-message (keyword (player-type player)))]]
    [:div.col-lg-3]])
 
-(defn- rabbit-game-computer []
+(defn- claby []
   (let [level-nb (aiw/current-level @world)
         speed-name (:adverb (cgi/speeds (-> @app-state :options :speed)))
         level-data (levels level-nb)
@@ -339,18 +339,9 @@
        [cgi/game-info (:player @params) app-state level-nb level-data]
        [cll/leaderboard "player"]]]]))
 
-(defn- rabbit-game-mobile []
-  [:div.mobile-incompatible
-   [:h1 "Game not yet available for mobile devices"]
-   [:h4 "Sorry :/"]])
-
-(defn claby []
-  (let [mobile-device?
-        (re-find #"Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini"
-                 (.-userAgent js/navigator))]
-    (if mobile-device?
-      (rabbit-game-mobile)
-      (rabbit-game-computer))))
+(defn mobile-device? []
+  (re-find #"Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini"
+           (.-userAgent js/navigator)))
 
 ;; conditionally start your application based on the presence of an "app" element
 ;; this is particularly helpful for testing this ns without launching the app
@@ -409,12 +400,13 @@
   'app' element in the html page."
   [ux]
   {:pre [(gdom/getElement "app")]}
-  (reset! params (parse-params))
-  (init ux)
-  (render [claby] (gdom/getElement "app") (partial game-render-callback ux))
-  (render [level-info-component] (gdom/getElement "next-level-info"))
-  (setup-leaderboard ux)
-  (cgi/setup-game-colors (-> @app-state :options :color-scheme-id)))
+  (when (not (mobile-device?))
+    (reset! params (parse-params))
+    (init ux)
+    (render [claby] (gdom/getElement "app") (partial game-render-callback ux))
+    (render [level-info-component] (gdom/getElement "next-level-info"))
+    (setup-leaderboard ux)
+    (cgi/setup-game-colors (-> @app-state :options :color-scheme-id))))
 
 ;; specify reload hook with ^;after-load metadata
 (defn ^:after-load on-reload []

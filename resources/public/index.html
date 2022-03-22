@@ -38,7 +38,14 @@
 	  <div class="intro-bullet">
 	    <span class="ib-strong">&#129300; Train your own AI</span>, make it compete for the best score
 	    <div>for hackers & researchers. &#9888; Last levels are hard for ML algorithms</div>
+	    
 	  </div>
+	  <div id="mobile-bullet" class="intro-bullet">
+	    <span class="ib-strong">&#x1f61f; Not yet available </span> on mobile devices
+	    <div>Please try it on laptop or desktop &#x1f64f;</div>
+	    <img src="img/sad-rabbit.gif">
+	  </div>
+
 	</div>
       </div>
     </div>
@@ -83,6 +90,11 @@
     
     <script src="lib/jquery/jquery.min.js"></script>
     <script>
+      $("#mobile-bullet").hide();
+      function isMobileDevice() {
+	  mobileRegexp = new RegExp("Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini");
+	  return mobileRegexp.test(navigator.userAgent);
+      }
       // Initial animation
       function fullDomain (hrefStr) {
 	  if (hrefStr == "") return "";
@@ -105,7 +117,12 @@
 		  .fadeOut(100).fadeIn(100)
 	  }
       }
-      if (!isPageLoadedFromInside()) {
+      if (isMobileDevice()) {
+	  console.log("Should be there");
+	  $("html").css("min-width", "unset");
+	  $("#mobile-bullet").show();
+	  $("#loading").hide();
+      } else if (!isPageLoadedFromInside()) {
 	  animateIntroScreen(2);
       } else {
 	  $("#intro-screen").hide();
