@@ -102,7 +102,15 @@
     understanding speech, etc. For those, a higher learning ability is
     required."]
     [:p " Luckily, sometimes a task that is unclear to humans is clear
-    to machines (e.g. doing your taxes)."]]})
+    to machines (e.g. doing your taxes)."]
+    [:p.headline [:b "Highest learning power"]]
+    [:p "The most powerful learning machines try to learn
+    generalizable knowledge--concepts understood from previous
+    situations that they reuse in future situations even if those
+    don't look similar at first--and learn to perform abstract
+    reasoning, e.g. devise a strategy. Machines that can display even
+    a tiny bit of these behaviours are very rare, and researchers
+    struggle to create them."]]})
 
 (def adaptability
   {:title "Adaptability"

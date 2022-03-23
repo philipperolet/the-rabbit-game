@@ -91,12 +91,11 @@
     can't be used for instance on image recognition tasks or medical
     analysis."]
     (level-subtitle 2)
-    [:p "At level 3, relatively fast enemies appear, simulating
-    without understanding enemies is not enough, it is necessary to
-    predict where enemies will move. Note: at level 2, enemies are
-    slow enough that it looks like they do not move to
-    TreeExplorator--although sometimes it can make a little mistake
-    and get caught."]
+    [:p "At level 2, enemies appear, simulating without understanding
+    enemies is not enough, it is necessary to predict where enemies
+    will move. Note: since at level 2, enemies are very slow,
+    sometimes TreeExplorator will be able to move past them and clear
+    the level anyways."]
     (more-subtitle "Monte-Carlo Tree Search")
     [:p "Monte-Carlo Tree Search (MCTS) in this context is a branch
     of Reinforcement Learning technologies, which is itself a branch
