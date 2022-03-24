@@ -16,7 +16,6 @@
    [mzero.ai.game-runner :as gr]
    [mzero.ai.world :as aiw]
    [mzero.ai.player :as aip]
-   [cljs-http.client :as http]
    [claby.ux.leaderboard :as cll]
    [claby.ux.game-board :as cgb]
    [claby.commons :refer [game-size]]
@@ -25,10 +24,12 @@
    [claby.ux.levels :refer [levels]]
    [claby.ux.help-texts :refer [stat-description-modals learn-more-modals]]
    [claby.ux.game-info :as cgi]
-   [claby.utils :refer [jq player-type reload-with-query-string se to-json-str human-emoji]]
+   [claby.utils :refer [jq player-type reload-with-query-string se move-request! human-emoji]]
+   [claby.ux.overload :as col]
    [cljs.reader :refer [read-string]]
    [alandipert.storage-atom :refer [local-storage]]
-   [clojure.core.async :refer [<!] :refer-macros [go]]))
+   [clojure.core.async :refer [<!] :refer-macros [go]]
+   [mzero.utils.commons :as c]))
 
 (defonce language (atom "en"))
 
@@ -51,27 +52,20 @@
   (reagent/cursor app-state [:player-selection-modal-choice]))
 
 (defonce world (atom {}))
-(def api-url
-  (if (= "localhost" (.-hostname (.-location js/window)))
-    "http://localhost:8080"
-    "https://api.game.machine-zero.com"))
 
 (defn post-next-request!
   "Request next move given world. Callback expects exactly one param,
   the request body parsed via read-string."
-  ([callback]
-   (go (let [thin-world
-             (-> @world
-                 cgb/fog-world
-                 (update ::aiw/next-levels #(repeat (count %) :hidden))
-                 (assoc ::aiw/levels-data [])
-                 (assoc-in [::gs/game-state :momentum-rule] nil))
-             response
-             (<! (http/post (str api-url "/" (:player @params "random"))
-                            {:with-credentials? false
-                             :headers {"Access-Control-Allow-Origin" "*"}
-                             :json-params (to-json-str thin-world)}))]
-         (callback (read-string (:body response)))))))
+  [callback]
+  (go (let [thin-world
+            (-> @world
+                cgb/fog-world
+                (update ::aiw/next-levels #(repeat (count %) :hidden))
+                (assoc ::aiw/levels-data [])
+                (assoc-in [::gs/game-state :momentum-rule] nil))
+            response
+            (<! (move-request! (:player @params "random") thin-world))]
+        (callback (read-string (:body response))))))
 
 
 (def param-strs (-> (.-location js/window) (split #"\?") last (split #"\&")))
@@ -142,13 +136,15 @@
   "Request a movement for an AI player"
   []
   (when (compare-and-set! ai-ready-to-play true false)
-    (post-next-request!
-     (fn [movement]
-       (reset! ai-ready-to-play true)
-       #_(change-style-for-mini-theme)
-       (when movement
-         (.css (jq "td.player") "opacity" 1.0)
-         (reset! next-movement-atom movement))))))
+    (let [request-sent-time (c/currTimeMillis)]
+      (post-next-request!
+       (fn [movement]
+         (reset! ai-ready-to-play true)
+         #_(change-style-for-mini-theme)
+         (when movement
+           (.css (jq "td.player") "opacity" 1.0)
+           (reset! next-movement-atom movement))
+         (col/check-server-overload! request-sent-time))))))
 
 (def game-runner (gr/->MonoThreadRunner world player {:number-of-steps 1}))
 (defn game-step! []
@@ -283,7 +279,8 @@
   [:div#all-modals
    (player-selection-modal player-selection-modal-choice)
    (stat-description-modals)
-   (learn-more-modals)])
+   (learn-more-modals)
+   (col/overload-modal)])
 
 
 (def try-other-player-btn
@@ -395,18 +392,22 @@
   ;; inputs & buttons should not get focus, otherwise spacebar activates them
   (.focus (jq "button, select, input") #(.blur (.-activeElement js/document))))
 
-(defn run-game
+(defn- run-game [ux]
+  (reset! params (parse-params))
+  (init ux)
+  (render [claby] (gdom/getElement "app") (partial game-render-callback ux))
+  (render [level-info-component] (gdom/getElement "next-level-info"))
+  (setup-leaderboard ux)
+  (cgi/setup-game-colors (-> @app-state :options :color-scheme-id)))
+
+(defn start-app
   "Runs the Lapyrinthe game with the specified UX. There must be an
   'app' element in the html page."
   [ux]
   {:pre [(gdom/getElement "app")]}
-  (when (not (mobile-device?))
-    (reset! params (parse-params))
-    (init ux)
-    (render [claby] (gdom/getElement "app") (partial game-render-callback ux))
-    (render [level-info-component] (gdom/getElement "next-level-info"))
-    (setup-leaderboard ux)
-    (cgi/setup-game-colors (-> @app-state :options :color-scheme-id))))
+  (cond
+    (mobile-device?) nil
+    :else (run-game ux)))
 
 ;; specify reload hook with ^;after-load metadata
 (defn ^:after-load on-reload []

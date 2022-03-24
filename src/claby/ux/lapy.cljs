@@ -188,4 +188,4 @@
     (enemy-style [this type]
       (str "{background-image: url(../img/" type ".gif)}"))))
 
-(ux/run-game lapy-ux)
+(ux/start-app lapy-ux)

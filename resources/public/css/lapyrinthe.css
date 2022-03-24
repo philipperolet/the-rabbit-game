@@ -260,3 +260,9 @@ h2.subtitle span, #intro-screen .is-title {
     margin-top: 1em;
     color: var(--black);
 }
+
+/* overload modal */
+#overload-modal img {
+    width: 80%;
+    margin-left: 10%;
+}

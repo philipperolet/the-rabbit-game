@@ -31,4 +31,4 @@
       (let [color (case type "drink" "red" "mouse" "purple" "virus" "green")]
         (str "{background-color: " color ";}")))))
 
-(ux/run-game minimal-ux)
+(ux/start-app minimal-ux)

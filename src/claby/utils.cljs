@@ -1,4 +1,5 @@
-(ns claby.utils)
+(ns claby.utils
+  (:require [cljs-http.client :as http]))
 
 (defonce jq (js* "$"))
 (defn se
@@ -19,7 +20,6 @@
                        (.-pathname (.-location js/window))
                        (or query-string "")) "_self"))
 
-
 (defn to-json-str
   "Convert to JSON string with namespaced keywords"
   [data]
@@ -29,6 +29,18 @@
   "Opposite of to-json-str"
   [json-str]
   (js->clj (.parse js/JSON json-str) :keywordize-keys true))
+
+(def api-url
+  (if (= "localhost" (.-hostname (.-location js/window)))
+    "http://localhost:8080"
+    "https://api.game.machine-zero.com"))
+
+(defn move-request! [player world]
+  (http/post (str api-url "/" player)
+             {:with-credentials? false
+              :headers {"Access-Control-Allow-Origin" "*"}
+              :json-params (to-json-str world)
+              :timeout 200}))
 
 (defn modal
   ([id title contents]
