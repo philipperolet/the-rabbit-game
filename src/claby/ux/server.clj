@@ -10,7 +10,7 @@
             [compojure.route :as route]
             [mzero.ai.main :as aim]
             [mzero.ai.player :as aip]
-            [mzero.ai.players.m00 :as m00]
+            [mzero.utils.commons :as c]
             [ring.middleware.json :refer [wrap-json-body]]
             [clojure.string :as cstr]
             [clojure.tools.logging :as log]
@@ -46,7 +46,7 @@
         (case player
           "tree-explorator" "tree-exploration"
           player)
-        {:as world :keys [::aiw/game-step]} (parse-world req)
+        {:as world :keys [::aiw/game-step request-timestamp]} (parse-world req)
         updated-player
         (aip/update-player (@players player-type) world)]
     (assert (some #{player-type} valid-player-types))
@@ -54,10 +54,10 @@
       (reset! missteps 0))
     (swap! missteps + (dec (max 0 (- game-step @last-step))))
     (reset! last-step game-step)
-    (when (zero? (mod (::aiw/game-step world) 100))
+    (when (zero? (mod (::aiw/game-step world) 25))
       (log/info (aiw/data->string world))
-      (log/info (str "Move: " (:next-movement updated-player)))
-      (log/info (str "Missteps: " @missteps)))
+      (log/info (str "Missteps: " @missteps))
+      (log/info (str "Request time: " (- (c/currTimeMillis) request-timestamp) "\n------------\n")))
     {:status  200
      :headers {"Content-Type" "text/plain"
                "Access-Control-Allow-Origin" "*"}

@@ -32,11 +32,11 @@
   [request-sent-time]
   (let [request-time (- (c/currTimeMillis) request-sent-time)
         update-moving-average #(+ (* 0.9 %) (* 0.1 request-time))
-        server-overload? (fn [req-duration] (> req-duration 100))
+        server-overload? (fn [req-duration] (> req-duration 150))
         warn-overload
         (fn []
           (.modal (jq "#overload-modal") "show")
           (.on (jq "#overload-modal") "hidden.bs.modal"
-                 #(reload-with-query-string "?player=human")))]
+               #(reload-with-query-string "?player=human")))]
     (swap! avg-request-duration update-moving-average)
     (when (server-overload? @avg-request-duration) (warn-overload))))

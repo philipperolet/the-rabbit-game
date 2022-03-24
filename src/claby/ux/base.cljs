@@ -62,6 +62,7 @@
                 cgb/fog-world
                 (update ::aiw/next-levels #(repeat (count %) :hidden))
                 (assoc ::aiw/levels-data [])
+                (assoc :request-timestamp (c/currTimeMillis))
                 (assoc-in [::gs/game-state :momentum-rule] nil))
             response
             (<! (move-request! (:player @params "random") thin-world))]
@@ -139,12 +140,12 @@
     (let [request-sent-time (c/currTimeMillis)]
       (post-next-request!
        (fn [movement]
+         (col/check-server-overload! request-sent-time)
          (reset! ai-ready-to-play true)
          #_(change-style-for-mini-theme)
          (when movement
            (.css (jq "td.player") "opacity" 1.0)
-           (reset! next-movement-atom movement))
-         (col/check-server-overload! request-sent-time))))))
+           (reset! next-movement-atom movement)))))))
 
 (def game-runner (gr/->MonoThreadRunner world player {:number-of-steps 1}))
 (defn game-step! []
