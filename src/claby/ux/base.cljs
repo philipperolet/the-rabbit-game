@@ -107,6 +107,7 @@
 
 (def player ;; Shallow player to wrap moves sent by human or AI
   (atom (->ShallowUXPlayer)))
+(def game-runner (gr/->MonoThreadRunner world player {:number-of-steps 1}))
 
 (defn move-human-player!
   "Request a movement for a human player"
@@ -120,7 +121,8 @@
           :other)]
     (when (not= :other command)
         (.preventDefault e)
-        (reset! next-movement-atom command))))
+        (reset! next-movement-atom command)
+        (gr/run-game (assoc-in game-runner [:opts :no-enemy-movement] true)))))
 
 (def ai-ready-to-play (atom true))
 
@@ -147,7 +149,6 @@
            (.css (jq "td.player") "opacity" 1.0)
            (reset! next-movement-atom movement)))))))
 
-(def game-runner (gr/->MonoThreadRunner world player {:number-of-steps 1}))
 (defn game-step! []
   (when (aiw/active? @world)
     (when (not= "human" (-> @params :player)) (move-ai-player!))

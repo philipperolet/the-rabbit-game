@@ -19,7 +19,7 @@
                  [reagent "0.10.0"]
                  [compojure "1.6.2"]
                  [ring/ring-json "0.5.1"]
-                 [mzero-game "0.3.3"]
+                 [mzero-game "0.3.4"]
                  [mzero "00.1.4-alpha"]
                  [alandipert/storage-atom "2.0.1"]]
 
