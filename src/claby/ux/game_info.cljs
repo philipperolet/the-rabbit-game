@@ -219,13 +219,7 @@
       "Controls"]
      [:a.info
       {:data-toggle "modal" :data-target "#level-info-modal"}
-      "About this level"]
-     #_[:a.info-inline
-        {:href "https://github.com/sittingbull/mzero-game"
-         :target "_blank"}
-        "Github"] #_" - "
-     #_[:a.info-inline
-        {:href "mailto:pr@machine-zero.com" :target "_blank"} "Contact"]]))
+      "About this level"]]))
 
 ;; Component
 ;;;;;

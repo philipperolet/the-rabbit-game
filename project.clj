@@ -1,6 +1,6 @@
-(defproject mzero-game-gui "1.0.4"
-  :description "This is a ClojureScript GUI for the [Mzero Game](https://github.com/sittingbull/mzero-game)."
-  :url "https://github.com/sittingbull/mzero-game-gui"
+(defproject the-rabbit-game "1.0.4"
+  :description "Discover various kinds of artificial intelligence algorithms by watching them play a simple game: a rabbit eating strawberries in a maze (humans can play too)."
+  :url "https://github.com/philipperolet/the-rabbit-game"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
@@ -19,7 +19,7 @@
                  [reagent "0.10.0"]
                  [compojure "1.6.2"]
                  [ring/ring-json "0.5.1"]
-                 [mzero-game "0.3.4"]
+                 [trg-libs "0.3.4"]
                  [mzero "00.1.4-alpha"]
                  [alandipert/storage-atom "2.0.1"]]
 

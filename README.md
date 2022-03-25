@@ -45,7 +45,7 @@ Meant for local use, not remote use.
 git clone https://github.com/sittingbull/the-rabbit-game.git
 cd the-rabbit-game
 ```
-- Start game server (backend) with ``lein run -m claby.ux.server/serve args`` where args is a string of command-line args such as those described for the [Mzero Game CLI](https://github.com/sittingbull/mzero-game);
+- Start game server (backend) with ``lein run -m claby.ux.server/serve args`` where args is a string of command-line args such as explaine in the  [TRG libs CLI](https://github.com/philipperolet/trg-libs);
 
 - The following will launch a browser with the game frontend--it will only work if the backend has been started
 
