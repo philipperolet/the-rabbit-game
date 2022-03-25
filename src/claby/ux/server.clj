@@ -6,7 +6,7 @@
   Endpoints are expected to return textual representations of clj objects that
   will be parsed with `read-string`"
   (:require [org.httpkit.server :as server]
-            [compojure.core :refer [POST OPTIONS defroutes]]
+            [compojure.core :refer [POST OPTIONS defroutes GET]]
             [compojure.route :as route]
             [mzero.ai.main :as aim]
             [mzero.ai.player :as aip]
@@ -70,6 +70,7 @@
              "Access-Control-Allow-Headers" "*"}})
 
 (defroutes app-routes
+  (GET "/hello" [] options-response)
   (POST "/:player" [player] (wrap-json-body (partial next-move-handler player)))
   (OPTIONS "/:player" [_] options-response)
   (route/not-found "404 - You Must Be New Here"))

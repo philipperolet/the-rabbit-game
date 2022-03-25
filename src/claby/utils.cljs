@@ -42,6 +42,13 @@
               :json-params (to-json-str world)
               :timeout 200}))
 
+(defn count-visit
+  "Sends a dummy request to server to count visit"
+  [query-string]
+  (http/get (str api-url "/hello?" query-string)
+            {:timeout 200
+             :headers {"Access-Control-Allow-Origin" "*"}
+             :with-credentials? false}))
 (defn modal
   ([id title contents]
    [:div.modal.fade

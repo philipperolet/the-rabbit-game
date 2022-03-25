@@ -24,12 +24,13 @@
    [claby.ux.levels :refer [levels]]
    [claby.ux.help-texts :refer [stat-description-modals learn-more-modals]]
    [claby.ux.game-info :as cgi]
-   [claby.utils :refer [jq player-type reload-with-query-string se move-request! human-emoji]]
+   [claby.utils :refer [jq player-type reload-with-query-string se move-request! human-emoji count-visit]]
    [claby.ux.overload :as col]
    [cljs.reader :refer [read-string]]
    [alandipert.storage-atom :refer [local-storage]]
    [clojure.core.async :refer [<!] :refer-macros [go]]
-   [mzero.utils.commons :as c]))
+   [mzero.utils.commons :as c]
+   [cljs-http.client :as http]))
 
 (defonce language (atom "en"))
 
@@ -69,7 +70,8 @@
         (callback (read-string (:body response))))))
 
 
-(def param-strs (-> (.-location js/window) (split #"\?") last (split #"\&")))
+(def query-str (-> (.-location js/window) (split #"\?") last))
+(def param-strs (split query-str #"\&"))
 (defn parse-params
   "Parse URL parameters into a hashmap"
   []
@@ -395,6 +397,7 @@
   (.focus (jq "button, select, input") #(.blur (.-activeElement js/document))))
 
 (defn- run-game [ux]
+  (count-visit query-str)
   (reset! params (parse-params))
   (init ux)
   (render [claby] (gdom/getElement "app") (partial game-render-callback ux))
