@@ -29,8 +29,7 @@
    [cljs.reader :refer [read-string]]
    [alandipert.storage-atom :refer [local-storage]]
    [clojure.core.async :refer [<!] :refer-macros [go]]
-   [mzero.utils.commons :as c]
-   [cljs-http.client :as http]))
+   [mzero.utils.commons :as c]))
 
 (defonce language (atom "en"))
 

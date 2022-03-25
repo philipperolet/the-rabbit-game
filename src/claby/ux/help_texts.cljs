@@ -163,46 +163,8 @@
     algorithm to go to the highest possible level. If it clears the
     last level, which is quite hard, you can win *a lot* of internet
     points (really awful lot)."]
-   [:h3 "What is the game really about? why was it made?"]
-   [:h4 (se 128161) "Demystifying Artificial Intelligence"]
-   [:p "Artificial intelligence can mean a lot of different
-   things. Sometimes it just means a regular program that does
-   something humans used to do. Sometimes it means a program that is
-   resilient to errors. Sometimes it means a program that learns on
-   its own how to perform certain tasks. Sometimes it's just used to
-   trigger various emotions in news headlines and doesn't really mean
-   anything."]
-   [:p "The rabbit game helps seeing what various AIs are and how they
-   work in a concrete way. It shows how each way of making intelligent
-   machines has benefits and drawbacks."]
-   [:p "It helps realize that AI is not a homogenous topic but that it
-   refers to a lot of diverse technologies with each their
-   tradeoffs, and that in fact, they are all still quite dumb
-   compared to us--yet :)."]
-   [:h4 (se 128048) "Cute for humans, tough for AIs"]
-   [:p "It's cute for humans in the sense that it's not hard to
-   understand. It's more of a kid's game, adults will understand the
-   various levels easily (which does not mean that they'll be able to
-   get a good score). "]
-   [:p "What is interesting is to see what's hard or easy for
-   different kind of machines. It's tough for AIs because contrary to
-   us they don't easily understand and adapt to new rules, and the
-   game has new rules at each levels."]
-   [:h4 (se 128300)"AI reasearch: finding challenges simple to express but hard to solve"]
-   [:p "An issue in AI research IMHO is the fact that \"intelligence\"
-   is not well defined--therefore it is harder to reason about it and
-   to find new ways for machines to be more intelligent."]
-   [:p "Being able to express various traits of intelligence as game
-   levels in this simple setting would help thinking about new
-   algorithms. "]
-   [:p "To be fair, the first levels are actually easy even for
-   AIs. But the last levels aim at being hard for them. Even though
-   very powerful AIs developped recently in research labs would
-   probably clear them without trouble, such AIs are very complex and
-   require a lot of setup, tuning and computing power. "]
-   [:p "The underlying goal is to explore the idea that if a task is
-   simple to us, there may exists algorithms that can also handle it
-   easily and that we can try to discover."]])
+   [:p [:a {:href "https://www.machine-zero.com/trg.html" :target "_blank"} "Learn more "]
+    " about the game: its backstory, the demystification, and the connection to AI research"]])
 
 (def stat-descriptions
   {:learning-power learning-power
