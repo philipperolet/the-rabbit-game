@@ -69,6 +69,7 @@
              "Access-Control-Allow-Origin" "*"
              "Access-Control-Allow-Headers" "*"}})
 
+
 (defroutes app-routes
   (GET "/hello" [] options-response)
   (POST "/:player" [player] (wrap-json-body (partial next-move-handler player)))

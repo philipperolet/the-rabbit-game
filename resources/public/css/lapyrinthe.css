@@ -48,9 +48,13 @@
     color: var(--white);
     background-color: var(--black);
 }
-#footer .done-by a {
-    
+#footer a:hover {
+    color: var(--white);
 }
+#footer .useful-links {
+    text-align: center;
+}
+
 #footer .copyrights {
     text-align: right;
     font-size: 0.8em;
