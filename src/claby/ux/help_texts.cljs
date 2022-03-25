@@ -146,7 +146,7 @@
 (def about-game
   [:div
    [:h3 "What should I do in this game?"]
-   [:p "The goal of this game is to demystify artificial intelligence
+   [:p "The goal of The Rabbit Game is to demystify artificial intelligence
    a little, by watching how machines play the game. But first, you
    can play it a little yourself to see how it works, get a good score
    and try all the various levels."]
@@ -154,10 +154,11 @@
     8 different artificial players; each has its own style determined
     by its stats--its strong and weak points (click on a stat to see
     what it means)."]
-   [:p "Have different AIs play on various levels, each of which
-   introduces a new complexity. See which ones get far, which one
-   fail, and why they behave like this (click on \"Learn more about me\" to
-   understand an AI's behaviour)"]
+   [:p "Have different AIs play on different levels. Each new level
+   introduces something new that will make it tougher for AIs. See
+   which ones get far, which one fail, and why they behave like
+   this (click on \"Learn more about me\" to understand an AI's
+   behaviour)"]
    [:p "Additionnally, if you're a hacker, you can try to code an
     algorithm to go to the highest possible level. If it clears the
     last level, which is quite hard, you can win *a lot* of internet
