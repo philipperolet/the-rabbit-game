@@ -32,9 +32,9 @@
               (.removeClass (jq "h2.subtitle") "initial"))))
 
 (defonce start-level-data
-  {:initial ["#intro-screen" #(.fadeOut (jq "#intro-screen h1") 2000) 30000]
+  {:initial ["#intro-screen" #(.fadeOut (jq "#intro-screen h1") 2000) 35000]
    :game-over [".game-over" nil]
-   :nextlevel [".game-nextlevel" next-level-callback 20000]})
+   :nextlevel [".game-nextlevel" next-level-callback 25000]})
 
 (defn final-animation [i]
   (cond
