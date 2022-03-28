@@ -59,6 +59,10 @@
     text-align: right;
     font-size: 0.8em;
 }
+#footer .copyrights a {
+    color: var(--white);
+    text-decoration: none;
+}
 /* Main */
 #lapyrinthe div.col {
     padding-left: 2px;
