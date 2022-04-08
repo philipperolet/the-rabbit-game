@@ -42,7 +42,11 @@ Other requirements / dependencies will be installed by leiningen, see the [lein 
 ### Installation
 Meant for local use, not remote use.
 ```
-git clone https://github.com/sittingbull/the-rabbit-game.git
+git clone https://github.com/philipperolet/trg-libs.git
+cd trg-libs
+lein install && lein clean
+cd ..
+git clone https://github.com/philipperolet/the-rabbit-game.git
 cd the-rabbit-game
 ```
 - Start game server (backend) with ``lein run -m claby.ux.server/serve args`` where args is a string of command-line args such as explaine in the  [TRG libs CLI](https://github.com/philipperolet/trg-libs);
@@ -51,6 +55,12 @@ cd the-rabbit-game
 
 ```
 lein fig:build-lapy
+```
+### Server setup
+```
+crontab -e
+# add line: @reboot bash /home/ubuntu/the-rabbit-game/start-server.sh
+
 ```
 ## Dev & deploy
 GUI tools and entry points are in ``claby.ux``
