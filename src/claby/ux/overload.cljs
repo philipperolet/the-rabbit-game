@@ -31,7 +31,7 @@
   restarts as human player if it closes"
   [request-sent-time]
   (let [request-time (- (c/currTimeMillis) request-sent-time)
-        update-moving-average #(+ (* 0.9 %) (* 0.1 request-time))
+        update-moving-average #(+ (* 0.95 %) (* 0.05 request-time))
         server-overload? (fn [req-duration] (> req-duration 150))
         warn-overload
         (fn []
