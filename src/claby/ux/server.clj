@@ -111,4 +111,5 @@
     (validate-args! args)
     (server/run-server #'app-routes {:port port :thread 16})
     (pre-init-players!)
-    (println (str "Running webserver at http://127.0.0.1:" port "/"))))
+    (println (str "Running webserver at http://127.0.0.1:" port "/"))
+    (println (str "Started at: " (java.util.Date.)))))
