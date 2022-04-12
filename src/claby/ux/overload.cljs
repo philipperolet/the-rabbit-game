@@ -26,17 +26,18 @@
     [:small "If the problem persists, reach out at "
      [:a {:href "mailto:pr@machine-zero.com"} "pr@machine-zero.com"]]]))
 
+(defn warn-overload
+  []
+  (.modal (jq "#overload-modal") "show")
+  (.on (jq "#overload-modal") "hidden.bs.modal"
+       #(reload-with-query-string "?player=human")))
+
 (defn check-server-overload!
   "If the server is overwhelmed, shows the appropriate modal and
   restarts as human player if it closes"
   [request-sent-time]
   (let [request-time (- (c/currTimeMillis) request-sent-time)
         update-moving-average #(+ (* 0.95 %) (* 0.05 request-time))
-        server-overload? (fn [req-duration] (> req-duration 150))
-        warn-overload
-        (fn []
-          (.modal (jq "#overload-modal") "show")
-          (.on (jq "#overload-modal") "hidden.bs.modal"
-               #(reload-with-query-string "?player=human")))]
+        server-overload? (fn [req-duration] (> req-duration 150))]
     (swap! avg-request-duration update-moving-average)
     (when (server-overload? @avg-request-duration) (warn-overload))))

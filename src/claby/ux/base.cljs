@@ -24,7 +24,7 @@
    [claby.ux.levels :refer [levels]]
    [claby.ux.help-texts :refer [stat-description-modals learn-more-modals]]
    [claby.ux.game-info :as cgi]
-   [claby.utils :refer [jq player-type reload-with-query-string se move-request! human-emoji count-visit]]
+   [claby.utils :refer [jq player-type reload-with-query-string se move-request! human-emoji count-visit start-server-if-needed]]
    [claby.ux.overload :as col]
    [cljs.reader :refer [read-string]]
    [alandipert.storage-atom :refer [local-storage]]
@@ -251,12 +251,27 @@
   (-> (jq "#loading")
       (.show 200) (.promise)))
 
+(defn wait-server-ready
+  "Wait for server to be ready to take requests by polling with hello
+  requests every 2 secs; after a minute fail"
+  ([ux retries]
+   (go (let [resp (<! (count-visit "server=check"))]
+         (cond
+           (or (:success resp) (= "human" (player-type (:player @params))))
+           (start-level ux)
+
+           (zero? retries) (col/warn-overload)
+
+           :else
+           (.setTimeout js/window #(wait-server-ready ux (dec retries)) 2000)))))
+  ([ux] (wait-server-ready ux 30)))
+
 (defn prepare-game
   [ux]
   (.addEventListener js/window "keydown" user-keypress)
   (-> (show-loading)
       (.then (load-game-board ux))
-      (.then #(start-level ux))))
+      (.then #(wait-server-ready ux))))
 
 (defn player-selection-modal [player-selection-modal-choice]
   (let [current-level (aiw/current-level @world)
@@ -397,6 +412,7 @@
 
 (defn- run-game [ux]
   (count-visit query-str)
+  (start-server-if-needed)
   (reset! params (parse-params))
   (init ux)
   (render [claby] (gdom/getElement "app") (partial game-render-callback ux))

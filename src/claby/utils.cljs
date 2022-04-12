@@ -35,6 +35,17 @@
     "http://localhost:8080"
     "https://api.game.machine-zero.com"))
 
+(def start-server-url
+  "URL to lambda function that starts the TRG server on EC2 when called
+  `nil` if running on localhost"
+  (when (not= "localhost" (.-hostname (.-location js/window)))
+    "https://nbabsgqoszg3xhkswrj5fy3zha0hmsau.lambda-url.eu-west-3.on.aws/"))
+
+(defn start-server-if-needed []
+  ;; url is not set on localhost so request won't be sent on dev
+  (when start-server-url 
+    (http/get start-server-url)))
+
 (defn move-request! [player world]
   (http/post (str api-url "/" player)
              {:with-credentials? false
@@ -49,6 +60,7 @@
             {:timeout 200
              :headers {"Access-Control-Allow-Origin" "*"}
              :with-credentials? false}))
+
 (defn modal
   ([id title contents]
    [:div.modal.fade

@@ -49,7 +49,7 @@ cd ..
 git clone https://github.com/philipperolet/the-rabbit-game.git
 cd the-rabbit-game
 ```
-- Start game server (backend) with ``lein run -m claby.ux.server/serve args`` where args is a string of command-line args such as explaine in the  [TRG libs CLI](https://github.com/philipperolet/trg-libs);
+- Start game server (backend) with ``lein run -m claby.ux.server/serve args`` where args is a string of command-line args such as explained in the  [TRG libs CLI](https://github.com/philipperolet/trg-libs);
 
 - The following will launch a browser with the game frontend--it will only work if the backend has been started
 
@@ -58,9 +58,17 @@ lein fig:build-lapy
 ```
 ### Server setup
 ```
+sudo apt install nginx
+sudo cp api.game.machine-zero.com.conf /etc/nginx/sites-available/
+
+# get the certificate & key from ssl, then run these lines
+sudo cp api.game.machine-zero.com.crt /etc/nginx/ssl
+sudo cp api.game.machine-zero.com.key.nopasswd /etc/nginx/ssl
+sudo chmod go-rwx /etc/nginx/ssl/api.game.machine-zero.com.key.nopasswd 
+
 crontab -e
 # add line: @reboot bash /home/ubuntu/the-rabbit-game/start-server.sh
-
+sudo reboot
 ```
 ## Dev & deploy
 GUI tools and entry points are in ``claby.ux``
