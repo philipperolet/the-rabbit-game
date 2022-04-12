@@ -20,9 +20,9 @@
      [:b (se 0x1f525) (se 0x1f916) (se 0x1f525) "Too many users watching AIs play"]]
     [:p "AIs need computing power to run. At the moment, all the
     available power is used by other rabbit machines; please try again in a few
-    minutes."]
+    minutes (note: this error may also have been caused by connexion issues)."]
     [:p "You can still play as a human though. Those don't consume
-    much (computing power, that is. They do consume other resources)."]
+    much (computing power, that is; they do consume other resources)."]
     [:small "If the problem persists, reach out at "
      [:a {:href "mailto:pr@machine-zero.com"} "pr@machine-zero.com"]]]))
 
