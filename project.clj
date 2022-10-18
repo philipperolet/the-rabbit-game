@@ -21,6 +21,10 @@
                  [ring/ring-json "0.5.1"]
                  [trg-libs "0.3.4"]
                  [org.clojars.philipperolet/trg-players "0.1.4.0"]
+                 ;; mkl dependency jar needed for trg-players to work appropriately
+                 ;; if MKL is not installed system-wide
+                 ;; TODO: put the dep in trg-players directly
+       		 [org.bytedeco/mkl-platform-redist "2020.3-1.5.4"]          
                  [alandipert/storage-atom "2.0.1"]]
 
   :jvm-opts ["-Xss1g"
