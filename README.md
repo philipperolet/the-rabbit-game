@@ -46,10 +46,6 @@ git clone https://github.com/philipperolet/trg-libs.git
 cd trg-libs
 lein install && lein clean
 cd ..
-git clone https://github.com/philipperolet/trg-players.git
-cd trg-players
-lein install && lein clean
-cd ..
 git clone https://github.com/philipperolet/the-rabbit-game.git
 cd the-rabbit-game
 ```

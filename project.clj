@@ -20,7 +20,7 @@
                  [compojure "1.6.2"]
                  [ring/ring-json "0.5.1"]
                  [trg-libs "0.3.4"]
-                 [mzero "00.1.4-alpha"]
+                 [org.clojars.philipperolet/trg-players "0.1.4.0"]
                  [alandipert/storage-atom "2.0.1"]]
 
   :jvm-opts ["-Xss1g"
