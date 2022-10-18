@@ -57,6 +57,7 @@ cd the-rabbit-game
 lein fig:build-lapy
 ```
 ### Server setup
+Adapt certificate file names and domain names as needed.
 ```
 sudo apt install nginx
 sudo cp api.game.machine-zero.com.conf /etc/nginx/sites-available/
@@ -65,9 +66,10 @@ sudo cp api.game.machine-zero.com.conf /etc/nginx/sites-available/
 sudo cp api.game.machine-zero.com.crt /etc/nginx/ssl
 sudo cp api.game.machine-zero.com.key.nopasswd /etc/nginx/ssl
 sudo chmod go-rwx /etc/nginx/ssl/api.game.machine-zero.com.key.nopasswd 
+sudo ln -s /etc/nginx/sites-available/api.game.machine-zero.com.conf /etc/nginx/sites-enabled/
 
 crontab -e
-# add line: @reboot bash /home/ubuntu/the-rabbit-game/start-server.sh
+# add line: @reboot bash /home/ubuntu/the-rabbit-game/start-server-prod.sh
 sudo reboot
 ```
 ## Dev & deploy
