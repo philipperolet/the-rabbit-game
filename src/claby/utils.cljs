@@ -30,21 +30,43 @@
   [json-str]
   (js->clj (.parse js/JSON json-str) :keywordize-keys true))
 
-(def api-url
-  (if (= "localhost" (.-hostname (.-location js/window)))
-    "http://localhost:8080"
-    "https://api.game.machine-zero.com"))
+(defn server-key-from-timezone []
+  (let [utc-offset (int (/ (.getTimezoneOffset (js/Date.)) -60))]
+    (cond
+      (< utc-offset -3) :california
+      :else :paris)))
 
-(def start-server-url
-  "URL to lambda function that starts the TRG server on EC2 when called
-  `nil` if running on localhost"
-  (when (not= "localhost" (.-hostname (.-location js/window)))
-    "https://nbabsgqoszg3xhkswrj5fy3zha0hmsau.lambda-url.eu-west-3.on.aws/"))
+;; start-lambda-url = url of the lambda function whose call will start
+;; the server
+(def start-lambda-url
+  "https://nbabsgqoszg3xhkswrj5fy3zha0hmsau.lambda-url.eu-west-3.on.aws/")
+
+(def servers
+  {:california
+   {:url "https://api-ca.game.machine-zero.com"
+    :aws-region "us-west-1"
+    :aws-id "i-02ffc001483629150"}
+   :paris
+   {:url "https://api.game.machine-zero.com"
+    :aws-region "eu-west-3"
+    :aws-id "i-0bfa1e1b6907bd4ad"}
+   :local
+   {:url "http://localhost:8080"}})
+
+(def server-key
+  (if (= "localhost" (.-hostname (.-location js/window)))
+    :local
+    (server-key-from-timezone)))
+
+(def api-url (-> servers server-key :url))
 
 (defn start-server-if-needed []
   ;; url is not set on localhost so request won't be sent on dev
-  (when start-server-url 
-    (http/get start-server-url)))
+  (.log js/console (str "Current server: " (name server-key)))
+  (when (not= :local server-key)
+    (http/get (str start-lambda-url
+                   "?region=" (-> servers server-key :aws-region)
+                   "&instance=" (-> servers server-key :aws-id)))))
 
 (defn move-request! [player world]
   (http/post (str api-url "/" player)
